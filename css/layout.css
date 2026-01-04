@@ -1,0 +1,117 @@
+/* global container style */
+.container{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 25px;
+    justify-content: center;
+}
+
+
+/* Card elements style */
+
+.card{
+    margin: 10px 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    flex-grow: 1;
+    min-width: 300px;
+    border: 1px solid black;
+    padding: 15px;
+}
+
+.card_links{
+    text-decoration: none;
+    align-self: flex-end;
+}
+
+
+/* Forms style */
+
+.form_container{
+    max-width: fit-content;
+    padding: 20px 30px;
+    margin: 50px auto;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    text-align: left; /* Forms are easier to read left-aligned */
+}
+
+.form_container form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.list_container{
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.list_card{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid var(--border-color);
+    padding: 15px 25px;
+}
+
+/* login.php */
+.profileImg{
+    margin: 10px 0;
+    max-height: 30%;
+    width: auto;
+    border-radius: 999px;
+    border: 2px solid var(--border-color);
+}
+
+.logoutBtn{
+    flex: 1;
+    padding: 12px;
+    text-align: center;
+    border-radius: 8px;
+}
+
+
+/* Overlay - added for profile.php REVIEW & CHANGE LATER!!!*/
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; 
+    z-index: 1000; 
+    left: 0;
+    top: 0;
+    width: 100%; 
+    height: 100%; 
+    background-color: rgba(0,0,0,0.5); /* Black w/ opacity */
+    }
+
+/* The Modal Box */
+.modal-content {
+    background-color: #fefefe;
+    margin: 10% auto; /* 15% from the top and centered */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%; 
+    max-width: 400px;
+    border-radius: 10px;
+    text-align: center;
+}
+
+/* Form Inputs inside Modal */
+.modal-input {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-sizing: border-box; /* Ensures padding doesn't widen element */
+}
+
+/* Buttons */
+.btn-save { background-color: #4CAF50; color: white; border: none; padding: 10px 20px; cursor: pointer; border-radius: 5px; }
+.btn-cancel { background-color: #f44336; color: white; border: none; padding: 10px 20px; cursor: pointer; border-radius: 5px; margin-left: 10px; }
+.editBtn { margin-top: 10px; background-color: #2196F3; color: white; padding: 10px; border: none; border-radius: 5px; cursor: pointer;}

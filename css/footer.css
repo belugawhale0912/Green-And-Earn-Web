@@ -1,0 +1,31 @@
+footer{
+    background-color: #8E6E53;
+    display: flex;
+    flex-wrap: wrap;
+    padding: 2%;
+}
+
+#information, #links{
+    background-color: #EAD7D7;
+    border-radius: 5px;
+    margin: 2%;
+    padding: 2%;
+    flex-grow: 1;
+    flex-shrink: 1;
+
+    flex-basis: 42%;
+
+    min-width: 320px;
+}
+
+#links{
+    display: flex;
+    flex-wrap: wrap;
+}
+
+#links div{
+    flex-basis: auto;
+    margin: 1%;
+    padding: 0 2%;
+    background-color: transparent;
+}
