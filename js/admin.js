@@ -10,16 +10,18 @@ function closeModal(){
 function openAddActivityModal(){
     document.getElementById("activityForm").reset();
 
-    document.getElementById("activityForm").action = "../commands/admin_addActivity.php";
+    document.getElementById("action").value = "add";
 
-    document.getElementById("modalTitle").innerText = "Add New Record";
+    document.getElementById("modalTitle").innerText = "Add New Activity";
 
     openModal();
 }
 
-function openUpdateActivityModal(title,description,points_awarded,start_date,end_date){
-    document.getElementById("activityForm").action = "../commands/admin_updateActivity.php";
+function openUpdateActivityModal(activityID, title,description,points_awarded,start_date,end_date){
 
+    document.getElementById("action").value = "update";
+
+    document.getElementById("activityID").value = activityID;
     document.getElementById("activityTitle").value = title;
     document.getElementById("activityDescription").value = description;
     document.getElementById("activityPoint").value = points_awarded;

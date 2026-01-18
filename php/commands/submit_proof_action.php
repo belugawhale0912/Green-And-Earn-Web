@@ -23,7 +23,7 @@
         if (move_uploaded_file($fileServerPath, $saveDir)){
             $sql = "INSERT INTO activity_submission (user_id, moderator_id, activity_id, proof, status) VALUES ('$user_id', '$moderator_id', '$activity_id', '$saveDir', '$status')";
             if(mysqli_query($dbConn, $sql)){
-                echo "<script>alert('Success!'); window.location.href='../pages/memberTaskList.php';</script>";
+                echo "<script>alert('Success!'); window.location.href='../member/memberTaskList.php';</script>";
             } else{
                 echo "Error While Saving";
             }

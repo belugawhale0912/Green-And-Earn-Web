@@ -15,11 +15,14 @@
     <!-- global header element -->
      <?php
         include("../include/header.php");
+        include("../include/libraries.php");
      ?>
+
     <section id="hero">
         <h1>Welcome To Green&Earn, Where Your Gamified Eco Quest Begin</h1>
         <img id="topBanner" src="../../assets/placeholder.jpg" alt="hero_img">
     </section>
+
 
     <main>
         <section id="how-to-use">

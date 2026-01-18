@@ -6,6 +6,72 @@
     $sql = "SELECT * FROM reward WHERE partner_id = $user_id AND status != 'deleted'";
 
     $result = mysqli_query($dbConn,$sql);
+
+    if($_SERVER["REQUEST_METHOD"] == "POST"){
+        if(isset($_POST['action'])){
+            if($_POST['action']=="add"){
+                $title =$_POST['title'];
+                $description =$_POST['description'];
+                $required_points =$_POST['required_points'];
+                $stock =$_POST['stock'];
+
+                $sql = "INSERT INTO reward (partner_id, status, title, description, required_points, stock)
+                        VALUES ($user_id, 'pending', '$title', '$description', $required_points, $stock)";
+
+                if(mysqli_query($dbConn,$sql)){
+                    echo("<script>
+                            alert('Successfully Added Reward');
+                            window.location.href = '../partner/partnerRewardList.php';
+                        </script>");
+                }else{
+                    echo("<script>
+                            alert('Failed to Add Reward!');
+                            window.location.href = '../partner/partnerRewardList.php';
+                        </script>");
+                }
+            }
+            if($_POST['action']=="update"){
+                $reward_id = $_POST['rewardID'];
+                $title =$_POST['title'];
+                $description =$_POST['description'];
+                $required_points =$_POST['required_points'];
+                $stock =$_POST['stock'];
+
+                $sql = "UPDATE reward SET 
+                        title = '$title',
+                        description = '$description',
+                        required_points=$required_points,
+                        stock=$stock
+                        WHERE reward_id = $reward_id";
+
+                if(mysqli_query($dbConn,$sql)){
+                    echo("<script>
+                            alert('Successfully Updated Reward');
+                            window.location.href = '../partner/partnerRewardList.php';
+                        </script>");
+                }else{
+                    echo("<script>
+                            alert('Update Failed!');
+                            window.location.href = '../partner/partnerRewardList.php';
+                        </script>");
+                }
+            }
+        }
+        if(isset($_POST['delete_btn'])){
+            $reward_id = $_POST['reward_id'];
+
+            $sql = "UPDATE reward SET status = 'deleted' WHERE reward_id = $reward_id";
+
+            if(mysqli_query($dbConn,$sql)){
+                echo "<script> 
+                        alert('Successfully Removed Reward')
+                        window.location.href = '../partner/partnerRewardList.php'
+                    </script>";
+            }else{
+                echo"Error";
+            }
+        }
+    }
 ?>
 
 <!DOCTYPE html>
@@ -58,7 +124,7 @@
                             </button>
                         </td>
                         <td>
-                            <form action="../commands/partner_deleteReward.php" method="POST">
+                            <form action="" method="POST">
                                 <input type="hidden" name="reward_id" value="<?php echo $reward_info['reward_id'];?>">
                                 <button type="submit">Delete</button>
                             </form>
@@ -72,7 +138,8 @@
         <div id="editModal" class="modal">
             <div class="modal-content">
                 <h2 id="modalTitle"></h2>
-                <form id="rewardForm" method="POST">
+                <form action="" id="rewardForm" method="POST">
+                    <input type="hidden" id="action" name="action">
                     <input type="hidden" id="rewardID" name="rewardID">
                     <label for="title">Title</label>
                     <input id="rewardTitle" type="text" name="title" class="modal-input" required>

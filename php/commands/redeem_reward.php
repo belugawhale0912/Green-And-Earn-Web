@@ -2,6 +2,7 @@
     session_start();
     $reward_id = $_GET['reward_id'];
     include "../include/conn.php";
+    include "../include/libraries.php";
 
     //validations
     $sql_reward = "SELECT * FROM reward WHERE reward_id = $reward_id";
@@ -55,10 +56,23 @@
         //if all query ran without error, save the changes
         $dbConn->commit();
         // JavaScript Feedback (TEMP)
-        echo "<script>";
-        echo "alert('Success! You have redeemed this reward.');";
-        echo "window.location.href = '../pages/memberRewardList.php';"; // Redirects user back
-        echo "</script>";
+        echo "<html>
+            <body>
+                <script>
+                    Swal.fire({
+                        title: 'Success!',
+                        text: 'The Reward is redeemed!',
+                        icon: 'success',
+                        confirmButtonText: 'OK'
+                    }).then((result) => {
+                        // This code runs ONLY after the button is clicked
+                        if (result.isConfirmed) {
+                            window.location.href = '../pages/memberRewardList.php';
+                        }
+                    });
+                </script>
+            </body>
+        </html>";
 
     }
     catch(Exception $e){

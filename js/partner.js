@@ -11,21 +11,21 @@ function closeModal(){
 function openAddRewardModal(){
     document.getElementById("rewardForm").reset();
 
-    document.getElementById("rewardForm").action = "../commands/partner_addReward.php";
+    document.getElementById("action").value = "add";
 
-    document.getElementById("modalTitle").innerText = "Add New Record";
+    document.getElementById("modalTitle").innerText = "Add New Reward";
 
     openModal();
 }
 
-function openUpdateRewardModal(rewardID,title,description,requiredPoiints,stock){
+function openUpdateRewardModal(rewardID,title,description,requiredPoints,stock){
 
-    document.getElementById("rewardForm").action = "../commands/partner_updateReward.php";
+    document.getElementById("action").value = "update";
 
     document.getElementById("rewardID").value = rewardID;
     document.getElementById("rewardTitle").value = title;
     document.getElementById("rewardDescription").value = description;
-    document.getElementById("requiredPoints").value = requiredPoiints;
+    document.getElementById("requiredPoints").value = requiredPoints;
     document.getElementById("stock").value = stock;
 
     document.getElementById("modalTitle").innerText = "Update Record";

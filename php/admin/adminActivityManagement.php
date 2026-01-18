@@ -1,0 +1,204 @@
+<?php
+    include "../include/conn.php";
+    include "../include/session.php";
+
+    $user_id = $_SESSION['user_id'];
+    $sql = "SELECT * FROM activity ORDER BY activity_id DESC";
+    $result = mysqli_query($dbConn, $sql);
+
+    if($_SERVER["REQUEST_METHOD"] == "POST"){
+        if(isset($_POST['action'])){
+            if($_POST['action']=="add"){
+                $adminID = $_SESSION['user_id'];
+                $title = $_POST['title'];
+                $description = $_POST['description'];
+                $pointAward = $_POST['point'];
+                $start = $_POST['startDate'];
+                $end = $_POST['endDate'];
+
+                $sql = "INSERT INTO activity (admin_id, title, description, points_awarded, status, start_date, end_date)
+                        VALUES ($adminID, '$title', '$description', $pointAward, 'Active', '$start', '$end')";
+
+                if(mysqli_query($dbConn,$sql)){
+                    echo("<script>
+                            alert('Successfully Added Activity');
+                            window.location.href = '../admin/adminActivityManagement.php';
+                        </script>");
+                }else{
+                    echo("<script>
+                            alert('Failed to Add Reward!');
+                            window.location.href = '../admin/adminActivityManagement.php';
+                        </script>");
+                }
+            }
+            if($_POST['action']=="update"){
+
+                $adminID = $_SESSION['user_id'];
+                $title = $_POST['title'];
+                $description = $_POST['description'];
+                $pointAward = $_POST['point'];
+                $start = $_POST['startDate'];
+                $end = $_POST['endDate'];
+                $activity_id = $_POST['activity_id'];
+
+                $sql = "UPDATE activity SET
+                        admin_id = $adminID, 
+                        title = '$title', 
+                        description = '$description', 
+                        points_awarded = $pointAward, 
+                        start_date = '$start', 
+                        end_date = '$end'
+                        WHERE activity_id = $activity_id";
+
+                if(mysqli_query($dbConn,$sql)){
+                    echo("<script>
+                            alert('Successfully Updated Activity');
+                            window.location.href = '../admin/adminActivityManagement.php';
+                        </script>");
+                }else{
+                    echo("<script>
+                            alert('Failed to Add Reward!');
+                            window.location.href = '../admin/adminActivityManagement.php';
+                        </script>");
+                }
+            }
+        }
+        if(isset($_POST['delete_btn'])){
+            $activity_id = $_POST['activity_id'];
+
+            $sql = "UPDATE activity SET 
+                    status = 'Deleted' 
+                    WHERE activity_id = $activity_id";
+
+            if(mysqli_query($dbConn,$sql)){
+                echo "<script> 
+                        alert('Successfully Deleted Activity! :(')
+                        window.location.href = '../admin/adminActivityManagement.php?'
+                    </script>";
+            }else{
+                echo "Error";
+            }
+        }
+
+        if(isset($_POST['restore_btn'])){
+            $activity_id = $_POST['activity_id'];
+
+            $sql = "UPDATE activity SET 
+                    status = 'Active' 
+                    WHERE activity_id = $activity_id";
+
+            if(mysqli_query($dbConn,$sql)){
+                echo "<script> 
+                        alert('Successfully Restored Activity! :)')
+                        window.location.href = '../admin/adminActivityManagement.php?'
+                    </script>";
+            }else{
+                echo "Error";
+            }
+        }
+    }
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../css/header.css">
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/admin.css">
+    <title>Manage Activities</title>
+</head>
+<body>
+    <?php
+        include "../include/header.php";
+    ?>
+    <h1>Activity Management</h1>
+    <button onclick="openAddActivityModal()">+ Add activity</button>
+    <?php if(mysqli_num_rows($result)>0):?>
+        <table>
+            <thead>
+                <tr id="header">
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th>AdminID</th>
+                    <th>Point award</th>
+                    <th>status</th>
+                    <th>Start</th>
+                    <th>End</th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php while($activity_info = mysqli_fetch_assoc($result)):?>
+                    <tr>
+                        <td><?php echo $activity_info['title'];?></td>
+                        <td><?php echo $activity_info['description'];?></td>
+                        <td><?php echo $activity_info['admin_id'];?></td>
+                        <td><?php echo $activity_info['points_awarded'];?></td>
+                        <td><?php echo $activity_info['status'];?></td>
+                        <td><?php echo $activity_info['start_date'];?></td>
+                        <td><?php echo $activity_info['end_date'];?></td>
+                        <td>
+                            <!-- Call js function to fill update form with existing data -->
+                            <button onclick="openUpdateActivityModal(
+                                             '<?php echo $activity_info['activity_id'];?>',
+                                             '<?php echo $activity_info['title'];?>',
+                                             '<?php echo $activity_info['description'];?>',
+                                             '<?php echo $activity_info['points_awarded'];?>',
+                                             '<?php echo $activity_info['start_date'];?>',
+                                             '<?php echo $activity_info['end_date'];?>',
+                                             )">Update
+                            </button>
+                        </td>
+                        <td>
+                            <?php if($activity_info['status']!='Deleted'):;?>
+                                <form action="" method="POST">
+                                    <input type="hidden" name="activity_id" value="<?php echo $activity_info['activity_id'];?>">
+                                    <button type="submit" name="delete_btn">Delete</button>
+                                </form>
+                            <?php else:;?>
+                                <form action="" method="POST">
+                                    <input type="hidden" name="activity_id" value="<?php echo $activity_info['activity_id'];?>">
+                                    <button type="submit" name="restore_btn">Restore</button>
+                                </form>
+                            <?php endif;?>
+                        </td>
+                    </tr>
+                
+                <?php endwhile;?>
+            </tbody>
+        </table>
+
+        <div id="activityModal" class="modal">
+            <div class="modalContent">
+                <h2 id="modalTitle"></h2>
+                <form action="" id="activityForm" method="POST">
+                    <input type="hidden" id="action" name="action">
+                    <input type="hidden" id="activityID" name="activity_id">
+                    <label for="title">Title</label>
+                    <input id="activityTitle" type="text" name="title" required>
+
+                    <label for="description">Description</label>
+                    <textarea id="activityDescription" name="description" rows="3"></textarea>
+                    
+                    <label for="pointAward">Point award</label>
+                    <input type="number" id="activityPoint" name="point"></input>
+
+                    <label for="startDate">Start Date</label>
+                    <input type="date" id="startDate" name="startDate">
+
+                    <label for="startDate">End Date</label>
+                    <input type="date" id="endDate" name="endDate">
+
+                    <button type="submit" id="confirmBtn">Confirm</button>
+                    <button type="button" onclick="closeModal()">Cancel</button>
+                </form>
+            </div>
+        </div>
+    <?php endif;?>
+    <script src="../../js/admin.js"></script>
+</body>
+</html>
+

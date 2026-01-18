@@ -8,27 +8,28 @@
     <nav id="header_links">
         <?php if(isset($_SESSION['role_id'])): $loggedInRole=$_SESSION['role_id']?>
             <?php if($loggedInRole==1):?>
-                <a href="../pages/adminDashboard.php">Dashboard</a>
-                <a href="../pages/.php">Manage User</a>
-                <a href="../pages/adminActivityManagement.php">Manage Activity</a>
-                <a href="../pages/.php">Manage Rewards</a>
+                <a href="../admin/adminDashboard.php">Dashboard</a>
+                <a href="../admin/.php">Manage User</a>
+                <a href="../admin/adminActivityManagement.php">Manage Activity</a>
+                <a href="../admin/.php">Manage Rewards</a>
                 <a href="../pages/profile.php">Profile</a>
             <?php elseif($loggedInRole==2):?>
-                <a href="../pages/memberDashboard.php">Dashboard</a>
-                <a href="../pages/memberTaskList.php">Task List</a>
-                <a href="../pages/memberRewardList.php">Rewards</a>
-                <a href="../pages/memberTransactionHistory.php">Point Transactions</a>
-                <a href="../pages/memberLeaderBoard.php">Leaderboard</a>
-                <a href="../pages/memberFriends.php">Friends</a>
+                <a href="../member/memberDashboard.php">Dashboard</a>
+                <a href="../member/memberTaskList.php">Task List</a>
+                <a href="../member/memberRewardList.php">Rewards</a>
+                <a href="../member/memberTransactionHistory.php">Point Transactions</a>
+                <a href="../member/memberLeaderBoard.php">Leaderboard</a>
+                <a href="../member/memberFriends.php">Friends</a>
                 <a href="../pages/profile.php">Profile</a>
             <?php elseif($loggedInRole==3):?>
-                <a href="../pages/moderatorDashboard.php">Dashboard</a>
-                <a href="../pages/moderatorSubmissions.php">Submissions</a>
+                <a href="../moderator/moderatorDashboard.php">Dashboard</a>
+                <a href="../moderator/moderatorSubmissions.php">Submissions</a>
+                <a href="../moderator/moderatorHistory.php">History</a>
                 <a href="../pages/profile.php">Profile</a>
             <?php elseif($loggedInRole==4):?>
-                <a href="../pages/partnerDashboard.php">Dashboard</a>
-                <a href="../pages/partnerRewardList.php">Rewards</a>
-                <a href="../pages/partnerPointAward.php">Points Award</a>
+                <a href="../partner/partnerDashboard.php">Dashboard</a>
+                <a href="../partner/partnerRewardList.php">Rewards</a>
+                <a href="../partner/partnerPointAward.php">Points Award</a>
                 <a href="../pages/profile.php">Profile</a>
             <?php endif;?>
         <?php else:?>
