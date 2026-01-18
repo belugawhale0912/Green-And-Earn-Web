@@ -22,17 +22,5 @@ if (mysqli_affected_rows($dbConn) == 0) {
     die("<script>alert('Error While Adding User!')</script>");
 }
 
-echo "<script>alert('Successfully Added User!')</script>";
+echo "<script>alert('Successfully Added User!')window.location.href = '../pages/login.php'</script>";
 ?>
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <a href="../pages/login.php">Back To Login</a>
-</body>
-</html>

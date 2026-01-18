@@ -1,0 +1,50 @@
+*{
+    box-sizing: border-box;
+}
+
+#actionButtons{
+    display: flex;
+}
+
+
+
+#profileSection{
+    margin: 0 auto;
+    max-height: 20%;
+    width: 90%;
+    display: flex;
+    gap: 20px;
+    border: 1px solid black;
+    padding: 20px;
+}
+
+#profileContainer{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+#profilePhoto img{
+    max-width: 300px;
+    max-height: 300px;
+    border-radius: 999px;
+}
+
+
+#stats{
+    display: flex;
+    justify-content: center;
+}
+
+.cardContainer{
+    display: flex;
+    gap: 20px;
+}
+
+.cards{
+    color: white;
+    background-color: rgb(105, 222, 105);
+    width: 300px;
+    height: 300px;
+    padding: 20px;
+}

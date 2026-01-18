@@ -10,9 +10,20 @@
 
 :root {
     /* clamp(MIN, PREFERRED, MAX) */
-    --fs-h1: clamp(1.8rem, 5vw + 1rem, 3rem);
-    --fs-h2: clamp(1.5rem, 3vw + 1rem, 2.2rem);
-    --fs-body: clamp(1rem, 1vw + 0.5rem, 1.1rem);
+    /* H1: Starts at 32px (2rem), grows to 64px (4rem) */
+    --fs-h1: clamp(2rem, 5vw + 1rem, 4rem);
+    
+    /* H2: Starts at 24px (1.5rem), grows to 40px (2.5rem) */
+    --fs-h2: clamp(1.5rem, 3vw + 1rem, 2.5rem);
+    
+    /* H3: Starts at 20px (1.25rem), grows to 32px (2rem) */
+    --fs-h3: clamp(1.25rem, 2vw + 1rem, 2rem);
+    
+    /* Body: Starts at 16px (1rem), grows slightly to 18px (1.125rem) for readability */
+    --fs-body: clamp(1rem, 0.5vw + 0.9rem, 1.125rem);
+    
+    /* Small Text: For labels or footnotes */
+    --fs-small: clamp(0.875rem, 0.5vw + 0.8rem, 1rem);
 
     --font-heading: 'montserrat',sans-serif;
     --font-body: 'poppins',sans-serif;
@@ -36,6 +47,10 @@ h2 {
     font-family: var(--font-heading);
 }
 
+h3{
+    font-size: var(--fs-h3);
+    font-family: var(--font-heading);
+}
 p  {
     font-size: var(--fs-body);
 }
@@ -52,20 +67,76 @@ a:hover{
     color: green;
 }
 
-
-img {
-    align-self: center;
-    max-width: 80%;
-    height: auto;
+table{
+    width: 100%;
+    border-collapse: collapse; /* Removes the double border lines */
+    font-size: 0.9em;
+    font-family: var(--font-body);
+    /* min-width: 400px; */
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15); /* Nice subtle shadow */
+    background-color: white;
 }
 
-
-button{
-    margin-top: 20px;
-    width: fit-content;
-    align-self: center;
-    padding: 6px 10px;
-    cursor: pointer;
+thead tr{
+    background-color: #00985e; /* Green theme color */
+    color: #ffffff;
 }
 
+th, td{
+    padding: 12px 15px;
+    border-bottom: 1px solid #dddddd;
+    text-align: left;
+}
 
+/* Zebra Striping (Alternating row colors) */
+tbody tr:nth-of-type(even){
+    background-color: #f3f3f3;
+}
+
+/* Hover Effect (Highlights row on mouseover) */
+tbody tr:hover{
+    background-color: #b6ffc8;
+    cursor: default;
+}
+
+/* Make the last row have a green line at the bottom */
+tbody tr:last-of-type{
+    border-bottom: 2px solid #009879;
+}
+
+/* Overlay */
+.modal{
+    display: none; /* Hidden by default */
+    position: fixed; 
+    z-index: 1000; 
+    left: 0;
+    top: 0;
+    width: 100%; 
+    height: 100%; 
+    background-color: rgba(0,0,0,0.5); /* Black w/ opacity */
+    }
+
+.modalContent{
+    display: flex;
+    flex-direction: column;
+    background-color: #fefefe;
+    margin: 5% auto; 
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%; 
+    border-radius: 10px;
+    text-align: center;
+
+    /* Scroll, set max height to 80% of view and overflow enable scrollbar */
+    max-height: 80vh;
+    overflow-y: auto;
+    border-radius: 10px;
+}
+
+.modalContent form{
+    gap: 20px;
+    align-self: center;
+    max-width: 500px;
+    display: flex;
+    flex-direction: column;
+}

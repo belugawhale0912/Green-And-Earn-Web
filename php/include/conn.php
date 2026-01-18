@@ -17,6 +17,4 @@ if (mysqli_connect_errno()) {
 
 // echo"<script>alert('Successfully connect to Green And Earn!');</script>";
 
-
-
 ?>

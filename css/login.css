@@ -1,0 +1,150 @@
+/* 1. Global Reset */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    height: 100vh; /* Full viewport height */
+    display: flex;
+    flex-direction: column;
+}
+
+/* back link styling*/
+body a { 
+    text-align: left;
+    text-decoration: none;
+    color: #333;
+    padding: 20px 20px 0 20px;
+    font-weight: bold;
+    display: inline-block;
+}
+
+/* Login to green and earn */
+body h1 {
+    font-size: 2rem;
+    margin: 10px 0 20px 0;
+    color: #28a745; /* Green to match theme */
+}
+
+/* Login conntainer  */
+#login_container {
+    align-self: center;
+    display: flex;
+    width: 100%;
+    height: 100%;
+}
+
+
+/*Left area*/
+
+#left_pane {
+    flex: 1; /* 40% of the width of login container*/
+    display: flex;
+    flex-direction: column;
+    justify-content: center; 
+    align-items: center;
+    background-color: white;
+    padding: 20px;
+}
+
+
+.form_container {
+    width: 100%;
+    max-width: 400px;
+    padding: 30px;
+    border: 1px solid #eee;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+
+.form_container form {
+    display: flex;
+    flex-direction: column;
+}
+
+
+.form_container label {
+    align-self: flex-start;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #555;
+}
+
+.form_container input {
+    padding: 12px;
+    margin-bottom: 20px;
+    border: 2px solid #ccc;
+    border-radius: 5px;
+    font-size: 1rem;
+    transition: border 0.3s;
+}
+
+.form_container input:focus {
+    border-color: #28a745;
+    outline: none;
+}
+
+/* 8. Links inside form (Register) */
+.form_container a {
+    color: #28a745;
+    text-decoration: none;
+    font-size: 0.9rem;
+    margin-bottom: 20px;
+    align-self: flex-end; /* Pushes link to the right */
+}
+
+.form_container a:hover {
+    text-decoration: underline;
+}
+
+
+.form_container button {
+    padding: 12px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.form_container button:hover {
+    background-color: #218838;
+}
+
+/* right area*/
+#right_pane {
+    flex: 1.5; /* 60% of the width */
+    background-color: #f0f0f0;
+    position: relative;
+}
+
+#right_pane img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Ensures image fills the pane without stretching */
+    display: block;
+}
+
+
+
+@media (max-width: 768px) {
+    #login_container {
+        /* set flex to column (up to down) */
+        flex-direction: column; 
+    }
+    
+    #left_pane {
+        /* Fill the gap with the login area */
+        flex: 1;
+    }
+    
+    #right_pane {
+        /* hide the background img on mobile view */
+        display: none;
+    }
+}

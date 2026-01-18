@@ -52,9 +52,12 @@
     <?php
         include "../include/header.php";
     ?>
-    <a href="?view=list">My Friends</a>
-    <a href="?view=requests">Requests</a>
-    <a href="?view=search">Find Friends</a>
+    <div class="list_card">
+        <a href="?view=list">My Friends</a>
+        <a href="?view=requests">Requests</a>
+        <a href="?view=search">Find Friends</a>
+    </div>
+
     <?php if(isset($_SESSION['role_id']) && $current_view=='list'): ?>
         <?php if(mysqli_num_rows($result)>0):?>
             <div class="list_container">
@@ -75,19 +78,23 @@
     <?php endif;?>
 
     <?php if(isset($_SESSION['role_id']) && $current_view=='requests'): ?>
-        <div class="list_container">
-            <?php while($user_info = mysqli_fetch_assoc($result)):?>
-                <div class="list_card">
-                    <img src="<?php echo $user_info['profile_photo']?>" alt="pfp">
-                    <h3><?php echo $user_info['username']?></h3>
-                    <form action="../commands/accept_friend_request.php" method="POST">
-                        <input type="hidden" name="friendship_id" value="<?php echo $user_info['friendship_id']?>">
-                        <button type="submit" name="action" value="Accept">Accept</button>
-                        <button type="submit" name="action" value="Reject">Reject</button>
-                    </form>
-                </div>
-            <?php endwhile;?>
-        </div>
+        <?php if(mysqli_num_rows($result)>0):?>
+            <div class="list_container">
+                <?php while($user_info = mysqli_fetch_assoc($result)):?>
+                    <div class="list_card">
+                        <img src="<?php echo $user_info['profile_photo']?>" alt="pfp">
+                        <h3><?php echo $user_info['username']?></h3>
+                        <form action="../commands/accept_friend_request.php" method="POST">
+                            <input type="hidden" name="friendship_id" value="<?php echo $user_info['friendship_id']?>">
+                            <button type="submit" name="action" value="Accept">Accept</button>
+                            <button type="submit" name="action" value="Reject">Reject</button>
+                        </form>
+                    </div>
+                <?php endwhile;?>
+            </div>
+        <?php else:?>
+            <h1>No Pending Reqeust</h1>
+        <?php endif?>
     <?php endif;?>
 
     <?php if(isset($_SESSION['role_id']) && $current_view=='search'): ?>

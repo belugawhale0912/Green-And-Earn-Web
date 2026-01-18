@@ -20,13 +20,16 @@ if (mysqli_num_rows($result)>0) {
         $_SESSION['user_id'] = $user_info['user_id'];
         switch($user_info['role_id']){
             case 1:
+                header("Location: ../pages/adminDashboard.php");
                 break;
             case 2:
                 header("Location: ../pages/memberDashboard.php");
                 break;
             case 3:
+                header("Location: ../pages/moderatorDashboard.php");
                 break;
             case 4:
+                header("Location: ../pages/partnerDashboard.php");
                 break;
         }
         exit();

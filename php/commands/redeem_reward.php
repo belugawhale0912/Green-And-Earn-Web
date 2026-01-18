@@ -1,4 +1,3 @@
-//1.Validation Check
 <?php
     session_start();
     $reward_id = $_GET['reward_id'];

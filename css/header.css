@@ -1,15 +1,17 @@
 header{
-    background-color: whitesmoke;
-    padding: 20px;
+    background-color: rgb(255, 255, 255);
+    padding: 10px 30px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     border-bottom: 1px gray solid;
+    position: relative;
+    z-index: 1000;
 }
 
 #logo{
     border: none;
-    max-width: 15%;
+    max-width: 150px;
     height: auto;
 }
 #header_links{
@@ -21,6 +23,7 @@ header{
     background-color: rgba(192, 192, 192, 0.5);
     border-radius: 999px;
     flex-wrap: wrap;
+    transition: 0.3s;
 }
 
 
@@ -33,16 +36,41 @@ header{
     color: green;
 }
 
+#hamburger{
+    display: none;
+    cursor: pointer;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.icon{
+    font-size: 50px;
+}
+
 
 @media (max-width: 768px) {
-    header {
-        flex-direction: column; /* Stack logo on top of nav */
+    #hamburger{
+        display: flex;
+    }
+    
+    #header_links{
+        display: none;
+        flex-direction: column;
+        width: 100%;
+        position: absolute;
+        top: 100%; /* Pushes it exactly below the header */
+        left: 0;
+        background-color: white; /* Solid background so text is readable */
+        border-radius: 0; /* Remove the pill shape for mobile */
+        border-bottom: 2px solid green;
+        padding: 20px 0;
+        box-shadow: 0 5px 10px rgba(0,0,0,0.1);
         gap: 15px;
+        z-index: 999;
     }
 
-    #header_links {
-        gap: 15px; /* Smaller gaps on mobile */
-        padding: 8px 20px;
-        font-size: 0.9rem; /* Slightly smaller text */
+    #header_links.active{
+        display: flex;
     }
+
 }

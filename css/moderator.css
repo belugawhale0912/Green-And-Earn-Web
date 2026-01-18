@@ -1,0 +1,67 @@
+#profileSection{
+    border: 1px solid black;
+}
+
+.profileImg{
+    max-height: 200px;
+    width: auto;
+    border-radius: 999px;
+    border: 2px solid var(--border-color);
+}
+
+
+#profileSection .container{
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center; 
+    gap: 30px;
+}
+
+/* Force the Title to take the full width (Top Row) */
+#profileSection h1{
+    width: 100%;
+}
+
+#profileInfo{
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+}
+
+#submissionUpload{
+    max-width: 80%;
+    align-self: center;
+}
+
+#popupProof{
+    max-height: 300px;
+    width: auto;
+}
+
+
+/* --- Mobile View for Profile Section --- */
+@media screen and (max-width: 768px) {
+    
+    /* 1. Stack the Image and Text vertically */
+    #profileSection .container {
+        flex-direction: column; /* Stacks items top-to-bottom */
+        text-align: center;     /* Centers the text */
+        justify-content: center;
+    }
+
+    /* 2. Remove the side gap since they are now stacked */
+    #profileSection .container {
+        gap: 15px;
+    }
+
+    /* 3. Center the text group items */
+    .text-group {
+        align-items: center; /* Ensures the text inside the group is centered */
+    }
+    
+    /* Optional: Make the image slightly smaller on mobile */
+    .profileImg {
+        width: 120px;
+        height: 120px;
+    }
+}

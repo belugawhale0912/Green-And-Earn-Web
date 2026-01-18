@@ -37,15 +37,15 @@
     <h1><?php echo $user_info['username']?></h1>
     <button class="editBtn" onclick="openModal()">Edit Profile</button>
     <div class="list_container">
-        <div class="card">
+        <div class="list_card">
             <h2>Email</h2>
             <h3><?php echo $user_info['email']?></h3>
         </div>
-        <div class="card">
+        <div class="list_card">
             <h2>Member Since</h2>
             <h3><?php echo $user_info['register_date']?></h3>
         </div>
-        <div class="card">
+        <div class="list_card">
             <h2>Total Accumulated Points</h2>
             <h3><?php echo $user_info['total_point_accumulated']?></h3>
         </div>
@@ -75,7 +75,7 @@
             </form>
         </div>
     </div>
-    <script src="../../js/editProfile.js"></script>
+    <script src="../../js/popup.js"></script>
 
 </body>
 </html>
