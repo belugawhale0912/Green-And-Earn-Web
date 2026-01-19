@@ -126,7 +126,7 @@
                         <td>
                             <form action="" method="POST">
                                 <input type="hidden" name="reward_id" value="<?php echo $reward_info['reward_id'];?>">
-                                <button type="submit">Delete</button>
+                                <button name="delete_btn"type="submit">Delete</button>
                             </form>
                         </td>
                     </tr>
