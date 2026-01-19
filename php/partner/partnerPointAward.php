@@ -28,7 +28,7 @@
         $sql_update_userPoint = "UPDATE user SET total_point_accumulated = $member_totalPoints+$points_award, point_balance = $member_pointBal+$points_award WHERE user_id = $member_id";
 
 
-        $dbConn->begin_transaction();
+        mysqli_begin_transaction($dbConn);
 
         try{
             if (!mysqli_query($dbConn, $sql_update_userPoint)) { throw new Exception("update failed"); }
@@ -37,7 +37,7 @@
             $sql_insert_transaction = "INSERT INTO point_transaction (user_id, partner_transaction_id, amount, type) VALUES($member_id, $partnerTrans_id, $points_award, 'Earned')";
             if (!mysqli_query($dbConn, $sql_insert_transaction)) { throw new Exception("Insert Transaction failed"); }        
             //if all query ran without error, save the changes
-            $dbConn->commit();
+            mysqli_commit($dbConn);
             // JavaScript Feedback (TEMP)
             echo "<script>";
             echo "alert('Success! Member Awarded.');";
@@ -45,10 +45,10 @@
             echo "</script>";
 
         }
-        catch(Exception $e){
+        catch(mysqli_sql_exception $exception){
             //if any of the query fail, undo the changes and send error message
-            $dbConn->rollback();
-            echo "Error:". $e->getMessage();
+            mysqli_rollback($dbConn);
+            echo "Error:". $exception;
         }
 
     }

@@ -44,7 +44,7 @@
     $sql_insert_redemption = "INSERT INTO reward_redemption (reward_id, user_id, points_spent, status) VALUES ($reward_id, $user_id, {$reward_info['required_points']}, 'Approved')";
 
     //turn off autosave to prevent data corruption if query fails
-    $dbConn->begin_transaction();
+    mysqli_begin_transaction($dbConn);
 
     try{
         if (!mysqli_query($dbConn, $sql_update_stock)) { throw new Exception("Reward update failed"); }
@@ -54,7 +54,7 @@
         $sql_insert_transaction= "INSERT INTO point_transaction (user_id, redemption_id, amount, type) VALUES ($user_id, $redemption_id, {$reward_info['required_points']},'Redemption')";
         if (!mysqli_query($dbConn, $sql_insert_transaction)) { throw new Exception("Insert Transaction failed"); }        
         //if all query ran without error, save the changes
-        $dbConn->commit();
+        mysqli_commit($dbConn);
         // JavaScript Feedback (TEMP)
         echo "<html>
             <body>
@@ -67,7 +67,7 @@
                     }).then((result) => {
                         // This code runs ONLY after the button is clicked
                         if (result.isConfirmed) {
-                            window.location.href = '../pages/memberRewardList.php';
+                            window.location.href = '../member/memberRewardList.php';
                         }
                     });
                 </script>
@@ -75,10 +75,10 @@
         </html>";
 
     }
-    catch(Exception $e){
+    catch(mysqli_sql_exception $exception){
         //if any of the query fail, undo the changes and send error message
-        $dbConn->rollback();
-        echo "Error:". $e->getMessage();
+        mysqli_rollback($dbConn);
+        echo "Error:". $exception;
     }
 
     
