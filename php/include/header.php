@@ -1,9 +1,10 @@
 <header>
     <img id="logo" src="../../assets/Page Title.png" alt="Green&Earn">
     
-    <div id="hamburger" onclick="toggleMenu()">
-        <span class="icon">🍔</span>
-    </div>
+    <button id="hamburger">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-menu-2"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 6l16 0" /><path d="M4 12l16 0" /><path d="M4 18l16 0" /></svg>
+    </button>
+
 
     <nav id="header_links">
         <?php if(isset($_SESSION['role_id'])): $loggedInRole=$_SESSION['role_id']?>
@@ -29,6 +30,7 @@
             <?php elseif($loggedInRole==4):?>
                 <a href="../partner/partnerDashboard.php">Dashboard</a>
                 <a href="../partner/partnerRewardList.php">Rewards</a>
+                <a href="../partner/partnerGiveReward.php">Give Reward</a>
                 <a href="../partner/partnerPointAward.php">Points Award</a>
                 <a href="../pages/profile.php">Profile</a>
             <?php endif;?>
