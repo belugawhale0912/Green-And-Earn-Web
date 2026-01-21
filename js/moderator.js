@@ -1,35 +1,41 @@
-//Filter dropdowm logic
+//Filter logic for history page
 const filterDropdown = document.getElementById("statusFilter");
-filterDropdown.addEventListener("change", function(){
-    document.getElementById("filterForm").submit();
-});
+if(filterDropdown){
+    filterDropdown.addEventListener("change", function(){
+        document.getElementById("filterForm").submit();
+    });
+}
 
-// The modal element
+
+// Modal for submission
 const modal = document.getElementById('submissionPopup');
 
+if(modal){
+    function openSubmissionModal(id, username, activity, time, proof) {
+        document.getElementById('popupUsername').innerText = username;
+        document.getElementById('popupActivity').innerText = activity;
+        document.getElementById('popupSubmissionTime').innerText = time;
 
-function openSubmissionModal(id, username, activity, time, proof) {
-    document.getElementById('popupUsername').innerText = username;
-    document.getElementById('popupActivity').innerText = activity;
-    document.getElementById('popupSubmissionTime').innerText = time;
+        document.getElementById('submission_id').value = id;
 
-    document.getElementById('submission_id').value = id;
+        const imgElement = document.getElementById('popupProof');
+        
+        if (proof && proof !== "") {
+            imgElement.src = proof;
+            imgElement.style.display = "block";
+        } else {
+            imgElement.style.display = "none";
+        }
 
-    const imgElement = document.getElementById('popupProof');
-    
-    if (proof && proof !== "") {
-        imgElement.src = proof;
-        imgElement.style.display = "block";
-    } else {
-        imgElement.style.display = "none";
+        modal.style.display = "block";
     }
 
-    modal.style.display = "block";
+    // 2. Close Modal Logic (Clicking outside)
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }                                       
+    }
 }
 
-// 2. Close Modal Logic (Clicking outside)
-window.onclick = function(event) {
-    if (event.target == modal) {
-        modal.style.display = "none";
-    }                                       
-}
+
