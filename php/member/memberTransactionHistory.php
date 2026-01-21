@@ -42,29 +42,33 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../../css/style.css">
-    <link rel="stylesheet" href="../../css/layout.css">
     <link rel="stylesheet" href="../../css/header.css">
+    <link rel="stylesheet" href="../../css/member.css">
     <title>Point Transaction</title>
 </head>
 <body>
     <?php
         include "../include/header.php";
     ?>
-    <div class="list_container">
-        <?php
-            if (mysqli_num_rows($result)>0) {
-                while($transaction_info = mysqli_fetch_assoc($result)){
-                    echo("<div class='list_card'>");
-                    echo("<h2>{$transaction_info['transaction_name']}</h2>");
-                    echo("<h3>Amount:{$transaction_info['amount']}</h3>");
-                    echo("<h3>{$transaction_info['transaction_time']}</h3>");
-                    echo("</div>");                 
-                }
-            }
-            else{
-                echo("<h2>No Transaction Record!</h2>");
-            }
-        ?>
+    
+    <div class="transactionContainer">
+        <?php if (mysqli_num_rows($result)>0):?>
+            <?php while($transaction_info = mysqli_fetch_assoc($result)):?>
+                <div class='transactionCard'>
+                    <div class="transactionInfo">
+                        <h2><?php echo $transaction_info['type']?></h2>
+                        <h3>Amount: <?php echo $transaction_info['amount']?></h3>
+                    </div>
+                    <div class="transactionInfo">
+                        <p><?php echo $transaction_info['transaction_name']?></p>
+                        <p><?php echo $transaction_info['transaction_time']?></p>
+                    </div>
+                </div>
+            <?php endwhile;?>
+
+        <?php else:?>
+            echo("<h2>No Transaction Record!</h2>");
+        <?php endif;?>
     </div>
 </body>
 </html>

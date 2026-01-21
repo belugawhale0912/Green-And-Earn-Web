@@ -28,13 +28,44 @@
     --font-heading: 'montserrat',sans-serif;
     --font-body: 'poppins',sans-serif;
 
-    --border-color: rgb(37,36,36);
+    /* Lightmode pellete */
+    --bg-dark: hsl(122 65% 86%);
+    --bg: hsl(122 100% 91%);
+    --bg-light: hsl(122 100% 97%);
+    --text: hsl(135 100% 1%);
+    --text-muted: hsl(134 100% 12%);
+    --highlight: hsl(124 100% 92%);
+    --border: hsl(129 47% 40%);
+    --border-muted: hsl(127 40% 53%);
+    --primary: hsl(134 100% 12%);
+    --secondary: hsl(297 57% 28%);
+    --danger: hsl(6 60% 41%);
+    --warning: hsl(52 100% 14%);
+    --success: hsl(161 100% 13%);
+    --info: hsl(217 62% 44%);
+
+    /* Darkmode pellete*/
+    /* --bg-dark: hsl(130 100% 1%);
+    --bg: hsl(129 100% 3%);
+    --bg-light: hsl(131 66% 6%);
+    --text: hsl(127 100% 90%);
+    --text-muted: hsl(128 31% 65%);
+    --highlight: hsl(130 31% 34%);
+    --border: hsl(133 47% 23%);
+    --border-muted: hsl(139 100% 11%);
+    --primary: hsl(128 34% 64%);
+    --secondary: hsl(303 40% 72%);
+    --danger: hsl(9 47% 65%);
+    --warning: hsl(51 32% 52%);
+    --success: hsl(149 31% 55%);
+    --info: hsl(217 52% 67%); */
 }
 body{
     text-align: center;
     margin: 0;
     padding: 0;
     font-family: var(--font-body);
+    background-color: var(--bg-light);
 }
 
 h1 {

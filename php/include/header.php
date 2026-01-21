@@ -9,9 +9,9 @@
         <?php if(isset($_SESSION['role_id'])): $loggedInRole=$_SESSION['role_id']?>
             <?php if($loggedInRole==1):?>
                 <a href="../admin/adminDashboard.php">Dashboard</a>
-                <a href="../admin/.php">Manage User</a>
+                <a href="../admin/adminUserManagement.php">Manage User</a>
                 <a href="../admin/adminActivityManagement.php">Manage Activity</a>
-                <a href="../admin/.php">Manage Rewards</a>
+                <a href="../admin/adminRewardManagement.php">Manage Rewards</a>
                 <a href="../pages/profile.php">Profile</a>
             <?php elseif($loggedInRole==2):?>
                 <a href="../member/memberDashboard.php">Dashboard</a>
