@@ -1,3 +1,9 @@
+//Filter dropdowm logic
+const filterDropdown = document.getElementById("statusFilter");
+filterDropdown.addEventListener("change", function(){
+    document.getElementById("filterForm").submit();
+});
+
 // The modal element
 const modal = document.getElementById('submissionPopup');
 
@@ -25,5 +31,5 @@ function openSubmissionModal(id, username, activity, time, proof) {
 window.onclick = function(event) {
     if (event.target == modal) {
         modal.style.display = "none";
-    }
+    }                                       
 }
