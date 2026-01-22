@@ -9,68 +9,135 @@
 }
 
 :root {
-    /* clamp(MIN, PREFERRED, MAX) */
-    /* H1: Starts at 32px (2rem), grows to 64px (4rem) */
-    --fs-h1: clamp(2rem, 5vw + 1rem, 4rem);
+/* H1: 28px -> 40px (Was 64px) */
+    /* Good for Page Titles */
+    --fs-h1: clamp(1.75rem, 3vw + 1rem, 2.5rem);
     
-    /* H2: Starts at 24px (1.5rem), grows to 40px (2.5rem) */
-    --fs-h2: clamp(1.5rem, 3vw + 1rem, 2.5rem);
+    /* H2: 24px -> 32px (Was 40px) */
+    /* Good for Section Headers */
+    --fs-h2: clamp(1.5rem, 2.5vw + 1rem, 2rem);
     
-    /* H3: Starts at 20px (1.25rem), grows to 32px (2rem) */
-    --fs-h3: clamp(1.25rem, 2vw + 1rem, 2rem);
+    /* H3: 20px -> 28px (Was 32px) */
+    /* Good for Card Titles */
+    --fs-h3: clamp(1.25rem, 2vw + 1rem, 1.75rem);
     
-    /* Body: Starts at 16px (1rem), grows slightly to 18px (1.125rem) for readability */
-    --fs-body: clamp(1rem, 0.5vw + 0.9rem, 1.125rem);
+    /* Body: 15px -> 16px */
+    /* Standard readable text */
+    --fs-body: clamp(0.9375rem, 0.5vw + 0.8rem, 1rem);
     
-    /* Small Text: For labels or footnotes */
-    --fs-small: clamp(0.875rem, 0.5vw + 0.8rem, 1rem);
+    /* Small: 13px -> 14px */
+    /* Hints and footnotes */
+    --fs-small: clamp(0.8125rem, 0.5vw + 0.7rem, 0.875rem);
 
-    --font-heading: 'montserrat',sans-serif;
-    --font-body: 'poppins',sans-serif;
+    --font-heading: 'poppins',sans-serif;
+    --font-body: 'montserrat',sans-serif;
 
-    /* Lightmode pellete */
-    --bg-dark: hsl(122 65% 86%);
-    --bg: hsl(122 100% 91%);
-    --bg-light: hsl(122 100% 97%);
-    --text: hsl(135 100% 1%);
-    --text-muted: hsl(134 100% 12%);
-    --highlight: hsl(124 100% 92%);
-    --border: hsl(129 47% 40%);
-    --border-muted: hsl(127 40% 53%);
-    --primary: hsl(134 100% 12%);
-    --secondary: hsl(297 57% 28%);
-    --danger: hsl(6 60% 41%);
-    --warning: hsl(52 100% 14%);
-    --success: hsl(161 100% 13%);
-    --info: hsl(217 62% 44%);
+    /* Colors inspired from colorffy.com */
+    /* --- BASE --- */
+    --clr-dark-a0: #000000;
+    --clr-light-a0: #ffffff;
 
-    /* Darkmode pellete*/
-    /* --bg-dark: hsl(130 100% 1%);
-    --bg: hsl(129 100% 3%);
-    --bg-light: hsl(131 66% 6%);
-    --text: hsl(127 100% 90%);
-    --text-muted: hsl(128 31% 65%);
-    --highlight: hsl(130 31% 34%);
-    --border: hsl(133 47% 23%);
-    --border-muted: hsl(139 100% 11%);
-    --primary: hsl(128 34% 64%);
-    --secondary: hsl(303 40% 72%);
-    --danger: hsl(9 47% 65%);
-    --warning: hsl(51 32% 52%);
-    --success: hsl(149 31% 55%);
-    --info: hsl(217 52% 67%); */
+    /* --- PRIMARY (Green) --- */
+    --clr-primary-a0: #89cf84;
+    --clr-primary-a10: #79b675;
+    --clr-primary-a20: #699d65;
+    --clr-primary-a30: #5a8557;
+    --clr-primary-a40: #4b6e48;
+    --clr-primary-a50: #3d573a;
+
+    /* --- SURFACES (Light Mode) --- */
+    --clr-surface-a0: #ffffff;   /* The Floor (Body BG) */
+    --clr-surface-a10: #f0f0f0;  /* The Furniture (Card BG) */
+    --clr-surface-a20: #e1e1e1;  /* Borders */
+    --clr-surface-a30: #d3d3d3;
+    --clr-surface-a40: #c5c5c5;
+    --clr-surface-a50: #b6b6b6;  /* Muted Text Color */
+
+    /* --- TONAL (Minty Tint) --- */
+    --clr-surface-tonal-a0: #f4faf2; /* Highlight BG */
+    --clr-surface-tonal-a10: #e6ece5;
+    --clr-surface-tonal-a20: #d9ded8;
+    --clr-surface-tonal-a30: #ccd0cb;
+    --clr-surface-tonal-a40: #bfc2be;
+    --clr-surface-tonal-a50: #b2b4b1;
+
+    /* --- STATUS --- */
+    --clr-success-a0: #1b7f5c;
+    --clr-warning-a0: #b8871f;
+    --clr-danger-a0: #b13535;
+    --clr-info-a0: #1e56a3;
+
+    /* --- LOGIC VARIABLES (Use these in your CSS) --- */
+    --bg-body: var(--clr-surface-a0);
+    --bg-card: var(--clr-surface-a10);
+    --bg-highlight: var(--clr-surface-tonal-a0);
+    --border-main: var(--clr-surface-a20);
+    
+    --text-main: var(--clr-dark-a0);
+    --text-muted: var(--clr-surface-a50);
+    --text-on-primary: var(--clr-dark-a0); /* Black text on green button */
+
 }
+
+/* --- DARK MODE OVERRIDES --- */
+[data-theme="dark"] {
+    /* Primary (Adjusted for Dark) */
+    --clr-primary-a0: #89cf84;
+    --clr-primary-a10: #97d591;
+    --clr-primary-a20: #a4da9f;
+    --clr-primary-a30: #b2dfac;
+    --clr-primary-a40: #bfe5ba;
+    --clr-primary-a50: #cceac8;
+
+    /* Surfaces (Dark Mode) */
+    --clr-surface-a0: #121212;   /* The Floor (Darkest) */
+    --clr-surface-a10: #282828;  /* The Furniture (Lighter to elevate) */
+    --clr-surface-a20: #3f3f3f;  /* Borders */
+    --clr-surface-a30: #575757;
+    --clr-surface-a40: #717171;
+    --clr-surface-a50: #8b8b8b;
+
+    /* Tonal (Dark Mint) */
+    --clr-surface-tonal-a0: #1d221d;
+    --clr-surface-tonal-a10: #323732;
+    --clr-surface-tonal-a20: #484c48;
+    --clr-surface-tonal-a30: #60635f;
+    --clr-surface-tonal-a40: #787b78;
+    --clr-surface-tonal-a50: #929491;
+
+    /* Status (Brightened for dark mode) */
+    --clr-success-a0: #47d5a6;
+    --clr-warning-a0: #d7ac61;
+    --clr-danger-a0: #d94a4a;
+    --clr-info-a0: #4077d1;
+
+    /* Logic Swaps */
+    --bg-body: var(--clr-surface-a0);
+    --bg-card: var(--clr-surface-a10);
+    --bg-highlight: var(--clr-surface-tonal-a0);
+    --border-main: var(--clr-surface-a20);
+
+    --text-main: var(--clr-light-a0);       /* White Text */
+    --text-muted: var(--clr-surface-a40);   /* Light Grey Text */
+    --text-on-primary: var(--clr-dark-a0);  /* Still Black on Green */
+}
+
+
+
 body{
     text-align: center;
     margin: 0;
     padding: 0;
     font-family: var(--font-body);
-    background-color: var(--bg-light);
+    background-color: var(--clr-surface-a0);
+    color: var(--text-main);
+    /* transition: background-color 0.5s; */
 }
 
 h1 {
     font-size: var(--fs-h1); 
     font-family: var(--font-heading);
+    color: var(--clr-primary-a40);
 }
 
 h2 {
@@ -87,15 +154,20 @@ p  {
 }
 
 a {
-    color: black;
+    color: var(--text-main);
     font-size: var(--fs-body);
     font-family: var(--font-body);
+    font-weight: bold;
     text-decoration: none;
     transition: color 0.3s ease;
 }
 
 a:hover{
-    color: green;
+    color: var(--clr-primary-a50);
+}
+
+input{
+    font-family: var(--font-body);
 }
 
 table{
@@ -105,34 +177,34 @@ table{
     font-family: var(--font-body);
     /* min-width: 400px; */
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.15); /* Nice subtle shadow */
-    background-color: white;
+    background-color: var(--bg-card);
+    color: var(--text-main);
 }
 
 thead tr{
-    background-color: #00985e; /* Green theme color */
-    color: #ffffff;
+    background-color: var(--clr-primary-a30); /* Green theme color */
+    color: var(--text-on-primary);
 }
 
 th, td{
     padding: 12px 15px;
-    border-bottom: 1px solid #dddddd;
+    border-bottom: 1px solid var(--border-main);
     text-align: left;
 }
 
 /* Zebra Striping (Alternating row colors) */
 tbody tr:nth-of-type(even){
-    background-color: #f3f3f3;
+    background-color: var(--bg-highlight);
 }
 
 /* Hover Effect (Highlights row on mouseover) */
 tbody tr:hover{
-    background-color: #b6ffc8;
-    cursor: default;
+    background-color: var(--clr-surface-a40);
 }
 
 /* Make the last row have a green line at the bottom */
 tbody tr:last-of-type{
-    border-bottom: 2px solid #009879;
+    border-bottom: 2px solid var(--clr-surface-tonal-a50);
 }
 
 /* Overlay */
@@ -150,14 +222,13 @@ tbody tr:last-of-type{
 .modalContent{
     display: flex;
     flex-direction: column;
-    background-color: #fefefe;
+    background-color: var(--bg-card);
     margin: 5% auto; 
     padding: 20px;
-    border: 1px solid #888;
+    border: 1px solid var(--border-main);
     width: 80%; 
     border-radius: 10px;
     text-align: center;
-
     /* Scroll, set max height to 80% of view and overflow enable scrollbar */
     max-height: 80vh;
     overflow-y: auto;
@@ -170,4 +241,54 @@ tbody tr:last-of-type{
     max-width: 500px;
     display: flex;
     flex-direction: column;
+}
+
+/* --- SWEETALERT CUSTOM THEME --- */
+.popup {
+    background-color: var(--clr-surface-a10);
+    border: 1px solid var(--border-main);
+    color: var(--text-main);
+    border-radius: 16px; /* You can even match your site's rounding */
+    padding: 30px;
+}
+
+/* TODO review code here */
+/* fix the success icon display error on dark background*/
+/* force the div to follow background color */
+.popup .swal2-success {
+    background-color: var(--bg-card) !important;
+}
+/* change the color for the remaining bar */
+.popup .swal2-success-fix {
+    background-color: var(--bg-card) !important;
+}
+
+/* 2. Fix the "Rotating Masks" (The spinning parts) */
+.popup .swal2-success-circular-line-left,
+.popup .swal2-success-circular-line-right {
+    background-color: var(--bg-card) !important;
+}
+
+
+
+.title {
+    color: var(--text-main);
+    font-family: var(--font-heading); /* Match your site's font */
+    font-size: 1.5rem;
+}
+
+.confirm_btn {
+    background-color: var(--clr-primary-a20);
+    color: var(--text-on-primary);
+    padding: 12px 24px;
+    border-radius: 8px;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+    transition: opacity 0.3s ease;
+    margin: 0 10px;
+}
+
+.confirm_btn:hover {
+    background-color: var(--clr-primary-a30);
 }

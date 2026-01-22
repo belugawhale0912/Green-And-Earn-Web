@@ -1,10 +1,12 @@
 header{
-    background-color: rgb(255, 255, 255);
+    background-color: var(--clr-surface-a10);
+    border-bottom: 3px solid var(--clr-primary-a10);
     padding: 10px 30px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    position: relative;
+    position: sticky;
+    top: 0;
     z-index: 1000;
 }
 
@@ -19,18 +21,17 @@ header{
     justify-content: center;
     align-items: center;
     gap: 25px;
-    border-radius: 999px;
     flex-wrap: wrap;
-    transition: 0.3s;
 }
 
 
 #header_links a {
     position: relative; /* 1. IMPORTANT: Anchors the bar to this text */
-    color: black;
+    color: var(--text-main);
     text-decoration: none;
     /* Optional: Add padding so the bar doesn't sit on top of the text */
     padding-bottom: 5px; 
+    /* TODO try use other way so the link is not that towards the top */
 }
 
 #header_links a::after {
@@ -40,16 +41,15 @@ header{
     height: 5px;
     bottom: 0;
     left: 0;
-    background-color: var(--border);
+    background-color: var(--clr-primary-a10);
     transition: all 0.4;
-    
     transform: scaleX(0);       
     transform-origin: center; 
-    transition: transform 0.3s ; 
+    transition: transform 0.5s ; 
 }
 
 #header_links a:hover {
-    color: green;
+    color: var(--clr-primary-a10);
 }
 
 #header_links a:hover::after {
@@ -58,39 +58,49 @@ header{
 
 #hamburger{
     display: none;
+    background: none;
+    border: none;
+    padding: 0;
     cursor: pointer;
-    flex-direction: column;
-    gap: 5px;
+    color: var(--clr-primary-a10);
 }
 
+#hamburger svg{
+    width: 40px;
+    height: 40px;
+}
 .icon{
     font-size: 50px;
 }
 
 
-@media (max-width: 1100px) {
+@media (max-width: 1200px) {
     #hamburger{
         display: flex;
     }
     
     #header_links{
-        display: none;
+        display: flex;
         flex-direction: column;
         width: 100%;
         position: absolute;
         top: 100%; /* Pushes it exactly below the header */
         left: 0;
-        background-color: white; /* Solid background so text is readable */
-        border-radius: 0; /* Remove the pill shape for mobile */
-        border-bottom: 2px solid green;
+        background-color: var(--clr-surface-a0); /* Solid background so text is readable */
+        border-bottom: 2px solid var(--clr-primary-a10);
         padding: 20px 0;
         box-shadow: 0 5px 10px rgba(0,0,0,0.1);
-        gap: 15px;
-        z-index: 999;
+        transform: translateY(-10px);
+        opacity: 0;
+        visibility: hidden;
+        z-index: 1000; 
     }
 
     #header_links.active{
-        display: flex;
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+        transition: all 0.3s ease-in-out;
     }
 
 }

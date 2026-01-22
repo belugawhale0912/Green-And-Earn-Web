@@ -36,10 +36,13 @@
             }
         }
         else{
-            $error = "User not found!";
+            $error = "Invalid Username";
         }
     }
 ?>
+
+
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -48,6 +51,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../../css/style.css">
     <link rel="stylesheet" href="../../css/login.css">
+    <?php include "../include/libraries.php"?>
     <title>Login</title>
 </head>
 <body>
@@ -55,8 +59,9 @@
         include("../include/conn.php");
     ?>
     <div id="login_container">
-        <a href="Landingpage.php">Back</a>
+        
         <div id="left_pane">
+            <a id="backLink" href="Landingpage.php">Back</a>
             <h1>Login to Green&Earn</h1>
             <div class="form_container">
                 <form action="" method="post">
@@ -75,5 +80,22 @@
         </div>
     </div>
 
+    <?php if(isset($error)):?>
+        <script>
+            Swal.fire({
+                title: "Error",
+                text: "<?php echo $error?>",
+                icon: "error",
+                confirmButtonText:"Fuck You"
+            }).then((result) => {
+                if(result.isComfirmed){
+                    window.location.href="login.php";
+                }
+            });
+        </script>
+    <?php endif?>
+
+    <script src="../../js/login.js"></script>
+    <script src="../../js/header.js"></script>
 </body>
 </html>
