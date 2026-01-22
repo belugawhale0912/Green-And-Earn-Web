@@ -45,7 +45,7 @@ header{
     transition: all 0.4;
     transform: scaleX(0);       
     transform-origin: center; 
-    transition: transform 0.5s ; 
+    transition: transform 0.7s ; 
 }
 
 #header_links a:hover {
@@ -72,6 +72,15 @@ header{
 .icon{
     font-size: 50px;
 }
+
+#themeToggle{
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    color: var(--clr-primary-a10);
+}
+
 
 
 @media (max-width: 1200px) {
