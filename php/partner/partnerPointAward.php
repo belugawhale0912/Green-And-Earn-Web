@@ -1,6 +1,7 @@
 <?php
     include "../include/conn.php";
     include "../include/session.php";
+    $partnerName = $_SESSION['username'];
 
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $username = $_POST['username'];
@@ -19,38 +20,57 @@
             header("Location: ../partner/partnerPointAward.php");
             die("User not found! Session Abort");
         }
+        // TODO add check: if input amount <=0 abort!
 
-        //calculations
-        $points_award = round($amt_spent, 1) * 10; //RM 1 = 10 Points
+        if(isset($_FILES['reciept_img'])&&$_FILES['reciept_img']['error'] === UPLOAD_ERR_OK){
 
-        //insertQuery
-        $sql_insert_partnerTransaction = "INSERT INTO partner_point_transaction (user_id, partner_id, amount_spent, points_awarded) VALUES($member_id, {$_SESSION['user_id']}, $amt_spent, $points_award) ";
-        $sql_update_userPoint = "UPDATE user SET total_point_accumulated = $member_totalPoints+$points_award, point_balance = $member_pointBal+$points_award WHERE user_id = $member_id";
+            $fileName = $_FILES['reciept_img']['name'];
+            $fileTempPath = $_FILES['reciept_img']['tmp_name'];
 
+            $fileExt = pathinfo($fileName,PATHINFO_EXTENSION);
 
-        mysqli_begin_transaction($dbConn);
+            $supportedExt = ['jpg','jpeg','png','gif'];
 
-        try{
-            if (!mysqli_query($dbConn, $sql_update_userPoint)) { throw new Exception("update failed"); }
-            if (!mysqli_query($dbConn, $sql_insert_partnerTransaction)) { throw new Exception("update failed"); }
-            $partnerTrans_id = mysqli_insert_id($dbConn);
-            $sql_insert_transaction = "INSERT INTO point_transaction (user_id, partner_transaction_id, amount, type) VALUES($member_id, $partnerTrans_id, $points_award, 'Earned')";
-            if (!mysqli_query($dbConn, $sql_insert_transaction)) { throw new Exception("Insert Transaction failed"); }        
-            //if all query ran without error, save the changes
-            mysqli_commit($dbConn);
-            // JavaScript Feedback (TEMP)
-            echo "<script>";
-            echo "alert('Success! Member Awarded.');";
-            echo "window.location.href = '../partner/partnerPointAward.php';"; // Redirects user back
-            echo "</script>";
+            if(in_array($fileExt,$supportedExt)){
+                $formattedFileName = "member_".$username."partner_"."$partnerName".time().".".$fileExt;
 
+                $saveDir = "../../uploads/receipt/".$formattedFileName;
+
+                if(move_uploaded_file($fileTempPath, $saveDir)){
+
+                    //calculations
+                    $points_award = round($amt_spent, 1) * 10; //RM 1 = 10 Points
+
+                    //insertQuery
+                    $sql_insert_partnerTransaction = "INSERT INTO partner_point_transaction (user_id, partner_id, amount_spent, points_awarded,receipt_img,status) VALUES($member_id, {$_SESSION['user_id']}, $amt_spent, $points_award, '$saveDir','Pending') ";
+                    $sql_update_userPoint = "UPDATE user SET total_point_accumulated = $member_totalPoints+$points_award, point_balance = $member_pointBal+$points_award WHERE user_id = $member_id";
+
+                    mysqli_begin_transaction($dbConn);
+
+                    try{
+                        if (!mysqli_query($dbConn, $sql_update_userPoint)) { throw new Exception("update failed"); }
+                        if (!mysqli_query($dbConn, $sql_insert_partnerTransaction)) { throw new Exception("update failed"); }
+                        $partnerTrans_id = mysqli_insert_id($dbConn);
+                        $sql_insert_transaction = "INSERT INTO point_transaction (user_id, partner_transaction_id, amount, type) VALUES($member_id, $partnerTrans_id, $points_award, 'Earned')";
+                        if (!mysqli_query($dbConn, $sql_insert_transaction)) { throw new Exception("Insert Transaction failed"); }        
+                        //if all query ran without error, save the changes
+                        mysqli_commit($dbConn);
+                        // JavaScript Feedback (TEMP)
+                        echo "<script>";
+                        echo "alert('Success! Member Awarded.');";
+                        echo "window.location.href = '../partner/partnerPointAward.php';"; // Redirects user back
+                        echo "</script>";
+
+                    }
+                    catch(mysqli_sql_exception $exception){
+                        //if any of the query fail, undo the changes and send error message
+                        mysqli_rollback($dbConn);
+                        echo "Error:". $exception;
+                    }
+
+                }
+            }
         }
-        catch(mysqli_sql_exception $exception){
-            //if any of the query fail, undo the changes and send error message
-            mysqli_rollback($dbConn);
-            echo "Error:". $exception;
-        }
-
     }
 ?>
 
@@ -69,11 +89,13 @@
         include "../include/header.php";
     ?>
     <div class="form_container">
-        <form action="" method="POST">
+        <form action="" method="POST" enctype="multipart/form-data">
             <label for="username">Username:</label>
             <input type="text" name="username" required>
             <label for="amt_spent">Amount Spent:</label>
             <input type="number" name="amt_spent" step="0.01" required>
+            <label>Upload Reciept (Image):</label>
+            <input type="file" name="reciept_img" required accept="image/*">
             <button type="submit">Comfirm</button>
         </form> 
     </div>
