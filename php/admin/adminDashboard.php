@@ -26,7 +26,7 @@
     $result_partnerCount = mysqli_query($dbConn, $sql_countPartners);
     $partnerCount = mysqli_fetch_assoc($result_partnerCount)['totalPartner'];
 
-    $sql_countReward = "SELECT COUNT(*) AS totalReward FROM reward WHERE status = 'available' ";
+    $sql_countReward = "SELECT COUNT(*) AS totalReward FROM reward WHERE status = 'pending' ";
     $result_rewardCount = mysqli_query($dbConn, $sql_countReward);
     $rewardCount = mysqli_fetch_assoc($result_rewardCount)['totalReward'];
 
@@ -56,32 +56,40 @@
             <img src="<?php echo $admin['profile_photo']?>" alt="profileImg" class="profileImg">
         </div>
         <div id="profileContainer">
-            <h3>Username: <?php echo $admin['username']?></h2>
-            <h3>Email: <?php echo $admin['email']?></h2>
+            <h3>Username : <?php echo $admin['username']?></h2>
+            <h3>Email : <?php echo $admin['email']?></h2>
         </div>
     </section>
     <h2>Statistics</h2>
     <section id="stats">
         <div class="cardContainer">
             <div class="cards">
-                <h3>Total Members: <?php echo $memberCount?></h3>
+                <h3>
+                    <span class="statistics"><?php echo $memberCount?></span> <br> 
+                    Total Members 
+                </h3>
             </div>
 
             <div class="cards">
-                <h3>Total Partners: <?php echo $partnerCount?> </h3>
+                <h3><span class="statistics"><?php echo $partnerCount?></span> <br>
+                    Total Partners & Sponsors
+                </h3>
             </div>
 
 
             <div class="cards">
-                <h3>Total Available Rewards: <?php echo $rewardCount?> </h3>
+                <h3><span class="statistics"><?php echo $rewardCount?></span> <br>
+                    Total Pending Rewards
+                </h3>
             </div>
 
             <div class="cards">
-                <h3>Total Ongoing Activity: <?php echo $activityCount?> </h3>
+                <h3><span class="statistics"><?php echo $activityCount?></span> <br> 
+                    Total Active Activities
+                </h3>
             </div>
         </div>
     </section>
-
 
 </body>
 </html>
