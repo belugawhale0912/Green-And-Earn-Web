@@ -7,6 +7,8 @@
     width: auto;
     border-radius: 999px;
     border: 2px solid var(--border-color);
+    object-fit: cover;
+    display: block;
 }
 
 
@@ -65,3 +67,132 @@
         height: 120px;
     }
 }
+
+#approval{
+    display: flex;
+    justify-content: center;
+}
+
+.cardContainer{
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.cards{
+    color: white;
+    background-color: #3d573a;
+    width: 300px;
+    height: 300px;
+    padding: 20px;
+}
+
+@media (max-width: 650px){
+    .cards{
+        width: 45%;
+        height: auto;
+    }
+}
+
+@media (max-width: 650px){
+    th{
+        display:none;
+    }
+
+    td{
+        display:grid;
+        gap: 0.5rem;
+        grid-template-columns: 15ch auto;
+        padding: 0.5rem 1rem;
+    }
+
+    td::before{
+        content: attr(data-label)": ";
+        font-weight:700;
+        text-transform: capitalize;
+    }
+
+    td:first-child{
+        padding-top: 2rem;
+    }
+
+    td:last-child{
+        padding-bottom: 2rem;
+    }
+}
+
+#historyViewControl{
+    position: absolute;
+    top: 115px;
+    left: 20px;
+    display:flex;
+    gap:10px;
+}
+
+#historyViewControl a{
+    text-decoration: none;
+    padding: 8px 18px;
+    border-radius: 8px;
+    background-color: #f0f0f0;
+    color: #333;
+    font-weight: 600;
+    border: 2px solid transparent;
+    transition: all 0.2s ease;
+}
+
+#historyViewControl a:hover{
+     background-color: #e0e0e0;
+}
+
+#historyViewControl a.active{
+    background-color: #3d573a;
+    color: white;
+    border-color: #3d573a;
+}
+
+[data-theme="dark"] #historyViewControl a{
+    text-decoration: none;
+    padding: 8px 18px;
+    border-radius: 8px;
+    background-color: #f0f0f0;
+    color: #333;
+    font-weight: 600;
+    border: 2px solid transparent;
+    transition: all 0.2s ease;
+}
+
+[data-theme="dark"] #historyViewControl a:hover{
+     background-color: #e0e0e0;
+}
+
+[data-theme="dark"] #historyViewControl a.active{
+    background-color: #89cf84;
+    color: #000000;
+    border-color: #89cf84;
+}
+
+.buttonGroup{
+    display:flex;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 15px;
+}
+
+.buttonGroup{
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.buttonGroup button:first-child{
+    background-color: #4CAF50;
+    color: white;
+}
+
+.buttonGroup button:last-child{
+    background-color: #f44336;
+    color: white;
+}
+
