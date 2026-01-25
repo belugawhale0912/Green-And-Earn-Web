@@ -96,7 +96,7 @@
         <button class="tab" data-target="moderatorTable">Moderators</button>
         <button class="tab" data-target="partnerTable">Partners & Sponsors</button>
 
-        <button id="addUserBtn" style="margin-left:auto;">Add New User</button>
+        <button id="addUserBtn">Add New User</button>
     </div>
 
     <div id="memberTable" class="table-section active">
@@ -262,7 +262,7 @@
     
     <div id="userModal" class="modal">
         <div class="modalContent">
-            <h2 id="userModalTitle"></h2>
+            <h2>Add New User</h2>
             <form action="" id="userForm" method="post">
                 <input type="hidden" id="action" name="action">
                 <input type="hidden" id="user_id" name="user_id">

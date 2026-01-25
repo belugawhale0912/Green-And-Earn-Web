@@ -99,8 +99,8 @@
     <h2>Reward Management</h2>
 
     <div class="tabs">
-        <button class="tab active" onclick="showTable('pendingTable', this)">Pending Rewards</button>
-        <button class="tab" onclick="showTable('approvedTable', this)">Approved Rewards</button>
+        <button class="tab active" data-target="pendingTable">Pending Rewards</button>
+        <button class="tab" data-target="approvedTable"="">Approved Rewards</button>
     </div>
 
     <div id="pendingTable" class="table-section active">

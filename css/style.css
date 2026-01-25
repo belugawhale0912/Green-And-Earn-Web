@@ -74,6 +74,7 @@
     --border-main: var(--clr-surface-a20);
     
     --text-main: var(--clr-dark-a0);
+    --text-main-invert: var(--clr-light-a0);
     --text-muted: var(--clr-surface-a50);
     --text-on-primary: var(--clr-dark-a0); /* Black text on green button */
 
@@ -118,6 +119,7 @@
     --border-main: var(--clr-surface-a20);
 
     --text-main: var(--clr-light-a0);       /* White Text */
+    --text-main-invert: var(--clr-dark-a0);
     --text-muted: var(--clr-surface-a40);   /* Light Grey Text */
     --text-on-primary: var(--clr-dark-a0);  /* Still Black on Green */
 }
@@ -223,7 +225,7 @@ tbody tr:last-of-type{
     display: flex;
     flex-direction: column;
     background-color: var(--bg-card);
-    margin: 5% auto; 
+    margin: 7% auto; 
     padding: 20px;
     border: 1px solid var(--border-main);
     width: 80%; 
@@ -253,8 +255,11 @@ tbody tr:last-of-type{
 }
 
 /* TODO review code here */
+
 /* fix the success icon display error on dark background*/
-/* force the div to follow background color */
+
+/* force the animation to follow background color */
+/* use !important to ensure the property is overwritten */
 .popup .swal2-success {
     background-color: var(--bg-card) !important;
 }
@@ -291,4 +296,11 @@ tbody tr:last-of-type{
 
 .confirm_btn:hover {
     background-color: var(--clr-primary-a30);
+}
+
+@media(max-width:800px){
+    .modalContent{
+        height: 70vh;
+        margin: 40% auto;
+    }
 }

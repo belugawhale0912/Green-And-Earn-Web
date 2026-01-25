@@ -15,9 +15,6 @@
     $result_profile = mysqli_query($dbConn, $sql_profile);
     $admin = mysqli_fetch_assoc($result_profile);
 
-    $sql_activities = "SELECT * FROM activity ORDER BY activity_id DESC";
-    $result_activities = mysqli_query($dbConn, $sql_activities);
-
     $sql_countMembers = "SELECT COUNT(*) AS totalMember FROM user WHERE role_id =2";
     $result_memberCount = mysqli_query($dbConn, $sql_countMembers);
     $memberCount = mysqli_fetch_assoc($result_memberCount)['totalMember'];
@@ -56,8 +53,8 @@
             <img src="<?php echo $admin['profile_photo']?>" alt="profileImg" class="profileImg">
         </div>
         <div id="profileContainer">
-            <h3>Username : <?php echo $admin['username']?></h2>
-            <h3>Email : <?php echo $admin['email']?></h2>
+            <h3>Username : <?php echo $admin['username']?></h3>
+            <h3>Email : <?php echo $admin['email']?></h3>
         </div>
     </section>
     <h2>Statistics</h2>

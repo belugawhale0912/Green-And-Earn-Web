@@ -8,13 +8,14 @@
 
     if($_SERVER["REQUEST_METHOD"] == "POST"){
         if(isset($_POST['action'])){
+            $adminID = $_SESSION['user_id'];
+            $title = $_POST['title'];
+            $description = $_POST['description'];
+            $pointAward = $_POST['point'];
+            $start = $_POST['startDate'];
+            $end = $_POST['endDate'];
+
             if($_POST['action']=="add"){
-                $adminID = $_SESSION['user_id'];
-                $title = $_POST['title'];
-                $description = $_POST['description'];
-                $pointAward = $_POST['point'];
-                $start = $_POST['startDate'];
-                $end = $_POST['endDate'];
 
                 $sql = "INSERT INTO activity (admin_id, title, description, points_awarded, status, start_date, end_date)
                         VALUES ($adminID, '$title', '$description', $pointAward, 'Active', '$start', '$end')";
@@ -32,13 +33,6 @@
                 }
             }
             if($_POST['action']=="update"){
-
-                $adminID = $_SESSION['user_id'];
-                $title = $_POST['title'];
-                $description = $_POST['description'];
-                $pointAward = $_POST['point'];
-                $start = $_POST['startDate'];
-                $end = $_POST['endDate'];
                 $activity_id = $_POST['activity_id'];
 
                 $sql = "UPDATE activity SET
@@ -57,7 +51,7 @@
                         </script>");
                 }else{
                     echo("<script>
-                            alert('Failed to Add Reward!');
+                            alert('Failed to Add Activity!');
                             window.location.href = '../admin/adminActivityManagement.php';
                         </script>");
                 }
@@ -149,15 +143,15 @@
                         <td><?php echo $activity_info['start_date'];?></td>
                         <td><?php echo $activity_info['end_date'];?></td>
                         <td>
-                            <!-- Call js function to fill update form with existing data -->
-                            <button onclick="openUpdateActivityModal(
-                                             '<?php echo $activity_info['activity_id'];?>',
-                                             '<?php echo $activity_info['title'];?>',
-                                             '<?php echo $activity_info['description'];?>',
-                                             '<?php echo $activity_info['points_awarded'];?>',
-                                             '<?php echo $activity_info['start_date'];?>',
-                                             '<?php echo $activity_info['end_date'];?>',
-                                             )">Update
+                            <button class="editActivityBtn"
+                                data-id="<?php echo $activity_info['activity_id'];?>"
+                                data-title="<?php echo $activity_info['title'];?>"
+                                data-desc="<?php echo $activity_info['description'];?>"
+                                data-point="<?php echo $activity_info['points_awarded'];?>"
+                                data-start="<?php echo $activity_info['start_date'];?>"
+                                data-end="<?php echo $activity_info['end_date'];?>"
+                            >
+                                Edit
                             </button>
                         </td>
                         <td>

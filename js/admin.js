@@ -1,100 +1,98 @@
-function openModal(modalID){
-    document.getElementById(modalID).style.display = "block";
-}
+document.addEventListener("DOMContentLoaded", function() {
 
-function closeModal(modalID){
-    document.getElementById(modalID).style.display = "none";
-}
-
-function openAddActivityModal(){
-    document.getElementById("activityForm").reset();
-
-    document.getElementById("action").value = "add";
-
-    document.getElementById("activityModalTitle").innerText = "Add New Activity";
-
-    openModal("activityModal");
-}
-
-function openUpdateActivityModal(activityID, title,description,points_awarded,start_date,end_date){
-
-    document.getElementById("action").value = "update";
-
-    document.getElementById("activityID").value = activityID;
-    document.getElementById("activityTitle").value = title;
-    document.getElementById("activityDescription").value = description;
-    document.getElementById("activityPoint").value = points_awarded;
-    document.getElementById("startDate").value = start_date;
-    document.getElementById("endDate").value = end_date;
-
-    document.getElementById("activityModalTitle").innerText = "Update Record";
-
-    openModal("activityModal");
-}
-
-function openAddUserModal(){
-    document.getElementById("userForm").reset();
-
-    document.getElementById("action").value = "add";
-
-    document.getElementById("userModalTitle").innerText = "Add New User";
-
-    openModal("userModal");
-}
-
-function showTable(tableID, clickedTab){
-    document.querySelectorAll('.table-section').forEach(function(section) {
-        section.classList.remove('active');
-    });
-
-    document.querySelectorAll('.tab').forEach(function(tab) {
-        tab.classList.remove('active');
-    })
-
-    document.getElementById(tableID).classList.add('active');
-
-    clickedTab.classList.add('active');
-}
-
-document.addEventListener("DOMContentLoaded", function(){
-    const addUserBtn = document.getElementById("addUserBtn");
+    // ActivityManagement Page
     const addActivityBtn = document.getElementById("addActivityBtn");
-    const cancelBtns = document.querySelectorAll(".cancelBtn");
-    const tabs = document.querySelectorAll(".tab");
 
-    tabs.forEach(tab => {
-        tab.addEventListener("click", function() {
-            const tabID = tab.dataset.target;
-            
-            //hide all tables
-            document.querySelectorAll(".table-section").forEach(function(section) {
-                section.classList.remove("active");
+    if(addActivityBtn){
+        addActivityBtn.addEventListener("click",function(){
+            document.getElementById("action").value = "add"; // Important!
+            document.getElementById("activityModalTitle").innerText = "Add New Activity";
+            document.getElementById("activityModal").style.display = "block";
+        });
+    }
+
+    
+    const editActivityBtns = document.querySelectorAll('.editActivityBtn');
+
+    if (editActivityBtns.length > 0) {
+        editActivityBtns.forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                
+                const id = btn.getAttribute('data-id');
+                const title = btn.getAttribute('data-title');
+                const desc = btn.getAttribute('data-desc');
+                const point = btn.getAttribute('data-point');
+                const start = btn.getAttribute('data-start');
+                const end = btn.getAttribute('data-end');
+
+                // 2. Populate the Modal Form
+                document.getElementById("action").value = "update"; // Important!
+                document.getElementById("activityID").value = id;
+                document.getElementById("activityTitle").value = title;
+                document.getElementById("activityDescription").value = desc;
+                document.getElementById("activityPoint").value = point;
+                document.getElementById("startDate").value = start;
+                document.getElementById("endDate").value = end;
+
+                // 3. Update Modal Title
+                document.getElementById("activityModalTitle").innerText = "Update Activity";
+
+                // 4. Show Modal
+                // Assuming you have a generic openModal function, or just:
+                document.getElementById("activityModal").style.display = "block";
             });
-
-            //show clicked table
-            document.getElementById(tabID).classList.add("active");
-
-            //remove "active" from all tabs
-            tabs.forEach(function(t){t.classList.remove("active")});
-
-            //click tab
-            tab.classList.add("active");
-        })
-    })
+        });
+    }
+    
+    // UserManagementPage
+    const addUserBtn = document.getElementById("addUserBtn");
+    const addUserModal = document.getElementById("userModal")
 
     if(addUserBtn){
-        addUserBtn.addEventListener("click", function(){
-            openModal("userModal");
+        addUserBtn.addEventListener("click",function(){
+            document.getElementById("userForm").reset();
+            document.getElementById("action").value = "add";
+            addUserModal.style.display = "block"
         });
     }
-    if(addActivityBtn){
-        addActivityBtn.addEventListener("click", function(){
-            openModal("activityModal");
-        });
-    }
+
+    // close modal function
+    const cancelBtns = document.querySelectorAll(".cancelBtn");
+
     cancelBtns.forEach(function(btn) {
         btn.addEventListener("click", function() {
-            closeModal(btn.dataset.modal);
+            const modals = document.querySelectorAll(".modal");
+            modals.forEach(function(modal){
+                modal.style.display = "none";
+            })
         });
     });
+
+
+    // Tab control logic
+    const tabs = document.querySelectorAll(".tab");
+
+    if(tabs.length>0){
+        tabs.forEach(tab => {
+            tab.addEventListener("click", function() {
+                const tabID = tab.dataset.target;
+                
+                //hide all tables
+                document.querySelectorAll(".table-section").forEach(function(section) {
+                    section.classList.remove("active");
+                });
+
+                //show clicked table
+                document.getElementById(tabID).classList.add("active");
+
+                //remove "active" from all tabs
+                tabs.forEach(function(t){t.classList.remove("active")});
+
+                //click tab
+                tab.classList.add("active");
+            });
+        });
+    }
+
 });
+
