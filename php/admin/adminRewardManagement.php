@@ -13,7 +13,7 @@
             $reward_id = $_POST['reward_id'];
             $admin_id = $_SESSION['user_id'];
 
-            $sql = "UPDATE reward SET status = 'approved', admin_id = $admin_id WHERE reward_id = $reward_id";
+            $sql = "UPDATE reward SET status = 'Available', admin_id = $admin_id WHERE reward_id = $reward_id";
             if(mysqli_query($dbConn, $sql)){
                 echo "<script>
                         alert('Successfully Approved Reward! :)')
@@ -30,7 +30,7 @@
             $reward_id = $_POST['reward_id'];
             $admin_id = $_SESSION['user_id'];
 
-            $sql = "UPDATE reward SET status = 'rejected', admin_id = $admin_id WHERE reward_id = $reward_id";
+            $sql = "UPDATE reward SET status = 'Rejected', admin_id = $admin_id WHERE reward_id = $reward_id";
 
             if(mysqli_query($dbConn, $sql)){
                 echo "<script>
@@ -48,7 +48,7 @@
             $reward_id = $_POST['reward_id'];
             $admin_id = $_SESSION['user_id'];
 
-            $sql = "UPDATE reward SET status = 'available', admin_id = $admin_id WHERE reward_id = $reward_id";
+            $sql = "UPDATE reward SET status = 'Available', admin_id = $admin_id WHERE reward_id = $reward_id";
             if(mysqli_query($dbConn, $sql)){
                 echo "<script>
                         alert('Successfully Activated Reward! :)')
@@ -65,7 +65,7 @@
             $reward_id = $_POST['reward_id'];
             $admin_id = $_SESSION['user_id'];
 
-            $sql = "UPDATE reward SET status = 'disabled', admin_id = $admin_id WHERE reward_id = $reward_id";
+            $sql = "UPDATE reward SET status = 'Disabled', admin_id = $admin_id WHERE reward_id = $reward_id";
 
             if(mysqli_query($dbConn, $sql)){
                 echo "<script>
