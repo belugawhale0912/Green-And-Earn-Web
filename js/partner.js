@@ -18,15 +18,16 @@ function openAddRewardModal(){
     openModal();
 }
 
-function openUpdateRewardModal(rewardID,title,description,requiredPoints,stock){
+function openUpdateRewardModal(reward_id, title, description, required_points, stock, reward_img){
 
     document.getElementById("action").value = "update";
 
-    document.getElementById("rewardID").value = rewardID;
+    document.getElementById("rewardID").value = reward_id;
     document.getElementById("rewardTitle").value = title;
     document.getElementById("rewardDescription").value = description;
-    document.getElementById("requiredPoints").value = requiredPoints;
+    document.getElementById("requiredPoints").value = required_points;
     document.getElementById("stock").value = stock;
+    document.getElementById("rewardImg").value = reward_img;
 
     document.getElementById("modalTitle").innerText = "Update Record";
 

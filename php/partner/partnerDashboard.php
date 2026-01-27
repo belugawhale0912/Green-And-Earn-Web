@@ -26,6 +26,7 @@
     <link rel="stylesheet" href="../../css/header.css">
     <link rel="stylesheet" href="../../css/style.css">
     <link rel="stylesheet" href="../../css/layout.css">
+    <link rel="stylesheet" href="../../css/partner.css">
     <title>Document</title>
 </head>
 <body>
@@ -36,8 +37,11 @@
 
     <h2>Statistics</h2>
     <div class="container">
-        <h3>Total Reward Redeemed</h3>
-        <p><?php echo $totalRewardRedeemed;?></p>
+        <div class="card">
+            <h3>Total Reward Redeemed</h3>
+            <p><?php echo $totalRewardRedeemed;?></p>
+        </div>
+        
     </div>
 
     <h2>List of Rewards</h2>
@@ -47,6 +51,7 @@
                 <div class="card">
                     <img src="<?php echo $reward_info['reward_img']?>" alt="">
                     <p><?php echo $reward_info['title']?></p>
+                    <p>Points Required: <?php echo $reward_info['required_points']?></p>
                 </div>
             <?php endwhile;?>
         <?php endif;?>
