@@ -106,22 +106,22 @@
         <table>
             <thead>
                 <tr>
-                    <td>SubmissionID</td>
-                    <td>User</td>
-                    <td>Activity</td>
-                    <td>Status</td>
-                    <td>Submission Time</td>
-                    <td></td>
+                    <th>Submission ID</th>
+                    <th>User</th>
+                    <th>Activity</th>
+                    <th>Status</th>
+                    <th>Submission Time</th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody>
                 <?php while($submission_info = mysqli_fetch_assoc($submissionResult)):?>
                     <tr>
-                        <td><?php echo $submission_info['submission_id']?></td>
-                        <td><?php echo $submission_info['username']?></td>
-                        <td><?php echo $submission_info['activity_title']?></td>
-                        <td><?php echo $submission_info['status']?></td>
-                        <td><?php echo $submission_info['submission_time']?></td>
+                        <td data-label="Submission ID"><?php echo $submission_info['submission_id']?></td>
+                        <td data-label="User"><?php echo $submission_info['username']?></td>
+                        <td data-label="Activity"><?php echo $submission_info['activity_title']?></td>
+                        <td data-label="Status"><?php echo $submission_info['status']?></td>
+                        <td data-label="Submission Time"><?php echo $submission_info['submission_time']?></td>
                         <td>
                             <button onclick="openSubmissionModal(
                                 '<?php echo $submission_info['submission_id']; ?>',
@@ -133,7 +133,6 @@
                                 View
                             </button>
                         </td>
-                        <!-- Map View Overlay -->
                     </tr>
                 <?php endwhile?>
             </tbody>
@@ -157,8 +156,10 @@
 
             <form action="" method="POST">
                     <input type="hidden" name="submission_id" id="submission_id">
-                    <button type="submit" name="moderatorDecision" value="approve">Approve</button>
-                    <button type="submit" name="moderatorDecision" value="reject">Reject</button>
+                    <div class="buttonGroup">
+                        <button type="submit" name="moderatorDecision" value="approve">Approve</button>
+                        <button type="submit" name="moderatorDecision" value="reject">Reject</button>
+                    </div>
             </form>
         </div>
     </div>

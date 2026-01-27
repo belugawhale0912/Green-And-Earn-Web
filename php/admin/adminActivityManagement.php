@@ -8,37 +8,31 @@
 
     if($_SERVER["REQUEST_METHOD"] == "POST"){
         if(isset($_POST['action'])){
+            $adminID = $_SESSION['user_id'];
+            $title = $_POST['title'];
+            $description = $_POST['description'];
+            $pointAward = $_POST['point'];
+            $start = $_POST['startDate'];
+            $end = $_POST['endDate'];
+
             if($_POST['action']=="add"){
-                $adminID = $_SESSION['user_id'];
-                $title = $_POST['title'];
-                $description = $_POST['description'];
-                $pointAward = $_POST['point'];
-                $start = $_POST['startDate'];
-                $end = $_POST['endDate'];
 
                 $sql = "INSERT INTO activity (admin_id, title, description, points_awarded, status, start_date, end_date)
                         VALUES ($adminID, '$title', '$description', $pointAward, 'Active', '$start', '$end')";
 
                 if(mysqli_query($dbConn,$sql)){
                     echo("<script>
-                            alert('Successfully Added Activity');
+                            alert('Successfully Added Activity!');
                             window.location.href = '../admin/adminActivityManagement.php';
                         </script>");
                 }else{
                     echo("<script>
-                            alert('Failed to Add Reward!');
+                            alert('Failed to Add Activity!');
                             window.location.href = '../admin/adminActivityManagement.php';
                         </script>");
                 }
             }
             if($_POST['action']=="update"){
-
-                $adminID = $_SESSION['user_id'];
-                $title = $_POST['title'];
-                $description = $_POST['description'];
-                $pointAward = $_POST['point'];
-                $start = $_POST['startDate'];
-                $end = $_POST['endDate'];
                 $activity_id = $_POST['activity_id'];
 
                 $sql = "UPDATE activity SET
@@ -57,7 +51,7 @@
                         </script>");
                 }else{
                     echo("<script>
-                            alert('Failed to Add Reward!');
+                            alert('Failed to Add Activity!');
                             window.location.href = '../admin/adminActivityManagement.php';
                         </script>");
                 }
@@ -76,7 +70,10 @@
                         window.location.href = '../admin/adminActivityManagement.php?'
                     </script>";
             }else{
-                echo "Error";
+                echo("<script>
+                        alert('Error!');
+                        window.location.href = '../admin/adminUserManagement.php';
+                    </script>"); 
             }
         }
 
@@ -93,7 +90,10 @@
                         window.location.href = '../admin/adminActivityManagement.php?'
                     </script>";
             }else{
-                echo "Error";
+                echo("<script>
+                        alert('Error!');
+                        window.location.href = '../admin/adminUserManagement.php';
+                    </script>"); 
             }
         }
     }
@@ -113,19 +113,21 @@
     <?php
         include "../include/header.php";
     ?>
-    <h1>Activity Management</h1>
-    <button onclick="openAddActivityModal()">+ Add activity</button>
+    <h2>Activity Management</h2>
+    <button id="addActivityBtn">Add Activity</button>
+    <h1></h1>
+    
     <?php if(mysqli_num_rows($result)>0):?>
         <table>
             <thead>
                 <tr id="header">
                     <th>Title</th>
                     <th>Description</th>
-                    <th>AdminID</th>
-                    <th>Point award</th>
-                    <th>status</th>
-                    <th>Start</th>
-                    <th>End</th>
+                    <th>Admin ID</th>
+                    <th>Points Awarded</th>
+                    <th>Status</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
                     <th></th>
                     <th></th>
                 </tr>
@@ -141,19 +143,19 @@
                         <td><?php echo $activity_info['start_date'];?></td>
                         <td><?php echo $activity_info['end_date'];?></td>
                         <td>
-                            <!-- Call js function to fill update form with existing data -->
-                            <button onclick="openUpdateActivityModal(
-                                             '<?php echo $activity_info['activity_id'];?>',
-                                             '<?php echo $activity_info['title'];?>',
-                                             '<?php echo $activity_info['description'];?>',
-                                             '<?php echo $activity_info['points_awarded'];?>',
-                                             '<?php echo $activity_info['start_date'];?>',
-                                             '<?php echo $activity_info['end_date'];?>',
-                                             )">Update
+                            <button class="editActivityBtn"
+                                data-id="<?php echo $activity_info['activity_id'];?>"
+                                data-title="<?php echo $activity_info['title'];?>"
+                                data-desc="<?php echo $activity_info['description'];?>"
+                                data-point="<?php echo $activity_info['points_awarded'];?>"
+                                data-start="<?php echo $activity_info['start_date'];?>"
+                                data-end="<?php echo $activity_info['end_date'];?>"
+                            >
+                                Edit
                             </button>
                         </td>
                         <td>
-                            <?php if($activity_info['status']!='Deleted'):;?>
+                            <?php if($activity_info['status'] !='Deleted'):;?>
                                 <form action="" method="POST">
                                     <input type="hidden" name="activity_id" value="<?php echo $activity_info['activity_id'];?>">
                                     <button type="submit" name="delete_btn">Delete</button>
@@ -173,7 +175,7 @@
 
         <div id="activityModal" class="modal">
             <div class="modalContent">
-                <h2 id="modalTitle"></h2>
+                <h2 id="activityModalTitle"></h2>
                 <form action="" id="activityForm" method="POST">
                     <input type="hidden" id="action" name="action">
                     <input type="hidden" id="activityID" name="activity_id">
@@ -193,7 +195,7 @@
                     <input type="date" id="endDate" name="endDate">
 
                     <button type="submit" id="confirmBtn">Confirm</button>
-                    <button type="button" onclick="closeModal()">Cancel</button>
+                    <button type="button" class="cancelBtn" data-modal="activityModal">Cancel</button>
                 </form>
             </div>
         </div>

@@ -32,16 +32,28 @@
                 exit();
             }
             else{
-                $error = "Invalid Password";
+                $_SESSION['popupMessage']=[
+                    'title' => 'Error!',
+                    'text' => 'Invalid Password',
+                    'icon' => 'error'
+                ];
+
+                header("Location: login.php");
+                exit();
             }
         }
         else{
-            $error = "Invalid Username";
+            $_SESSION['popupMessage']=[
+                'title' => 'Error!',
+                'text' => 'Username not found',
+                'icon' => 'error'
+            ];
+
+            header("Location: login.php");
+            exit();
         }
     }
 ?>
-
-
 
 
 <!DOCTYPE html>
@@ -51,10 +63,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../../css/style.css">
     <link rel="stylesheet" href="../../css/login.css">
+    <link rel="icon" href="/GreenAndEarnWeb/favicon.ico">
     <?php include "../include/libraries.php"?>
     <title>Login</title>
 </head>
 <body>
+    <script src="../../js/customSwal.js"></script>
     <?php
         include("../include/conn.php");
     ?>
@@ -80,20 +94,18 @@
         </div>
     </div>
 
-    <?php if(isset($error)):?>
+    <?php if(isset($_SESSION['popupMessage'])):?>
         <script>
-            Swal.fire({
-                title: "Error",
-                text: "<?php echo $error?>",
-                icon: "error",
-                confirmButtonText:"Fuck You"
-            }).then((result) => {
-                if(result.isComfirmed){
-                    window.location.href="login.php";
-                }
+            CustomSwal.fire({
+                title: "<?php echo $_SESSION['popupMessage']['title']?>",
+                text: "<?php echo $_SESSION['popupMessage']['text']?>",
+                icon: "<?php echo $_SESSION['popupMessage']['icon']?>",
+                confirmButtonText: 'Try Again',
+                heightAuto: false
             });
         </script>
-    <?php endif?>
+        <?php unset($_SESSION['popupMessage'])?>
+    <?php endif;?>
 
     <script src="../../js/login.js"></script>
     <script src="../../js/header.js"></script>

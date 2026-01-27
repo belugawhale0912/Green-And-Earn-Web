@@ -2,6 +2,7 @@
     include "../include/conn.php";
     include "../include/session.php";
 
+    $view = isset($_GET['view']) ? $_GET['view'] : 'submissions';
     $filter = isset($_GET['status']) ? $_GET['status'] : 'all';
 
     if ($filter == "Approved"){
@@ -25,6 +26,30 @@
     }
 
     $result = mysqli_query($dbConn, $sql);
+
+    $partnerFilter = isset($_GET['status']) ? $_GET['status'] : 'all';
+
+    if($partnerFilter == "Approved"){
+        $sql_partner = "SELECT p.*, u.username
+        FROM partner_point_transaction p
+        JOIN user u ON p.user_id = u.user_id
+        WHERE p.status = 'Approved'
+        ORDER BY p.award_time DESC";
+    }else if ($partnerFilter == "Rejected"){
+        $sql_partner = "SELECT p.*, u.username
+        FROM partner_point_transaction p
+        JOIN user u ON p.user_id = u.user_id
+        WHERE p.status = 'Rejected'
+        ORDER BY p.award_time DESC";
+    }else{
+        $sql_partner = "SELECT p.*, u.username
+        FROM partner_point_transaction p
+        JOIN user u ON p.user_id = u.user_id
+        WHERE p.status IN ('Approved', 'Rejected')
+        ORDER BY p.award_time DESC";
+    }
+
+    $result_partner = mysqli_query($dbConn, $sql_partner);
 ?>
 
 <!DOCTYPE html>
@@ -41,10 +66,17 @@
     <?php
         include "../include/header.php";
     ?>
+    <div id="historyViewControl">
+        <a href="moderatorHistory.php?view=submissions"
+            class="<?php echo ($view ?? 'submissions')=='submissions' ? 'active' : ''; ?>">Submission</a>
+        <a href="moderatorHistory.php?view=partnerPoints"
+            class="<?php echo ($view ?? '')=='partnerPoints' ? 'active' : ''; ?>">Partner Points</a>
+    </div>
     <h1>History</h1>
-    <section id="History">
-    
+<?php if($view == 'submissions'): ?>
+<section id="History">
     <form method="GET" id="filterForm">
+        <input type="hidden" name="view" value="submissions">
         <label for="statusFilter">Filter:</label>
         <select name="status" id="statusFilter">
             <option value="all" <?php if ($filter == "all") echo 'selected'; ?>>All</option>
@@ -61,21 +93,104 @@
                 <th>Activity</th>
                 <th>Status</th>
                 <th>Submission Time</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
             <?php while ($row = mysqli_fetch_assoc($result)): ?>
                 <tr>
-                    <td><?php echo $row['submission_id']; ?></td>
-                    <td><?php echo htmlspecialchars($row['username']); ?></td>
-                    <td><?php echo htmlspecialchars($row['activity_title']); ?></td>
-                    <td><?php echo $row['status']; ?></td>
-                    <td><?php echo $row['submission_time']; ?></td>
+                    <td data-label="Submission ID"><?php echo $row['submission_id']; ?></td>
+                    <td data-label="User"><?php echo htmlspecialchars($row['username']); ?></td>
+                    <td data-label="Activity"><?php echo htmlspecialchars($row['activity_title']); ?></td>
+                    <td data-label="Status"><?php echo $row['status']; ?></td>
+                    <td data-label="Submission Time"><?php echo $row['submission_time']; ?></td>
+                    <td><button type="button" onclick = "openSubmissionModal(
+                        '<?php echo $row['submission_id']; ?>',
+                        '<?php echo htmlspecialchars($row['username'], ENT_QUOTES); ?>',
+                        '<?php echo htmlspecialchars($row['activity_title'], ENT_QUOTES); ?>',
+                        '<?php echo $row['submission_time']; ?>',
+                        '<?php echo $row['proof']; ?>'
+                    )">
+                        View Attachment
+                    </button></td>
                 </tr>
                 <?php endwhile; ?>
         </tbody>
     </table>
 </section>
+<?php endif; ?>
+<div id="submissionPopup" class="modal" style="display:none;">
+    <div class="modalContent">
+        <h1>Submission Details</h1>
+        <p>Username: <span id="popupUsername"></span></p>
+        <p>Activity: <span id="popupActivity"></span></p>
+        <p>Submission Time: <span id="popupSubmissionTime"></span></p>
+        <p>Proof:</p>
+        <img id="popupProof" src="" alt="Proof Image" style="max-width:100%; display=block;">
+        <input type="hidden" id="submission_id" name="submission_id">
+    </div>
+</div>
+
+<?php if($view == 'partnerPoints'): ?>
+<section id="PartnerPointsHistory">
+    <form method="GET" id="filterFormPartner">
+        <input type="hidden" name="view" value="partnerPoints">
+        <label for="statusFilterPartner">Filter:</label>
+        <select name="status" id="statusFilterPartner">
+            <option value="all" <?php if($partnerFilter == 'all') echo 'selected'; ?>>All</option>
+            <option value="Approved" <?php if($partnerFilter == 'Approved') echo 'selected'; ?>>Approved</option>
+            <option value="Rejected" <?php if($partnerFilter == 'Rejected') echo 'selected'; ?>>Rejected</option>
+        </select>
+    </form>
+    <table>
+        <thead>
+            <tr>
+                <th>Transaction ID</th>
+                <th>User</th>
+                <th>Partner</th>
+                <th>Amount Spent</th>
+                <th>Points Awarded</th>
+                <th>Status</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php while ($row = mysqli_fetch_assoc($result_partner)): ?>
+            <tr>
+                <td data-label="Transaction ID"><?php echo $row['partner_transaction_id']; ?></td>
+                <td data-label="User"><?php echo htmlspecialchars($row['username']); ?></td>
+                <td data-label="Partner"><?php echo $row['partner_id']; ?></td>
+                <td data-label="Amount Spent"><?php echo $row['amount_spent']; ?></td>
+                <td data-label="Points Awarded"><?php echo $row['points_awarded']; ?></td>
+                <td data-label="Status"><?php echo $row['status']; ?></td>
+                <td>
+                    <button type='button' onclick="openPartnerModal(
+                        '<?php echo $row ['partner_transaction_id']; ?>',
+                        '<?php echo htmlspecialchars($row ['username'], ENT_QUOTES); ?>',
+                        '<?php echo $row ['amount_spent']; ?>',
+                        '<?php echo $row ['points_awarded']; ?>',
+                        '<?php echo $row ['reciept_img']; ?>'
+                    )">
+                        View Attachment
+                    </button>
+                </td>
+            </tr>
+            <?php endwhile; ?>
+        </tbody>
+    </table>
+</section>
+<?php endif; ?>
+<div id="partnerPopup" class="modal" style="display:none;">
+    <div class="modalContent">
+        <h1>Partner Points Details</h1>
+        <p>Username: <span id="partnerUsername"></span></p>
+        <p>Amount Spent: <span id="partnerAmount"></span></p>
+        <p>Points Awarded: <span id="partnerPoints"></span></p>
+        <p>Reciept:</p>
+        <img id="partnerReciept" src="" alt="Reciept Image" style="max-width:100%; display:block;">
+        <input type="hidden" id="partnerTransactionID" name="partnerTransactionID">
+    </div>
+</div>
     <script src="../../js/moderator.js" defer></script>
 </body>
 </html>

@@ -1,28 +1,28 @@
-console.log("loaded");
-
 document.addEventListener("DOMContentLoaded",function(){
+    const htmlElement = document.documentElement; // Selects the <html> tag
     const hamburger = document.getElementById("hamburger");
     const nav = document.getElementById("header_links");
-
-    hamburger.addEventListener("click",function(){
-        nav.classList.toggle('active');
-    })
-});
-
-document.addEventListener("DOMContentLoaded", function() {
     const toggleBtn = document.getElementById("themeToggle");
-    const htmlElement = document.documentElement; // Selects the <html> tag
-
-    // 1. Check Local Storage on Load
-    // If the user previously chose dark, apply it immediately
+    // check for setted theme from local storage
     const savedTheme = localStorage.getItem("theme");
+
+    // if the saved theme is dark, set the data-theme attribute to dark so the css can change the color to darkmode pallete
     if (savedTheme === "dark") {
         htmlElement.setAttribute("data-theme", "dark");
-        toggleBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sun-icon lucide-sun"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>`; // Change icon to Sun
     }
 
-    // 2. Listen for Click
+    if(hamburger){
+        hamburger.addEventListener("click",function(){
+        // TODO check here
+        nav.classList.toggle('active');
+        });
+    }
+
     if(toggleBtn){
+        if (savedTheme === "dark") {
+            toggleBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sun-icon lucide-sun"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>`; // Change icon to Sun
+        }
+
         toggleBtn.addEventListener("click", function() {
             
             // Check current mode
@@ -41,4 +41,12 @@ document.addEventListener("DOMContentLoaded", function() {
             }
         });
     }
+
+    // general way to close modal (click outside modal)
+    window.onclick = function(event) {
+            const modal = document.querySelector('.modal');
+            if (modal && event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
 });

@@ -1,34 +1,98 @@
-function openModal(){
-    document.getElementById("activityModal").style.display = "block";
-}
+document.addEventListener("DOMContentLoaded", function() {
 
-function closeModal(){
-    document.getElementById("activityModal").style.display = "none";
-}
+    // ActivityManagement Page
+    const addActivityBtn = document.getElementById("addActivityBtn");
+
+    if(addActivityBtn){
+        addActivityBtn.addEventListener("click",function(){
+            document.getElementById("action").value = "add"; // Important!
+            document.getElementById("activityModalTitle").innerText = "Add New Activity";
+            document.getElementById("activityModal").style.display = "block";
+        });
+    }
+
+    
+    const editActivityBtns = document.querySelectorAll('.editActivityBtn');
+
+    if (editActivityBtns.length > 0) {
+        editActivityBtns.forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                
+                const id = btn.getAttribute('data-id');
+                const title = btn.getAttribute('data-title');
+                const desc = btn.getAttribute('data-desc');
+                const point = btn.getAttribute('data-point');
+                const start = btn.getAttribute('data-start');
+                const end = btn.getAttribute('data-end');
+
+                // 2. Populate the Modal Form
+                document.getElementById("action").value = "update"; // Important!
+                document.getElementById("activityID").value = id;
+                document.getElementById("activityTitle").value = title;
+                document.getElementById("activityDescription").value = desc;
+                document.getElementById("activityPoint").value = point;
+                document.getElementById("startDate").value = start;
+                document.getElementById("endDate").value = end;
+
+                // 3. Update Modal Title
+                document.getElementById("activityModalTitle").innerText = "Update Activity";
+
+                // 4. Show Modal
+                // Assuming you have a generic openModal function, or just:
+                document.getElementById("activityModal").style.display = "block";
+            });
+        });
+    }
+    
+    // UserManagementPage
+    const addUserBtn = document.getElementById("addUserBtn");
+    const addUserModal = document.getElementById("userModal")
+
+    if(addUserBtn){
+        addUserBtn.addEventListener("click",function(){
+            document.getElementById("userForm").reset();
+            document.getElementById("action").value = "add";
+            addUserModal.style.display = "block"
+        });
+    }
+
+    // close modal function
+    const cancelBtns = document.querySelectorAll(".cancelBtn");
+
+    cancelBtns.forEach(function(btn) {
+        btn.addEventListener("click", function() {
+            const modals = document.querySelectorAll(".modal");
+            modals.forEach(function(modal){
+                modal.style.display = "none";
+            })
+        });
+    });
 
 
-function openAddActivityModal(){
-    document.getElementById("activityForm").reset();
+    // Tab control logic
+    const tabs = document.querySelectorAll(".tab");
 
-    document.getElementById("action").value = "add";
+    if(tabs.length>0){
+        tabs.forEach(tab => {
+            tab.addEventListener("click", function() {
+                const tabID = tab.dataset.target;
+                
+                //hide all tables
+                document.querySelectorAll(".table-section").forEach(function(section) {
+                    section.classList.remove("active");
+                });
 
-    document.getElementById("modalTitle").innerText = "Add New Activity";
+                //show clicked table
+                document.getElementById(tabID).classList.add("active");
 
-    openModal();
-}
+                //remove "active" from all tabs
+                tabs.forEach(function(t){t.classList.remove("active")});
 
-function openUpdateActivityModal(activityID, title,description,points_awarded,start_date,end_date){
+                //click tab
+                tab.classList.add("active");
+            });
+        });
+    }
 
-    document.getElementById("action").value = "update";
+});
 
-    document.getElementById("activityID").value = activityID;
-    document.getElementById("activityTitle").value = title;
-    document.getElementById("activityDescription").value = description;
-    document.getElementById("activityPoint").value = points_awarded;
-    document.getElementById("startDate").value = start_date;
-    document.getElementById("endDate").value = end_date;
-
-    document.getElementById("modalTitle").innerText = "Update Record";
-
-    openModal();
-}
