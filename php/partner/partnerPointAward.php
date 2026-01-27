@@ -7,6 +7,13 @@
         $username = $_POST['username'];
         $amt_spent = $_POST['amt_spent'];
 
+        if($amt_spent <= 0){
+            echo "<script>";
+            echo "alert('Session Aborted. Amount spent must be more than 0');";
+            echo "window.location.href = '../partner/partnerPointAward.php';";
+            echo "</script>";
+        }
+
         $checkSql = "SELECT * FROM user WHERE username = '$username'";
 
         $checkResult = mysqli_query($dbConn,$checkSql);
@@ -20,12 +27,12 @@
             header("Location: ../partner/partnerPointAward.php");
             die("User not found! Session Abort");
         }
-        // TODO add check: if input amount <=0 abort!
 
-        if(isset($_FILES['reciept_img'])&&$_FILES['reciept_img']['error'] === UPLOAD_ERR_OK){
+        
+        if(isset($_FILES['receipt_img'])&&$_FILES['receipt_img']['error'] === UPLOAD_ERR_OK){
 
-            $fileName = $_FILES['reciept_img']['name'];
-            $fileTempPath = $_FILES['reciept_img']['tmp_name'];
+            $fileName = $_FILES['receipt_img']['name'];
+            $fileTempPath = $_FILES['receipt_img']['tmp_name'];
 
             $fileExt = pathinfo($fileName,PATHINFO_EXTENSION);
 
@@ -42,8 +49,11 @@
                     $points_award = round($amt_spent, 1) * 10; //RM 1 = 10 Points
 
                     //insertQuery
-                    $sql_insert_partnerTransaction = "INSERT INTO partner_point_transaction (user_id, partner_id, amount_spent, points_awarded,receipt_img,status) VALUES($member_id, {$_SESSION['user_id']}, $amt_spent, $points_award, '$saveDir','Pending') ";
-                    $sql_update_userPoint = "UPDATE user SET total_point_accumulated = $member_totalPoints+$points_award, point_balance = $member_pointBal+$points_award WHERE user_id = $member_id";
+                    $sql_insert_partnerTransaction = "INSERT INTO 
+                        partner_point_transaction (user_id, partner_id, amount_spent, points_awarded, receipt_img, status) 
+                        VALUES($member_id, {$_SESSION['user_id']}, $amt_spent, $points_award, '$saveDir','Pending') ";
+                    $sql_update_userPoint = "UPDATE user SET total_point_accumulated = $member_totalPoints+$points_award, 
+                        point_balance = $member_pointBal+$points_award WHERE user_id = $member_id";
 
                     mysqli_begin_transaction($dbConn);
 
@@ -82,23 +92,28 @@
     <link rel="stylesheet" href="../../css/header.css">
     <link rel="stylesheet" href="../../css/style.css">
     <link rel="stylesheet" href="../../css/layout.css">
+    <link rel="stylesheet" href="../../css/partner.css">
     <title>Point Award</title>
 </head>
 <body>
     <?php
         include "../include/header.php";
     ?>
-    <div class="form_container">
+    <div class="formContainer">
         <form action="" method="POST" enctype="multipart/form-data">
-            <label for="username">Username:</label>
-            <input type="text" name="username" required>
-            <label for="amt_spent">Amount Spent:</label>
-            <input type="number" name="amt_spent" step="0.01" required>
-            <label>Upload Reciept (Image):</label>
-            <input type="file" name="reciept_img" required accept="image/*">
-            <button type="submit">Comfirm</button>
+            <div class="formCard">
+                <div class="formItem">
+                    <label for="username">Username:</label>
+                    <input type="text" name="username" required>
+                    <label for="amt_spent">Amount Spent:</label>
+                    <input type="number" name="amt_spent" step="0.01" required>
+                    <label>Upload Receipt (Image):</label>
+                    <input type="file" name="receipt_img" required accept="image/*">
+                <div class="formItem">
+                    <button type="submit">Comfirm</button>
+                </div>
+            </div>
         </form> 
     </div>
-
 </body>
 </html>
