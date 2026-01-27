@@ -3,7 +3,16 @@
     include "../include/session.php";
 
     $user_id = $_SESSION['user_id'];
-    $sql = "SELECT * FROM activity ORDER BY activity_id DESC";
+    $filter = isset($_GET['status']) ? $_GET['status'] : 'all';
+
+    if($filter == "Active"){
+        $sql = "SELECT * FROM activity WHERE status = 'Active'";
+    }else if($filter == "Deleted"){
+        $sql = "SELECT * FROM activity WHERE status = 'Deleted'";
+    }else{
+        $sql = "SELECT * FROM activity ORDER BY status ASC";
+    }
+    
     $result = mysqli_query($dbConn, $sql);
 
     if($_SERVER["REQUEST_METHOD"] == "POST"){
@@ -116,7 +125,15 @@
     <h2>Activity Management</h2>
     <button id="addActivityBtn">Add Activity</button>
     <h1></h1>
-    
+    <form method="GET" id="filterForm">
+        <label for="statusFilter">Filter:</label>
+        <select name="status" id="statusFilter" class="dropdown">
+                <option value="All" <?php if ($filter == "All") echo 'selected'; ?>>All</option>
+                <option value="Active" <?php if ($filter == "Active") echo 'selected'; ?>>Active</option>
+                <option value="Deleted" <?php if ($filter == "Deleted") echo 'selected'; ?>>Deleted</option>
+        </select>
+    </form>
+    <h3>Activities Table</h3>
     <?php if(mysqli_num_rows($result)>0):?>
         <table>
             <thead>
@@ -135,35 +152,37 @@
             <tbody>
                 <?php while($activity_info = mysqli_fetch_assoc($result)):?>
                     <tr>
-                        <td><?php echo $activity_info['title'];?></td>
-                        <td><?php echo $activity_info['description'];?></td>
-                        <td><?php echo $activity_info['admin_id'];?></td>
-                        <td><?php echo $activity_info['points_awarded'];?></td>
-                        <td><?php echo $activity_info['status'];?></td>
-                        <td><?php echo $activity_info['start_date'];?></td>
-                        <td><?php echo $activity_info['end_date'];?></td>
-                        <td>
-                            <button class="editActivityBtn"
-                                data-id="<?php echo $activity_info['activity_id'];?>"
-                                data-title="<?php echo $activity_info['title'];?>"
-                                data-desc="<?php echo $activity_info['description'];?>"
-                                data-point="<?php echo $activity_info['points_awarded'];?>"
-                                data-start="<?php echo $activity_info['start_date'];?>"
-                                data-end="<?php echo $activity_info['end_date'];?>"
-                            >
-                                Edit
-                            </button>
+                        <td data-label="Title"><?php echo $activity_info['title'];?></td>
+                        <td data-label="Description"><?php echo $activity_info['description'];?></td>
+                        <td data-label="Admin ID"><?php echo $activity_info['admin_id'];?></td>
+                        <td data-label="Points Awarded"><?php echo $activity_info['points_awarded'];?></td>
+                        <td data-label="Status"><?php echo $activity_info['status'];?></td>
+                        <td data-label="Start Date"><?php echo $activity_info['start_date'];?></td>
+                        <td data-label="End Date"><?php echo $activity_info['end_date'];?></td>
+                        <td data-label="Edit Button">
+                            <form action="Edit Button" method="POST">
+                                    <button class="editActivityBtn"
+                                        data-id="<?php echo $activity_info['activity_id'];?>"
+                                        data-title="<?php echo $activity_info['title'];?>"
+                                        data-desc="<?php echo $activity_info['description'];?>"
+                                        data-point="<?php echo $activity_info['points_awarded'];?>"
+                                        data-start="<?php echo $activity_info['start_date'];?>"
+                                        data-end="<?php echo $activity_info['end_date'];?>"
+                                    >
+                                        Edit
+                                    </button>
+                                </form>
                         </td>
-                        <td>
+                        <td data-label="Delete/Restore Button">
                             <?php if($activity_info['status'] !='Deleted'):;?>
-                                <form action="" method="POST">
+                                <form action="Delete/Restore Button" method="POST">
                                     <input type="hidden" name="activity_id" value="<?php echo $activity_info['activity_id'];?>">
-                                    <button type="submit" name="delete_btn">Delete</button>
+                                    <button type="submit" class="deleteBtn">Delete</button>
                                 </form>
                             <?php else:;?>
                                 <form action="" method="POST">
                                     <input type="hidden" name="activity_id" value="<?php echo $activity_info['activity_id'];?>">
-                                    <button type="submit" name="restore_btn">Restore</button>
+                                    <button type="submit" class="restoreBtn">Restore</button>
                                 </form>
                             <?php endif;?>
                         </td>

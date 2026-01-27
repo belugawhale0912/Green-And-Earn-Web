@@ -6,71 +6,85 @@
     display: flex;
 }
 
-
-
-#profileSection{
-    margin: 0 auto;
-    max-height: 20%;
-    width: 90%;
-    display: flex;
-    gap: 20px;
-    border: 1px solid black;
-    padding: 20px;
-}
-
-#profileContainer{
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-}
-
-#profilePhoto img{
-    max-width: 300px;
-    max-height: 300px;
-    border-radius: 999px;
-}
-
-
 #stats{
     display: flex;
     justify-content: center;
 }
 
-.cardContainer{
+#memberChart {
+    max-width: 100%;
+    height: auto;
+}
+
+#stats.dashboardContainer {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    justify-content: start;
+    /* align-items: center; */
+}
+
+.chartContainer {
     display: flex;
-    gap: 15px;
+    justify-content: center;
+}
+
+.cardContainer{
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 5px;
+    justify-items: space-between;
 }
 
 .cards{
     color: white;
     background-color: rgb(105, 222, 105);
-    width: 300px;
-    height: 260px;
-    padding: auto;
+    width: 100%;
+    max-width: 300px;
+    height: 230px;
+    padding: 20px;
     border-radius: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
 }
 
 .tabs{
     display: flex;
-    gap: 14px;
-    margin-bottom: 20px;
-    justify-content: left;
+    gap: 8px;
+    margin-bottom: 24px;
+    justify-content: flex-start;
 }
 
 .tab{
-    padding: 16px 32px;
-    border-radius: 90px;
+    padding: 16px 26px;
+    border-radius: 999px;
     border: 1px solid rgb(20, 20, 20);
     background-color:rgb(51, 51, 51);
     color: white;
-    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.6);
+    box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.6);
+    font-size: 14px;
+    font-weight: bold;
+    letter-spacing: 0.3px;
+    cursor: pointer;
+    transition:
+        background-color 0.25s,
+        color 0.25s,
+        transform 0.15s,
+        box-shadow 0.25s;
 }
 
 .tab.active{
     background-color: #1f3808;
     color: rgb(255, 255, 255);
     border-color:#304e00;
-    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.6);
+    box-shadow: 0 6px 14px 0 rgba(0, 0, 0, 0.6);
+}
+
+.tab:hover{
+    background-color: #1f3808;;
+    transform: translateY(-2px);
 }
 
 .table-section{
@@ -88,6 +102,13 @@ button{
     padding: 12px 16px;
     text-align: center;
     border-radius: 999px;
+    font-weight: bold;
+}
+
+button:hover{
+    background-color: #1f3808;;
+    transform: translateY(-2px);
+    border-color: #1f3808;;
 }
 
 .statistics{
@@ -101,4 +122,107 @@ button{
     background-color: red;
     color: white;
     border-color: red;
+    font-weight: bold;
 }
+
+.cancelBtn:hover {
+    background-color: #a80000;
+    ;
+    transform: translateY(-2px);
+    border-color: #a80000;
+    ;
+}
+
+.rejectBtn {
+    background-color: red;
+    color: white;
+    border-color: red;
+    font-weight: bold;
+}
+
+.rejectBtn:hover {
+    background-color: #a80000;
+    ;
+    transform: translateY(-2px);
+    border-color: #a80000;
+    ;
+}
+
+.deleteBtn {
+    background-color: red;
+    color: white;
+    border-color: red;
+    font-weight: bold;
+}
+
+.deletelBtn:hover {
+    background-color: #a80000;
+    ;
+    transform: translateY(-2px);
+    border-color: #a80000;
+    ;
+}
+
+.suspendBtn{
+    background-color: red;
+    color: white;
+    border-color: red;
+    font-weight: bold;
+}
+
+.suspendBtn:hover {
+    background-color: #a80000;
+    ;
+    transform: translateY(-2px);
+    border-color: #a80000;
+    ;
+}
+
+.dropdown {
+    padding: 10px 14px;
+    border-radius: 10px;
+    border: 1px solid #444;
+    background-color: var(--clr-surface-a10);
+    color: var(--fs);
+    font-size: 14px;
+    cursor: pointer;
+}
+
+#addUserBtn{
+    margin-left: auto;
+}
+
+@media (max-width: 1000px) {
+    th {
+        display: none;
+    }
+
+    td {
+        display: grid;
+        gap: 0.5rem;
+        grid-template-columns: 15ch auto;
+        padding: 0.5rem 1rem;
+    }
+
+    td::before {
+        content: attr(data-label)": ";
+        font-weight: 700;
+        text-transform: capitalize;
+    }
+
+    td:first-child {
+        padding-top: 2rem;
+    }
+
+    td:last-child {
+        padding-bottom: 2rem;
+    }
+
+    .cardContainer {
+        grid-template-columns: repeat(2,1fr);
+    }
+    #stats.dashboardContainer {
+        grid-template-columns: 1fr;
+    }
+}
+

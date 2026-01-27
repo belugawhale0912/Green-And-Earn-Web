@@ -274,8 +274,6 @@ tbody tr:last-of-type{
     background-color: var(--bg-card) !important;
 }
 
-
-
 .title {
     color: var(--text-main);
     font-family: var(--font-heading); /* Match your site's font */
@@ -296,6 +294,71 @@ tbody tr:last-of-type{
 
 .confirm_btn:hover {
     background-color: var(--clr-primary-a30);
+}
+
+.title{
+    color:var(--fs-h3);
+    font-weight: bold;
+}
+
+.subject{
+    color: #3c720a;
+}
+
+.editBtn{
+    background-color: #304e00;
+    border-color: #304e00;
+    color: white;
+    padding: 12px 16px;
+    text-align: center;
+    border-radius: 999px;
+    font-weight: bold;
+}
+
+.logoutBtn{
+    background-color: #304e00;
+    border-color: #304e00;
+    color: white;
+    padding: 12px 16px;
+    text-align: center;
+    border-radius: 999px;
+    font-weight: bold;
+}
+
+.profileCard{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 350px;
+    height: 350px;
+    border-radius: 20px;
+    overflow: hidden;
+    margin: 0 auto;
+}
+
+.profileImg{
+    width: 300px;
+    height: 300px;
+    object-fit: cover;
+    border-radius: 30px;
+    border: 2px solid #304e00;
+}
+
+.list_container{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+}
+
+.list_card{
+    width: 650px;
+    border: 2px solid;
+    border-color: var(--fs);
+    border-radius: 10px;
+    padding: 0;
+    text-align: center;
+    box-sizing: border-box;
 }
 
 @media(max-width:800px){

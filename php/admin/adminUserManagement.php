@@ -117,32 +117,32 @@
                     <tbody>
                         <?php while($user_info = mysqli_fetch_assoc($resultMember)):?> 
                             <tr>
-                                <td><?php echo $user_info['user_id'];?></td>
-                                <td><?php echo $user_info['username'];?></td>
-                                <td><?php echo $user_info['email'];?></td>
-                                <td><?php echo $user_info['point_balance'];?></td>
+                                <td data-label="User ID"><?php echo $user_info['user_id'];?></td>
+                                <td data-label="Username"><?php echo $user_info['username'];?></td>
+                                <td data-label="Email"><?php echo $user_info['email'];?></td>
+                                <td data-label="Point Balance"><?php echo $user_info['point_balance'];?></td>
                                 <?php if($user_info['active_status']==1){
                                     $memberStatus = "Active";
                                 }else{
                                     $memberStatus = "Inactive";
                                 }
                                 ?>
-                                <td><?php echo $memberStatus?></td>
-                                <td><?php echo $user_info['register_date'];?></td>
-                                <td> 
+                                <td data-label="Status"><?php echo $memberStatus?></td>
+                                <td data-label="Register Date"><?php echo $user_info['register_date'];?></td>
+                                <td data-label="Suspend/Activate Button"> 
                                 <!--Suspend Button -->
                                     <?php if($user_info['active_status'] == 1): ?>
                                         <form  method="POST">
                                             <input type="hidden" name="action" value="suspend">
                                             <input type="hidden" name="user_id" value="<?php echo $user_info['user_id'];?>">
-                                            <button type="submit">Suspend</button>
+                                            <button type="submit" class="suspendBtn">Suspend</button>
                                         </form> 
                                     <?php else: ?>
                                 <!--Activate Button -->
                                         <form method="POST">
                                             <input type="hidden" name="action" value="activate">
                                             <input type="hidden" name="user_id" value="<?php echo $user_info['user_id'];?>">
-                                            <button type="submit" name="activate_btn">Activate</button>
+                                            <button type="submit" class="activateBtn">Activate</button>
                                         </form>
                                     <?php endif;?>    
                                 </td>
@@ -170,32 +170,32 @@
                 <tbody>
                     <?php while($user_info = mysqli_fetch_assoc($resultModerator)):?> 
                         <tr>
-                            <td><?php echo $user_info['user_id'];?></td>
-                            <td><?php echo $user_info['username'];?></td>
-                            <td><?php echo $user_info['email'];?></td>
-                            <td><?php echo $user_info['point_balance'];?></td>
+                            <td data-label="User ID"><?php echo $user_info['user_id'];?></td>
+                            <td data-label="Username"><?php echo $user_info['username'];?></td>
+                            <td data-label="Email"><?php echo $user_info['email'];?></td>
+                            <td data-label="Point Balance"><?php echo $user_info['point_balance'];?></td>
                             <?php if($user_info['active_status']==1){
                                 $memberStatus = "Active";
                             }else{
                                 $memberStatus = "Inactive";
                             }
                             ?>
-                            <td><?php echo $memberStatus?></td>
-                            <td><?php echo $user_info['register_date'];?></td>
-                            <td> 
+                            <td data-label="Status"><?php echo $memberStatus?></td>
+                            <td data-label="Register Date"><?php echo $user_info['register_date'];?></td>
+                            <td data-label="Suspend/Activate Button"> 
                             <!--Suspend Button -->
                                 <?php if($user_info['active_status'] == 1): ?>
                                     <form  method="POST">
                                         <input type="hidden" name="action" value="suspend">
                                         <input type="hidden" name="user_id" value="<?php echo $user_info['user_id'];?>">
-                                        <button type="submit">Suspend</button>
+                                        <button type="submit" class="suspendBtn">Suspend</button>
                                     </form> 
                                 <?php else: ?>
                             <!--Activate Button -->
                                     <form method="POST">
                                         <input type="hidden" name="action" value="activate">
                                         <input type="hidden" name="user_id" value="<?php echo $user_info['user_id'];?>">
-                                        <button type="submit" name="activate_btn">Activate</button>
+                                        <button type="submit" class="activateBtn">Activate</button>
                                     </form>
                                 <?php endif;?>    
                             </td>
@@ -224,32 +224,32 @@
                 <tbody>
                     <?php while($user_info = mysqli_fetch_assoc($resultPartner)):?> 
                         <tr>
-                            <td><?php echo $user_info['user_id'];?></td>
-                            <td><?php echo $user_info['username'];?></td>
-                            <td><?php echo $user_info['email'];?></td>
-                            <td><?php echo $user_info['point_balance'];?></td>
+                            <td data-label="User ID"><?php echo $user_info['user_id'];?></td>
+                            <td data-label="Username"><?php echo $user_info['username'];?></td>
+                            <td data-label="Email"><?php echo $user_info['email'];?></td>
+                            <td data-label="Point Balance"><?php echo $user_info['point_balance'];?></td>
                             <?php if($user_info['active_status']==1){
                                 $memberStatus = "Active";
                             }else{
                                 $memberStatus = "Inactive";
                             }
                             ?>
-                            <td><?php echo $memberStatus?></td>
-                            <td><?php echo $user_info['register_date'];?></td>
-                            <td> 
+                            <td data-label="Status"><?php echo $memberStatus?></td>
+                            <td data-label="Register Date"><?php echo $user_info['register_date'];?></td>
+                            <td data-label="Suspend/Activate Button"> 
                             <!--Suspend Button -->
                                 <?php if($user_info['active_status'] == 1): ?>
                                     <form  method="POST">
                                         <input type="hidden" name="action" value="suspend">
                                         <input type="hidden" name="user_id" value="<?php echo $user_info['user_id'];?>">
-                                        <button type="submit">Suspend</button>
+                                        <button type="submit" class="suspendBtn">Suspend</button>
                                     </form> 
                                 <?php else: ?>
                             <!--Activate Button -->
                                     <form method="POST">
                                         <input type="hidden" name="action" value="activate">
                                         <input type="hidden" name="user_id" value="<?php echo $user_info['user_id'];?>">
-                                        <button type="submit" name="activate_btn">Activate</button>
+                                        <button type="submit" class="activateBtn">Activate</button>
                                     </form>
                                 <?php endif;?>    
                             </td>

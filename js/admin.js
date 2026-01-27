@@ -11,6 +11,13 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
+    const activityFilter = document.getElementById("statusFilter");
+    if(activityFilter){
+        const activityFilterForm = document.getElementById("filterForm");
+        activityFilter.addEventListener("change", function(){
+            activityFilterForm.submit();
+        });
+    }
     
     const editActivityBtns = document.querySelectorAll('.editActivityBtn');
 
@@ -53,6 +60,15 @@ document.addEventListener("DOMContentLoaded", function() {
             document.getElementById("userForm").reset();
             document.getElementById("action").value = "add";
             addUserModal.style.display = "block"
+        });
+    }
+
+    // RewardManagementPage
+    const rewardFilter = document.getElementById("statusFilter");
+    if(rewardFilter){
+        const rewardFilterForm = document.getElementById("filterForm");
+        rewardFilter.addEventListener("change", function(){
+            rewardFilterForm.submit();
         });
     }
 

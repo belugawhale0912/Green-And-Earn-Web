@@ -9,13 +9,13 @@
 
     $user_id = $_SESSION['user_id'];
 
-    $sql = "SELECT * FROM user WHERE user_id = $user_id";
+    $sql = "SELECT * FROM user JOIN role ON role.role_id = user.role_id WHERE user.user_id = $user_id ";
     $result = mysqli_query($dbConn,$sql);
     if(mysqli_num_rows($result)>0){
         $user_info = mysqli_fetch_assoc($result);
     }
 
-    $profile_img = !empty($user_info['profile_img']) ? $user_info['profile_img']:"../../uploads/profileImg/Placeholder.png";
+    $profile_img = !empty($user_info['profile_photo']) ? $user_info['profile_photo']:"../../uploads/profileImg/Placeholder.png";
 
 ?>
 
@@ -33,23 +33,41 @@
     <?php
         include "../include/header.php";
     ?>
-    <img class="profileImg" src="<?php echo $profile_img?>" alt="Profile Photo"><br>
-    <h1><?php echo $user_info['username']?></h1>
-    <button class="editBtn" onclick="openModal()">Edit Profile</button>
-    <div class="list_container">
-        <div class="list_card">
-            <h2>Email</h2>
-            <h3><?php echo $user_info['email']?></h3>
-        </div>
-        <div class="list_card">
-            <h2>Member Since</h2>
-            <h3><?php echo $user_info['register_date']?></h3>
-        </div>
-        <div class="list_card">
-            <h2>Total Accumulated Points</h2>
-            <h3><?php echo $user_info['total_point_accumulated']?></h3>
-        </div>
+    <h2>Profile</h2>
+    <div class="profileCard">
+        <img class="profileImg" src="<?php echo $profile_img?>" alt="Profile Photo"><br>
     </div>
+    <h4></h4>
+    <button class="editBtn" onclick="openModal()">Edit Profile</button>
+    <h4></h4>
+    <div class="list_container">
+
+        <div class="list_card">
+            <h3><span class="title">Username | </span>
+                <span class="subject"><?php echo $user_info['username']?> </span>
+            </h3>
+        </div>
+        
+        <div class="list_card">
+            <h3><span class="title">Role | </span>
+                <span class="subject"><?php echo $user_info['role_name']?> </span>
+            </h3>
+        </div>
+
+        <div class="list_card">
+            <h3><span class="title">Email | </span>
+                <span class="subject"><?php echo $user_info['email']?> </span>
+            </h3>
+        </div>
+
+        <div class="list_card">
+            <h3><span class="title">Member Since | </span>
+                <span class="subject"><?php echo $user_info['register_date']?> </span>
+            </h3>
+        </div>
+
+    </div>
+    <h4></h4>
     <form action="../commands/logout.php" method="POST">
         <button class="logoutBtn" type="submit">Log Out</button>
     </form>
