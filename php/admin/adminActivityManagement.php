@@ -25,7 +25,6 @@
             $end = $_POST['endDate'];
 
             if($_POST['action']=="add"){
-
                 $sql = "INSERT INTO activity (admin_id, title, description, points_awarded, status, start_date, end_date)
                         VALUES ($adminID, '$title', '$description', $pointAward, 'Active', '$start', '$end')";
 
@@ -123,6 +122,7 @@
         include "../include/header.php";
     ?>
     <h2>Activity Management</h2>
+    <div>
     <button id="addActivityBtn">Add Activity</button>
     <h1></h1>
     <form method="GET" id="filterForm">
@@ -133,6 +133,7 @@
                 <option value="Deleted" <?php if ($filter == "Deleted") echo 'selected'; ?>>Deleted</option>
         </select>
     </form>
+    </div>
     <h3>Activities Table</h3>
     <?php if(mysqli_num_rows($result)>0):?>
         <table>
@@ -160,7 +161,6 @@
                         <td data-label="Start Date"><?php echo $activity_info['start_date'];?></td>
                         <td data-label="End Date"><?php echo $activity_info['end_date'];?></td>
                         <td data-label="Edit Button">
-                            <form action="Edit Button" method="POST">
                                     <button class="editActivityBtn"
                                         data-id="<?php echo $activity_info['activity_id'];?>"
                                         data-title="<?php echo $activity_info['title'];?>"
@@ -168,10 +168,8 @@
                                         data-point="<?php echo $activity_info['points_awarded'];?>"
                                         data-start="<?php echo $activity_info['start_date'];?>"
                                         data-end="<?php echo $activity_info['end_date'];?>"
-                                    >
-                                        Edit
+                                    >Edit
                                     </button>
-                                </form>
                         </td>
                         <td data-label="Delete/Restore Button">
                             <?php if($activity_info['status'] !='Deleted'):;?>
@@ -204,7 +202,7 @@
                     <label for="description">Description</label>
                     <textarea id="activityDescription" name="description" rows="3"></textarea>
                     
-                    <label for="pointAward">Point award</label>
+                    <label for="pointAward">Points Awarded</label>
                     <input type="number" id="activityPoint" name="point"></input>
 
                     <label for="startDate">Start Date</label>

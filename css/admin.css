@@ -1,5 +1,6 @@
 *{
     box-sizing: border-box;
+    margin: 0 auto;
 }
 
 #actionButtons{
@@ -8,49 +9,73 @@
 
 #stats{
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    gap: 24px;
 }
 
-#memberChart {
-    max-width: 100%;
-    height: auto;
-}
-
-#stats.dashboardContainer {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
-    justify-content: start;
-    /* align-items: center; */
-}
-
-.chartContainer {
+.dashboardContainer{
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    gap: 24px;
+    padding: 20px;
 }
 
 .cardContainer{
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 5px;
-    justify-items: space-between;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    width: 100%;
 }
 
 .cards{
-    color: white;
-    background-color: rgb(105, 222, 105);
-    width: 100%;
-    max-width: 300px;
-    height: 230px;
-    padding: 20px;
-    border-radius: 50px;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
+    background-color: rgb(105, 222, 105);
+    border-radius: 12px;
+    padding: 20px;
     text-align: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
 }
 
-.tabs{
+.statistics{
+    font-family: "Bebas Neue",sans-serif;
+    font-size: 80px;
+    font-weight: 700;
+    display: block;
+    color: rgb(26, 56, 41);
+}
+
+.statLabel{
+    font-size: 20px;
+    opacity: 0.7;
+}
+
+.chartContainer {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    width: 100%;
+}
+
+.memberChartWrapper, .pointChartWrapper{
+    background-color: var(--bg-card);
+    border-radius: 20px;
+    padding: 20px;
+    height: 400px;
+    width: 100%;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.memberChartWrapper canvas,
+.pointChartWrapper canvas {
+    width: auto;
+    height: auto;
+}
+
+/* .tabs{
     display: flex;
     gap: 8px;
     margin-bottom: 24px;
@@ -85,14 +110,10 @@
 .tab:hover{
     background-color: #1f3808;;
     transform: translateY(-2px);
-}
+} */
 
-.table-section{
-    display: none;
-}
-
-.table-section.active{
-    display: block;
+.pages{
+    
 }
 
 button{
@@ -109,13 +130,6 @@ button:hover{
     background-color: #1f3808;;
     transform: translateY(-2px);
     border-color: #1f3808;;
-}
-
-.statistics{
-    font-family: "Bebas Neue",sans-serif;
-    font-size: 120px;
-    font-weight: black;
-    color: rgb(26, 56, 41);
 }
 
 .cancelBtn{
@@ -192,7 +206,7 @@ button:hover{
     margin-left: auto;
 }
 
-@media (max-width: 1000px) {
+@media (max-width: 800px) {
     th {
         display: none;
     }
@@ -221,6 +235,7 @@ button:hover{
     .cardContainer {
         grid-template-columns: repeat(2,1fr);
     }
+
     #stats.dashboardContainer {
         grid-template-columns: 1fr;
     }

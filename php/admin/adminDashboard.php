@@ -42,8 +42,29 @@
     $result_activityCount = mysqli_query($dbConn, $sql_countActivity);
     $activityCount = mysqli_fetch_assoc($result_activityCount)['totalActivity'];
 
+    $sql_countPoints = "SELECT 
+                                DATE(transaction_time) AS day,
+                                SUM(CASE WHEN type = 'Issued' THEN amount ELSE 0 END) AS issued,
+                                SUM(CASE WHEN type = 'Redemption' THEN amount ELSE 0 END) AS redeemed
+                                FROM point_transaction
+                                WHERE transaction_time >= CURDATE() - INTERVAL 6 DAY
+                                GROUP BY day
+                                ORDER BY day
+                            ";
+    $result_countPoints = mysqli_query($dbConn, $sql_countPoints);
+
     $memberLabels = ['Members', 'Moderators', 'Partners'];
     $memberData = [$memberCount, $moderatorCount, $partnerCount];
+
+    $pointLabels = [];
+    $pointsIssuedData = [];
+    $pointsRedeemedData = [];
+
+    while ($row = mysqli_fetch_assoc($result_countPoints)) {
+    $pointLabels[] = $row['day'];
+    $pointsIssuedData[] = (int)$row['issued'];
+    $pointsRedeemedData[] = (int)$row['redeemed'];
+}
 ?>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -64,13 +85,46 @@
         include "../include/header.php"; 
     ?>
 
-    <h2>Statistics</h2>
-    
+    <h2>Dashboard</h2>
     <section id="stats" class="dashboardContainer">
-        <div class="chartContainer">
-            <canvas id="memberChart"></canvas>
-        </div>
-
+                <h3>Statistics</h3><br>
+                    <div class="cardContainer">
+                        <div class="cards">
+                            <h3><span class="statistics"><?php echo $rewardPendingCount?></span> <br>
+                                <span class="statLabel">Total Pending Rewards</span>
+                            </h3>
+                        </div>
+    
+                        <div class="cards">
+                            <h3><span class="statistics"><?php echo $rewardApprovedCount?></span> <br>
+                                <span class="statLabel">Total Approved Rewards</span>
+                            </h3>
+                        </div>
+    
+                        <div class="cards">
+                            <h3><span class="statistics"><?php echo $rewardAvailableCount?></span> <br>
+                                <span class="statLabel">Total Available Rewards</span>
+                            </h3>
+                        </div>
+    
+                        <div class="cards">
+                            <h3><span class="statistics"><?php echo $activityCount?></span> <br> 
+                                <span class="statLabel">Total Active Activities</span>
+                            </h3>
+                        </div>
+                    </div>
+            </div>
+        
+            <div class="chartContainer">
+                <div class="memberChartWrapper">
+                    <h3>Users Distribution</h3><br>
+                    <canvas id="memberChart"></canvas>
+                </div>
+                <div class="pointChartWrapper">
+                    <h3>Points Distribution</h3><br>
+                    <canvas id="pointChart"></canvas>
+                </div>
+            </div>
         <script>
             const memberLabels = <?php echo json_encode($memberLabels); ?>;
             const memberData = <?php echo json_encode($memberData); ?>;
@@ -90,34 +144,40 @@
                 }
             });
         </script>
-        
-        <div class="cardContainer">
 
-            <div class="cards">
-                <h3><span class="statistics"><?php echo $rewardPendingCount?></span> <br>
-                    Total Pending Rewards
-                </h3>
-            </div>
+        <script>
+            const pointLabels = <?php echo json_encode($pointLabels); ?>;
+            const pointsIssuedData =  <?php echo json_encode($pointsIssuedData); ?>;
+            const pointsRedeemedData =  <?php echo json_encode($pointsRedeemedData); ?>;
 
-            <div class="cards">
-                <h3><span class="statistics"><?php echo $rewardApprovedCount?></span> <br>
-                    Total Approved Rewards
-                </h3>
-            </div>
-
-            <div class="cards">
-                <h3><span class="statistics"><?php echo $rewardAvailableCount?></span> <br>
-                    Total Available Rewards
-                </h3>
-            </div>
-
-            <div class="cards">
-                <h3><span class="statistics"><?php echo $activityCount?></span> <br> 
-                    Total Active Activities
-                </h3>
-            </div>
-        </div>
+            new Chart(document.getElementById('pointChart'), {
+                type: 'line',
+                data: {
+                    labels: pointLabels,
+                    datasets: [{
+                        label: 'Points Issued',
+                        data: pointsIssuedData,
+                        fill: false,
+                        borderColor: 'green',
+                        tension: 0.3,
+                    },{
+                        label: 'Points Redeemed',
+                        data: pointsRedeemedData,
+                        fill: false,
+                        borderColor: 'red',
+                        tension: 0.3,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false
+                    
+                }
+            });
+        </script>
     </section>
+        
+    
 
 </body>
 </html>

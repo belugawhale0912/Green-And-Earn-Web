@@ -117,11 +117,11 @@
         <button class="tab" data-target="approvedTable">Approved Rewards</button>
     </div> -->
 
-    <a href="?view=pendingPage">Pending Rewards</a>
-    <a href="?view=approvedPage&status=Approved">Approved Rewards</a>
+    <a href="?view=pendingPage" class="<?php echo ($view == 'available')? 'active':'' ?>">Pending Rewards</a>
+    <a href="?view=approvedPage" class="<?php echo ($view == 'available')? 'active':'' ?>">Approved Rewards</a>
 
     <?php if(isset($_GET['view'])&&$_GET['view']=='pendingPage'):?>
-        <div id="pendingTable" class="table-section active">
+        <div id="pendingTable">
             <h3>Pending Rewards Table</h3>
                 <?php if(mysqli_num_rows($resultPending)>0):?>
                     <table>
@@ -165,18 +165,19 @@
             <?php endif; ?>
         </div>
     <?php elseif(isset($_GET['view'])&&$_GET['view']=='approvedPage'):?>
-        <div id="approvedTable" class="table-section">
+        <div id="approvedTable">
+            <h3>Approved Rewards Table</h3> 
             <form method="GET" id="filterForm">
                 <input type="hidden" name="view" value="approvedPage">
                 <label for="statusFilter">Filter:</label>
-                <select name="status" id="statusFilter" onchange="this.form.submit()">
+                <select name="status" id="statusFilter" class="dropdown" onchange="this.form.submit()">
                     <option value="All" <?= $filter=='All'?'selected':'' ?>>All</option>
                     <option value="Approved" <?= $filter=='Approved'?'selected':'' ?>>Approved</option>
                     <option value="Available" <?= $filter=='Available'?'selected':'' ?>>Available</option>                
                     <option value="Deactivated" <?= $filter=='Deactivated'?'selected':'' ?>>Deactivated</option>
                 </select>
             </form>
-            <h3>Approved Rewards Table</h3>
+            <hr>
                 <?php if(mysqli_num_rows($resultComplete)>0):?>
                     <table>
                         <thead>

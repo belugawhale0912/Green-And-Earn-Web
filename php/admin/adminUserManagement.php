@@ -11,6 +11,7 @@
     $resultMember = mysqli_query($dbConn, $sqlMember);
     $resultModerator = mysqli_query($dbConn, $sqlModerator);
     $resultPartner = mysqli_query($dbConn, $sqlPartner);
+    $view = isset($_GET['view']) ? $_GET['view'] : 'pendingPage';
 
     if($_SERVER["REQUEST_METHOD"] == "POST"){
         if(isset($_POST['action'])){
@@ -90,16 +91,17 @@
         include "../include/header.php"; 
     ?>
     <h2>User Management</h2>
-
+    
     <div class="tabs">
-        <button class="tab" data-target="memberTable">Members</button>
-        <button class="tab" data-target="moderatorTable">Moderators</button>
-        <button class="tab" data-target="partnerTable">Partners & Sponsors</button>
+    <a class="pages" href="?view=memberPage">Members</a>
+    <a class="pages" href="?view=moderatorPage">Moderators</a>
+    <a class="pages" href="?view=partnerPage">Partners & Sponsors</a>
 
         <button id="addUserBtn">Add New User</button>
     </div>
 
-    <div id="memberTable" class="table-section active">
+    <?php if(isset($_GET['view'])&&$_GET['view']=='memberPage'):?>
+    <div id="memberTable">
         <h3>List of Members</h3>
             <?php if(mysqli_num_rows($resultMember)>0):?>
                 <table>
@@ -153,7 +155,8 @@
             <?php endif; ?>
     </div>    
 
-    <div id="moderatorTable" class="table-section">
+    <?php elseif(isset($_GET['view'])&&$_GET['view']=='moderatorPage'):?>
+    <div id="moderatorTable">
         <h3>List of Moderators</h3>
         <?php if(mysqli_num_rows($resultModerator)>0):?>
             <table>
@@ -206,7 +209,8 @@
         <?php endif; ?>                   
     </div>
 
-    <div id="partnerTable" class="table-section">
+    <?php elseif(isset($_GET['view'])&&$_GET['view']=='partnerPage'):?>
+    <div id="partnerTable">
         <h3>List of Partners and Sponsors</h3>
         <?php if(mysqli_num_rows($resultPartner)>0):?>
             <table>
@@ -257,6 +261,7 @@
                     <?php endwhile; ?>  
                 </tbody>
             </table>
+        <?php endif; ?>
         <?php endif; ?>
     </div>
     

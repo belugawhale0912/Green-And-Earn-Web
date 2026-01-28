@@ -19,10 +19,10 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
     
-    const editActivityBtns = document.querySelectorAll('.editActivityBtn');
+    const editActivityBtn = document.querySelectorAll('.editActivityBtn');
 
-    if (editActivityBtns.length > 0) {
-        editActivityBtns.forEach(function(btn) {
+    if (editActivityBtn.length > 0) {
+        editActivityBtn.forEach(function(btn) {
             btn.addEventListener('click', function() {
                 
                 const id = btn.getAttribute('data-id');
@@ -53,7 +53,7 @@ document.addEventListener("DOMContentLoaded", function() {
     
     // UserManagementPage
     const addUserBtn = document.getElementById("addUserBtn");
-    const addUserModal = document.getElementById("userModal")
+    const addUserModal = document.getElementById("userModal");
 
     if(addUserBtn){
         addUserBtn.addEventListener("click",function(){
