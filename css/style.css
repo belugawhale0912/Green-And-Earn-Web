@@ -176,8 +176,26 @@ a:hover{
     color: var(--clr-primary-a50);
 }
 
+label{
+    font-weight: 600;
+    color: var(--text-main);
+    font-size: 0.9rem;
+    margin-left: 5px;
+}
+
 input{
+    padding: 14px;
+    border: 2px solid var(--clr-surface-a20);
+    border-radius: 12px;
+    font-size: 1rem;
+    background: var(--clr-surface-a10);
+    transition: 0.3s;
     font-family: var(--font-body);
+}
+
+input:focus{
+    border-color: var(--clr-primary-a10);
+    outline: none;
 }
 
 table{
@@ -253,8 +271,9 @@ tbody tr:last-of-type{
     flex-direction: column;
 }
 
+
 /* --- SWEETALERT CUSTOM THEME --- */
-.popup {
+.popup{
     background-color: var(--clr-surface-a10);
     border: 1px solid var(--border-main);
     color: var(--text-main);
@@ -268,11 +287,11 @@ tbody tr:last-of-type{
 
 /* force the animation to follow background color */
 /* use !important to ensure the property is overwritten */
-.popup .swal2-success {
+.popup .swal2-success{
     background-color: var(--bg-card) !important;
 }
 /* change the color for the remaining bar */
-.popup .swal2-success-fix {
+.popup .swal2-success-fix{
     background-color: var(--bg-card) !important;
 }
 
@@ -282,13 +301,13 @@ tbody tr:last-of-type{
     background-color: var(--bg-card) !important;
 }
 
-.title {
+.title{
     color: var(--text-main);
     font-family: var(--font-heading); /* Match your site's font */
     font-size: 1.5rem;
 }
 
-.confirm_btn {
+.confirm_btn{
     background-color: var(--clr-primary-a20);
     color: var(--text-on-primary);
     padding: 12px 24px;
@@ -300,7 +319,7 @@ tbody tr:last-of-type{
     margin: 0 10px;
 }
 
-.confirm_btn:hover {
+.confirm_btn:hover{
     background-color: var(--clr-primary-a30);
 }
 
