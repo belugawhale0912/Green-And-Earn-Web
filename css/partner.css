@@ -1,3 +1,8 @@
+/* 1. Global Reset */
+* {
+    box-sizing: border-box;
+}
+
 .container {
     display: grid;
     /* This magic line makes columns automatic! */
@@ -114,4 +119,131 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+}
+
+/* Points Award Page */
+
+body#pointPage {
+    margin: 0;
+    overflow: hidden; 
+}
+
+/* 1. Background Layer */
+.backgroundWrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1; /* Send to back */
+}
+
+.backgroundWrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Dark overlay to make the form pop */
+.backgroundWrapper .overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--clr-backdrop); 
+    backdrop-filter: blur(5px); /* Soft blur effect on background */
+}
+
+/* 2. Centered Container */
+.centeredContainer {
+    width: 100%;
+    height: calc(100vh - 80px); /* Fill screen minus header */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* 3. The Floating Card */
+.formCard.floating {
+    background: var(--clr-surface-a0); /* Slightly transparent white */
+    padding: 40px;
+    width: 100%;
+    max-width: 450px; /* Card width */
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+    animation: floatUp 0.6s ease-out;
+}
+
+@keyframes floatUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* 4. Form Styling Enhancements */
+.formCard h2 {
+    text-align: center;
+    color: var(--text-main);
+    margin-bottom: 5px;
+    border-bottom: none; /* Removed the line for cleaner look */
+}
+
+.subtitle {
+    text-align: center;
+    color: #666;
+    margin-bottom: 30px;
+    font-size: 0.9rem;
+}
+
+.form-inputs {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.form-inputs label {
+    font-weight: 600;
+    color: var(--text-main);
+    font-size: 0.9rem;
+    margin-left: 5px;
+}
+
+.form-inputs input {
+    padding: 14px;
+    border: 2px solid var(--clr-surface-a20);
+    border-radius: 12px;
+    font-size: 1rem;
+    background: var(--clr-surface-a10);
+    transition: 0.3s;
+}
+
+.form-inputs input:focus {
+    border-color: var(--clr-primary-a10);
+    outline: none;
+}
+
+.submitBtn {
+    margin-top: 25px;
+    padding: 16px;
+    background: var(--clr-primary-a50);
+    color: var(--text-main-invert);
+    font-size: 1.1rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.submitBtn:hover {
+    background: #43a047;
+    transform: translateY(-1px);
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 600px) {
+    .formCard.floating {
+        width: 90%;
+        padding: 30px 20px;
+    }
 }
