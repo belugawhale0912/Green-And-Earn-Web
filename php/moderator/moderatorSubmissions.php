@@ -2,6 +2,11 @@
     include "../include/conn.php";
     include "../include/session.php";
 
+    if(!isset($_SESSION['role_id']) || $_SESSION['role_id'] != 3){
+        header("Location: ../pages/Landingpage.php"); // Redirect non-moderators
+        exit();
+    }
+
     $moderator_id = $_SESSION['user_id'];
 
     // Pending verification (User Join to show username and activity name)
@@ -9,78 +14,106 @@
                        FROM activity_submission s
                        JOIN user u ON s.user_id = u.user_id
                        JOIN activity a ON s.activity_id = a.activity_id
-                       WHERE s.status = 'Pending'";
+                       WHERE s.status = 'Pending'
+                       ORDER BY s.submission_time ASC";
 
     $submissionResult = mysqli_query($dbConn,$sql_submission);
 
     
     // Moderator Approval Logic
-    if ($_SERVER["REQUEST_METHOD"] == "POST") {        
+    if ($_SERVER["REQUEST_METHOD"] == "POST") { 
+
         $submission_id = $_POST['submission_id'];
         $decision = $_POST['moderatorDecision']; // Will be 'approve' or 'reject'
 
         if ($decision == 'approve') {
+
             $sql_info = "SELECT s.user_id, a.points_awarded 
                          FROM activity_submission s 
                          JOIN activity a ON s.activity_id = a.activity_id 
-                         WHERE s.submission_id = '$submission_id'";
-            
-            $result = mysqli_query($dbConn, $sql_info);
-            $submission_info = mysqli_fetch_assoc($result);
-            
-            
+                         WHERE s.submission_id = ?";
 
-            // Update submission status
+            $stmt = mysqli_prepare($dbConn,$sql_info);
+            mysqli_stmt_bind_param($stmt, "i", $submission_id);
+            mysqli_stmt_execute($stmt);
+            $result = mysqli_stmt_get_result($stmt);
+            $submission_info = mysqli_fetch_assoc($result);
+            mysqli_stmt_close($stmt);
+            
+            if($submission_info){
+                $userID = $submission_info['user_id'];
+                $points = $submission_info['points_awarded'];
+            }
+
+            mysqli_begin_transaction($dbConn);
+            $success = true;
+            $err = "";
+
             $sql_update_status = "UPDATE activity_submission 
                                   SET status = 'Approved', 
-                                                moderator_id = '$moderator_id' 
-                                  WHERE submission_id = '$submission_id'";
+                                                moderator_id = ? 
+                                  WHERE submission_id = ?";
 
-            // Update user point balance
-            $sql_add_points = "UPDATE user SET point_balance = point_balance + {$submission_info['points_awarded']} WHERE user_id = '{$submission_info['user_id']}'";
-
-            $dbConn->begin_transaction();
-
-            try{
-                if (!mysqli_query($dbConn, $sql_update_status)) { throw new Exception("Status Update failed"); }
-                if (!mysqli_query($dbConn, $sql_add_points)) { throw new Exception("Point award failed"); }
-                $sql_insert_transaction= "INSERT INTO point_transaction (user_id, submission_id, amount, type) VALUES ({$submission_info['user_id']}, $submission_id, {$submission_info['points_awarded']},'Earned')";
-                if (!mysqli_query($dbConn, $sql_insert_transaction)) { throw new Exception("Insert Transaction failed"); }        
-                //if all query ran without error, save the changes
-                $dbConn->commit();
-                // TODO JavaScript Feedback (TEMP)
-                echo "<script>
-                        alert('Success! Points awarded.');
-                        window.location.href = '../moderator/moderatorSubmissions.php';
-                    </script>";
-                exit(); // Stops PHP here so the browser has time to show the alert
-
+            $stmt_update = mysqli_prepare($dbConn, $sql_update_status);
+            mysqli_stmt_bind_param($stmt_update, "ii", $moderator_id, $submission_id);
+            if(!mysqli_stmt_execute($stmt_update)){
+                $success = false;
+                $err = "Status Update Failed";
             }
-            catch(Exception $e){
-                //if any of the query fail, undo the changes and send error message
-                $dbConn->rollback();
-                echo "Error:". $e->getMessage();
-                echo "<script>
-                        alert('Error While Processing:'".$e->getMessage().");
-                        window.location.href = '../moderator/moderatorSubmissions.php';
-                    </script>";
-                exit(); // Stops PHP here so the browser has time to show the alert
+            mysqli_stmt_close($stmt_update);
+
+            if($success){
+                $sql_add_points = "UPDATE user 
+                                SET point_balance = point_balance + ?, total_point_accumulated = total_point_accumulated + ? 
+                                WHERE user_id = ?";
+
+                $stmt_points = mysqli_prepare($dbConn, $sql_add_points);
+                mysqli_stmt_bind_param($stmt_points, "iii", $points, $points, $userID);
+                if(!mysqli_stmt_execute($stmt_points)){
+                    $success = false;
+                    $err = "Update User Point Failed";
+                }
+                mysqli_stmt_close($stmt_points);
             }
 
-        } else if ($decision == 'reject') {
+            if($success){
+                $sql_insert_transaction = "INSERT INTO point_transaction (user_id, submission_id, amount, type) 
+                                        VALUES (?, ?, ?, 'Earned')";
+                $stmt_transaction = mysqli_prepare($dbConn, $sql_insert_transaction);
+                mysqli_stmt_bind_param($stmt_transaction, "iii", $userID, $submission_id, $points);
+                if(!mysqli_stmt_execute($stmt_transaction)) {
+                    $success = false;
+                    $err = "Transaction log failed";
+                }
+                mysqli_stmt_close($stmt_transaction);
+            }
+
+            if($success){
+                mysqli_commit($dbConn);
+                include "../include/badge_system.php";
+                checkTaskBadges($dbConn, $submission_info['user_id']);
+                echo "<script>alert('Success! Points awarded.'); window.location.href = 'moderatorSubmissions.php';</script>";
+            }else {
+                mysqli_rollback($dbConn);
+                echo "<script>alert('Error: $err'); window.location.href = 'moderatorSubmissions.php';</script>";
+            }
+
+        }else if ($decision == 'reject') {
             // mark as Rejected (No points added)
             $sql_reject = "UPDATE activity_submission 
                            SET status = 'Rejected',
-                               moderator_id ='$moderator_id'
-                           WHERE submission_id = '$submission_id'";
+                               moderator_id = ?
+                           WHERE submission_id = ?";
 
-            mysqli_query($dbConn, $sql_reject);
-            if(mysqli_query($dbConn, $sql_reject)){
+            $stmt = mysqli_prepare($dbConn, $sql_reject);
+            mysqli_stmt_bind_param($stmt, "ii", $moderator_id, $submission_id);
+
+            if(mysqli_stmt_execute($stmt)){
                 echo "<script>
                         alert('Submission Rejected.');
                         window.location.href = '../moderator/moderatorSubmissions.php';
                       </script>";
-                exit();            
+                mysqli_stmt_close($stmt);
             }
         }     
     } 
@@ -103,40 +136,44 @@
     ?>
     <h1>Submissions</h1>
     <section id="submissions">
-        <table>
-            <thead>
-                <tr>
-                    <th>Submission ID</th>
-                    <th>User</th>
-                    <th>Activity</th>
-                    <th>Status</th>
-                    <th>Submission Time</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php while($submission_info = mysqli_fetch_assoc($submissionResult)):?>
+        <?php if(mysqli_num_rows($submissionResult)>0):?>
+            <table>
+                <thead>
                     <tr>
-                        <td data-label="Submission ID"><?php echo $submission_info['submission_id']?></td>
-                        <td data-label="User"><?php echo $submission_info['username']?></td>
-                        <td data-label="Activity"><?php echo $submission_info['activity_title']?></td>
-                        <td data-label="Status"><?php echo $submission_info['status']?></td>
-                        <td data-label="Submission Time"><?php echo $submission_info['submission_time']?></td>
-                        <td>
-                            <button onclick="openSubmissionModal(
-                                '<?php echo $submission_info['submission_id']; ?>',
-                                '<?php echo htmlspecialchars($submission_info['username'], ENT_QUOTES); ?>',
-                                '<?php echo htmlspecialchars($submission_info['activity_title'], ENT_QUOTES); ?>',
-                                '<?php echo $submission_info['submission_time']; ?>',
-                                '<?php echo $submission_info['proof']; ?>'
-                            )">
-                                View
-                            </button>
-                        </td>
+                        <th>Submission ID</th>
+                        <th>User</th>
+                        <th>Activity</th>
+                        <th>Status</th>
+                        <th>Submission Time</th>
+                        <th></th>
                     </tr>
-                <?php endwhile?>
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    <?php while($submission_info = mysqli_fetch_assoc($submissionResult)):?>
+                        <tr>
+                            <td data-label="Submission ID"><?php echo $submission_info['submission_id']?></td>
+                            <td data-label="User"><?php echo $submission_info['username']?></td>
+                            <td data-label="Activity"><?php echo $submission_info['activity_title']?></td>
+                            <td data-label="Status"><?php echo $submission_info['status']?></td>
+                            <td data-label="Submission Time"><?php echo $submission_info['submission_time']?></td>
+                            <td>
+                                <button class="viewSubmissionBtn"
+                                    data-id="<?php echo $submission_info['submission_id'];?>"
+                                    data-username="<?php echo htmlspecialchars($submission_info['username'], ENT_QUOTES);?>"
+                                    data-activity="<?php echo htmlspecialchars($submission_info['activity_title'], ENT_QUOTES);?>"
+                                    data-time="<?php echo $submission_info['submission_time'];?>"
+                                    data-proof="<?php echo $submission_info['proof'];?>"
+                                >
+                                    View
+                                </button>
+                            </td>
+                        </tr>
+                    <?php endwhile?>
+                </tbody>
+            </table>
+        <?php else:?>
+            <h2>No Pending Submission At The Moment!</h2>
+        <?php endif?>
     </section>
 
     <!-- Popup window -->

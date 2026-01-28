@@ -1,70 +1,62 @@
-//Filter logic for submissions history page
-const filterDropdown = document.getElementById("statusFilter");
-if(filterDropdown){
-    filterDropdown.addEventListener("change", function(){
-        document.getElementById("filterForm").submit();
-    });
-}
-
-//FIlter logic for partner points history page
-const filterDropdownPartner = document.getElementById("statusFilterPartner");
-if(filterDropdownPartner){
-    filterDropdownPartner.addEventListener("change", function(){
-        document.getElementById("filterFormPartner").submit();
-    });
-}
-
-// Modal for submission
-const submissionModal = document.getElementById('submissionPopup');
-
-if(submissionModal){
-    function openSubmissionModal(id, username, activity, time, proof) {
-        document.getElementById('popupUsername').innerText = username;
-        document.getElementById('popupActivity').innerText = activity;
-        document.getElementById('popupSubmissionTime').innerText = time;
-
-        document.getElementById('submission_id').value = id;
-
-        const imgElement = document.getElementById('popupProof');
-        
-        if (proof && proof !== "") {
-            imgElement.src = proof;
-            imgElement.style.display = "block";
-        } else {
-            imgElement.style.display = "none";
-        }
-
-        submissionModal.style.display = "block";
+document.addEventListener("DOMContentLoaded", function() {
+    //Filter logic for submissions history page
+    const filterDropdown = document.getElementById("statusFilter");
+    if(filterDropdown){
+        filterDropdown.addEventListener("change", function(){
+            document.getElementById("filterForm").submit();
+        });
     }
-}
 
-//Modal for partner points
-const partnerModal = document.getElementById('partnerPopup');
-
-if(partnerModal){
-    function openPartnerModal(transactionID, username, amountSpent, pointsAwarded, recieptImg){
-        document.getElementById('partnerUsername').innerText = username;
-        document.getElementById('partnerAmount').innerText = amountSpent;
-        document.getElementById('partnerPoints').innerText = pointsAwarded;
-
-        const imgElement = document.getElementById('partnerReciept');
-        if(recieptImg && recieptImg !==""){
-            imgElement.src = recieptImg;
-            imgElement.style.display = "block";
-        }else{
-            imgElement.style.display = "none";
-        }
-        document.getElementById('partnerTransactionID').value = transactionID;
-        partnerModal.style.display="block";
+    //FIlter logic for partner points history page
+    const filterDropdownPartner = document.getElementById("statusFilterPartner");
+    if(filterDropdownPartner){
+        filterDropdownPartner.addEventListener("change", function(){
+            document.getElementById("filterFormPartner").submit();
+        });
     }
-}
 
-// 2. Close Modal Logic (Clicking outside)
-window.onclick = function(event) {
-    if (event.target == submissionModal) {
-        submissionModal.style.display = "none";
+    // Modal for submission
+    const btnOpenSubmissionModal = document.querySelectorAll(".viewSubmissionBtn");
+    const submissionModal = document.getElementById("submissionPopup");
+
+    if(btnOpenSubmissionModal){
+        btnOpenSubmissionModal.forEach(function(btn){
+            btn.addEventListener("click",function(){
+                const submissionID = btn.getAttribute("data-id");
+                const submitterUsername = btn.getAttribute("data-username");
+                const activity = btn.getAttribute("data-activity");
+                const time = btn.getAttribute("data-time");
+                const proof = btn.getAttribute("data-proof");
+                document.getElementById("submission_id").value = submissionID;
+                document.getElementById("popupUsername").innerText = submitterUsername;
+                document.getElementById("popupActivity").innerText = activity;
+                document.getElementById("popupSubmissionTime").innerText = time;
+                document.getElementById("popupProof").src = "../../uploads/proofs/" + proof;
+                submissionModal.style.display = "block";
+            });
+        });
     }
-    if(event.target == partnerModal){
-        partnerModal.style.display = "none";
+
+    //Modal for partner points
+    const btnViewPartner = document.querySelectorAll('.viewPartnerBtn');
+    const partnerModal = document.getElementById('partnerPopup');
+
+    if(btnViewPartner.length>0){
+        btnViewPartner.forEach(function(btn){
+            btn.addEventListener("click",function(){
+                const transactionID = btn.getAttribute('data-id');
+                const username = btn.getAttribute('data-username');
+                const amount = btn.getAttribute('data-amount');
+                const points = btn.getAttribute('data-points');
+                const receipt = btn.getAttribute('data-receipt');
+
+                document.getElementById('partnerTransactionID').value = transactionID;
+                document.getElementById('partnerUsername').innerText = username;
+                document.getElementById('partnerAmount').innerText = amount;
+                document.getElementById('partnerPoints').innerText = points;
+                document.getElementById('partnerReceipt').src = receipt;
+                partnerModal.style.display = "block";
+            });
+        });
     }
-};
+});

@@ -61,6 +61,9 @@
     --clr-surface-tonal-a40: #bfc2be;
     --clr-surface-tonal-a50: #b2b4b1;
 
+    /* clr - backdrop */
+    --clr-backdrop: rgba(0, 0, 0, 0.3);
+
     /* --- STATUS --- */
     --clr-success-a0: #1b7f5c;
     --clr-warning-a0: #b8871f;
@@ -76,7 +79,9 @@
     --text-main: var(--clr-dark-a0);
     --text-main-invert: var(--clr-light-a0);
     --text-muted: var(--clr-surface-a50);
-    --text-on-primary: var(--clr-dark-a0); /* Black text on green button */
+    --text-on-primary: var(--clr-dark-a0);
+
+    
 
 }
 
@@ -91,9 +96,9 @@
     --clr-primary-a50: #cceac8;
 
     /* Surfaces (Dark Mode) */
-    --clr-surface-a0: #121212;   /* The Floor (Darkest) */
-    --clr-surface-a10: #282828;  /* The Furniture (Lighter to elevate) */
-    --clr-surface-a20: #3f3f3f;  /* Borders */
+    --clr-surface-a0: #121212;   
+    --clr-surface-a10: #282828;  
+    --clr-surface-a20: #3f3f3f;  
     --clr-surface-a30: #575757;
     --clr-surface-a40: #717171;
     --clr-surface-a50: #8b8b8b;
@@ -105,6 +110,9 @@
     --clr-surface-tonal-a30: #60635f;
     --clr-surface-tonal-a40: #787b78;
     --clr-surface-tonal-a50: #929491;
+
+    /* clr - backdrop */
+    --clr-backdrop: rgba(0, 0, 0, 0.7);
 
     /* Status (Brightened for dark mode) */
     --clr-success-a0: #47d5a6;
