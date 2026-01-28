@@ -2,12 +2,16 @@
     include "../include/conn.php";
     include "../include/session.php";
 
+    // 1. ACCESS CONTROL
+    if(!isset($_SESSION['role_id']) || $_SESSION['role_id'] != 4){ // Assuming Partner ID is 2
+       header("Location: ../pages/Landingpage.php");
+       exit();
+    }
+
     $user_id = $_SESSION['user_id'];
-    $sql = "SELECT * FROM reward WHERE partner_id = $user_id AND status != 'deleted'";
-
-    $result = mysqli_query($dbConn,$sql);
-
+    
     if($_SERVER["REQUEST_METHOD"] == "POST"){
+
         if(isset($_POST['action'])){
             if($_POST['action']=="add"){
                 $title = $_POST['title'];
@@ -21,7 +25,6 @@
 
                     $fileName = $_FILES['reward_img']['name'];
                     $fileTempPath = $_FILES['reward_img']['tmp_name'];
-
                     $fileExt = pathinfo($fileName,PATHINFO_EXTENSION);
                     $supportedExt = ['jpg','jpeg','png','gif'];
                 
@@ -31,9 +34,12 @@
 
                         if(move_uploaded_file($fileTempPath, $saveDir)){
                             $sql = "INSERT INTO reward (partner_id, status, title, description, required_points, stock, reward_img)
-                                    VALUES ($user_id, 'pending', '$title', '$description', $required_points, $stock, '$saveDir')";
+                                    VALUES (?, 'pending', ?, ?, ?, ?, ?)";
 
-                            if(mysqli_query($dbConn,$sql)){
+                            $stmt = mysqli_prepare($dbConn, $sql);
+                            mysqli_stmt_bind_param($stmt, "issiis", $user_id, $title, $description, $required_points, $stock, $saveDir);
+
+                            if(mysqli_stmt_execute($stmt)){
                                 echo("<script>
                                         alert('Successfully Added Reward');
                                         window.location.href = '../partner/partnerRewardList.php';
@@ -74,12 +80,18 @@
 
                         }
                     }
+                }else{
+                    $saveDir = $reward_img;
                 }
 
-                $sql = "UPDATE reward SET title = '$title', description = '$description', required_points = $required_points,
-                        stock = $stock, reward_img = '$reward_img' WHERE reward_id = $reward_id";
+                $sql = "UPDATE reward SET title = ?, description = ?, required_points = ?,
+                        stock = ?, reward_img = ? WHERE reward_id = ?";
+
+                $stmt = mysqli_prepare($dbConn, $sql);
+                mysqli_stmt_bind_param($stmt, "ssisii", $title, $description, $required_points, $stock, $reward_img, $reward_id);
+
                 
-                if(mysqli_query($dbConn,$sql)){
+                if(mysqli_stmt_execute($stmt)){
                     echo("<script>
                             alert('Successfully Updated Reward');
                             window.location.href = '../partner/partnerRewardList.php';
@@ -90,14 +102,17 @@
                             window.location.href = '../partner/partnerRewardList.php';
                         </script>");
                 }
+                mysqli_stmt_close($stmt);
             }
         }
         if(isset($_POST['delete_btn'])){
             $reward_id = $_POST['reward_id'];
 
-            $sql = "UPDATE reward SET status = 'deleted' WHERE reward_id = $reward_id";
+            $sql = "UPDATE reward SET status = 'deleted' WHERE reward_id = ? AND partner_id = ?";
+            $stmt = mysqli_prepare($dbConn, $sql);
+            mysqli_stmt_bind_param($stmt, "ii", $reward_id, $user_id);
 
-            if(mysqli_query($dbConn,$sql)){
+            if(mysqli_stmt_execute($stmt)){
                 echo "<script> 
                         alert('Successfully Removed Reward')
                         window.location.href = '../partner/partnerRewardList.php'
@@ -105,8 +120,16 @@
             }else{
                 echo"Error";
             }
+            mysqli_stmt_close($stmt);
         }
     }
+
+    $sql_fetch = "SELECT * FROM reward WHERE partner_id = ? AND status != 'deleted'";
+    $stmt_fetch = mysqli_prepare($dbConn, $sql_fetch);
+    mysqli_stmt_bind_param($stmt_fetch, "i", $user_id);
+    mysqli_stmt_execute($stmt_fetch);
+    $result = mysqli_stmt_get_result($stmt_fetch);
+
 ?>
 
 <!DOCTYPE html>
@@ -124,7 +147,7 @@
         include "../include/header.php";
     ?>
     <h2>List of Rewards</h2>
-    <button onclick="openAddRewardModal()">Add Reward</button><br><br>
+    <button class="addRewardButton">Add Reward</button>
     <?php if(mysqli_num_rows($result)>0):?>
         <table>
             <thead>
@@ -149,14 +172,13 @@
                         <td><?php echo $reward_info['status']?></td>
                         <td><?php echo $reward_info['stock']?></td>
                         <td>
-                            <!-- Call js function to fill update form with existing data -->
-                            <button onclick="openUpdateRewardModal(
-                                '<?php echo $reward_info['reward_id'] ?>',
-                                '<?php echo htmlspecialchars($reward_info['title'], ENT_QUOTES); ?>', 
-                                '<?php echo htmlspecialchars($reward_info['description'], ENT_QUOTES); ?>', 
-                                <?php echo $reward_info['required_points']; ?>, 
-                                <?php echo $reward_info['stock']; ?>, 
-                                '<?php echo $reward_info['reward_img']; ?>')">
+                            <button class="editRewardBtn" 
+                                data-id="<?php echo $reward_info['reward_id']; ?>"
+                                data-title="<?php echo htmlspecialchars($reward_info['title'], ENT_QUOTES); ?>"
+                                data-desc="<?php echo htmlspecialchars($reward_info['description'], ENT_QUOTES); ?>"
+                                data-points="<?php echo $reward_info['required_points']; ?>"
+                                data-stock="<?php echo $reward_info['stock']; ?>"
+                            >
                                 Update
                             </button>
                         </td>
@@ -172,8 +194,8 @@
             </tbody>
         </table>
         <!-- Responsive modal -->
-        <div id="editModal" class="modal">
-            <div class="modal-content">
+        <div id="rewardModal" class="modal">
+            <div class="modalContent">
                 <h2 id="modalTitle"></h2>
                 <form action="" id="rewardForm" method="POST" enctype="multipart/form-data">
                     <input type="hidden" id="action" name="action">
@@ -194,7 +216,7 @@
                     <input id="rewardImg" type="file" name="reward_img" class="modal-input" accept="image/*">
                     
                     <button type="submit" class="saveBtn">Confirm</button>
-                    <button type="button" onclick="closeModal()">Cancel</button>
+                    <button type="button" id="cancelBtn">Cancel</button>
                 </form>
             </div>
         </div>

@@ -1,35 +1,51 @@
-function openModal(){
-    document.getElementById("editModal").style.display = "block";
-}
+document.addEventListener("DOMContentLoaded", function() {
 
-function closeModal(){
-    document.getElementById("editModal").style.display = "none";
-}
+    //RewardList Page
+    const btnAddReward = document.querySelectorAll(".addRewardButton");
+    const rewardModal = document.getElementById("rewardModal");
 
 
-//RewardList Page
-function openAddRewardModal(){
-    document.getElementById("rewardForm").reset();
+    if(btnAddReward){
+        btnAddReward.forEach(function(btn){
+            btn.addEventListener("click", function(){
+                rewardModal.style.display="block";
+            });
+        });
+    }
 
-    document.getElementById("action").value = "add";
+    const btnEditReward = document.querySelectorAll(".editRewardBtn");
 
-    document.getElementById("modalTitle").innerText = "Add New Reward";
+    if(btnEditReward){
+        btnEditReward.forEach(function(btn){
+            btn.addEventListener("click", function(){
+                const id = btn.getAttribute("data-id");
+                const title = btn.getAttribute("data-title");
+                const desc = btn.getAttribute("data-desc");
+                const points = btn.getAttribute("data-points");
+                const stock = btn.getAttribute("data-stock");
 
-    openModal();
-}
+                document.getElementById("rewardID").value = id;
+                document.getElementById("rewardTitle").value = title;
+                document.getElementById("rewardDescription").value = desc;
+                document.getElementById("requiredPoints").value = points;
+                document.getElementById("stock").value = stock;
 
-function openUpdateRewardModal(reward_id, title, description, required_points, stock, reward_img){
+                rewardModal.style.display="block";
+            });
+        });
+    }
 
-    document.getElementById("action").value = "update";
+    const btnCancel = document.getElementById("cancelBtn");
+    const modals = document.querySelectorAll(".modal");
+    
+    if(btnCancel){
+        btnCancel.addEventListener("click", function(){
+            modals.forEach(function(modal){
+                modal.style.display ="none";
+            });
+        });
+    }
 
-    document.getElementById("rewardID").value = reward_id;
-    document.getElementById("rewardTitle").value = title;
-    document.getElementById("rewardDescription").value = description;
-    document.getElementById("requiredPoints").value = required_points;
-    document.getElementById("stock").value = stock;
-    document.getElementById("rewardImg").value = reward_img;
 
-    document.getElementById("modalTitle").innerText = "Update Record";
 
-    openModal();
-}
+})
