@@ -13,12 +13,12 @@
     if($_SERVER["REQUEST_METHOD"] == "POST"){
 
         if(isset($_POST['action'])){
+            
             if($_POST['action']=="add"){
                 $title = $_POST['title'];
                 $description = $_POST['description'];
                 $required_points = $_POST['required_points'];
                 $stock = $_POST['stock'];
-                $reward_img = $_POST['reward_img'];
 
                 // if file ok execute the action
                 if(isset($_FILES['reward_img'])&&$_FILES['reward_img']['error'] === UPLOAD_ERR_OK){
@@ -61,7 +61,6 @@
                 $description = $_POST['description'];
                 $required_points = $_POST['required_points'];
                 $stock = $_POST['stock'];
-                $reward_img = $_POST['reward_img'];
 
                 // if file ok execute the action
                 if(isset($_FILES['reward_img']) && $_FILES['reward_img']['error'] === UPLOAD_ERR_OK){
@@ -88,7 +87,7 @@
                         stock = ?, reward_img = ? WHERE reward_id = ?";
 
                 $stmt = mysqli_prepare($dbConn, $sql);
-                mysqli_stmt_bind_param($stmt, "ssisii", $title, $description, $required_points, $stock, $reward_img, $reward_id);
+                mysqli_stmt_bind_param($stmt, "ssissi", $title, $description, $required_points, $stock, $saveDir, $reward_id);
 
                 
                 if(mysqli_stmt_execute($stmt)){

@@ -8,6 +8,7 @@ document.addEventListener("DOMContentLoaded", function() {
     if(btnAddReward){
         btnAddReward.forEach(function(btn){
             btn.addEventListener("click", function(){
+                document.getElementById('action').value="add";
                 rewardModal.style.display="block";
             });
         });
@@ -24,6 +25,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 const points = btn.getAttribute("data-points");
                 const stock = btn.getAttribute("data-stock");
 
+                document.getElementById('action').value="update";
                 document.getElementById("rewardID").value = id;
                 document.getElementById("rewardTitle").value = title;
                 document.getElementById("rewardDescription").value = desc;
@@ -45,7 +47,4 @@ document.addEventListener("DOMContentLoaded", function() {
             });
         });
     }
-
-
-
 })
