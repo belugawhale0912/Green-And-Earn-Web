@@ -29,7 +29,6 @@ header{
     position: relative; /* 1. IMPORTANT: Anchors the bar to this text */
     color: var(--text-main);
     text-decoration: none;
-    /* Optional: Add padding so the bar doesn't sit on top of the text */
     padding-bottom: 5px; 
     /* TODO try use other way so the link is not that towards the top */
 }

@@ -1,3 +1,5 @@
+<link rel="icon" type="image/x-icon" href="/GreenAndEarnWeb/favicon.ico">
+
 <header>
     <img id="logo" src="../../assets/Page Title.png" alt="Green&Earn">
     
@@ -5,7 +7,6 @@
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-menu-2"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 6l16 0" /><path d="M4 12l16 0" /><path d="M4 18l16 0" /></svg>
     </button>
 
-    <!-- TODO move theme button at the end of the bar -->
     <nav id="header_links">
         <?php if(isset($_SESSION['role_id'])): $loggedInRole=$_SESSION['role_id']?>
             <?php if($loggedInRole==1):?>
@@ -40,6 +41,7 @@
             <a href="../pages/contactUs.php">Contact Us</a>
             <a href="../pages/login.php">Login</a>
         <?php endif;?>
+        
         <button id="themeToggle">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-moon-icon lucide-moon"><path d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/></svg>
         </button>
