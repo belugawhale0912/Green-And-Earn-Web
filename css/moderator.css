@@ -1,73 +1,21 @@
-#profileSection{
-    border: 1px solid black;
-}
-
-.profileImg{
-    max-height: 200px;
-    width: auto;
-    border-radius: 999px;
-    border: 2px solid var(--border-color);
-    object-fit: cover;
-    display: block;
-}
-
-
-#profileSection .container{
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center; 
-    gap: 30px;
-}
-
-/* Force the Title to take the full width (Top Row) */
+/* To force the Title to take the full width (Top Row) */
 #profileSection h1{
     width: 100%;
 }
 
-#profileInfo{
-    display: flex;
-    flex-direction: column;
-    text-align: left;
-}
-
+/* To make sure the Submission Upload doesnt go too wide and centers it */
 #submissionUpload{
     max-width: 80%;
     align-self: center;
 }
 
-#popupProof{
-    max-height: 300px;
-    width: auto;
+/* To limit the size of the images in the popups */
+#popupProof, #partnerReceipt{
+    width: 400px;
+    height: auto;
 }
 
-
-/* --- Mobile View for Profile Section --- */
-@media screen and (max-width: 768px) {
-    
-    /* 1. Stack the Image and Text vertically */
-    #profileSection .container {
-        flex-direction: column; /* Stacks items top-to-bottom */
-        text-align: center;     /* Centers the text */
-        justify-content: center;
-    }
-
-    /* 2. Remove the side gap since they are now stacked */
-    #profileSection .container {
-        gap: 15px;
-    }
-
-    /* 3. Center the text group items */
-    .text-group {
-        align-items: center; /* Ensures the text inside the group is centered */
-    }
-    
-    /* Optional: Make the image slightly smaller on mobile */
-    .profileImg {
-        width: 120px;
-        height: 120px;
-    }
-}
-
+/* To style the cards for the pending approvals*/
 #approval{
     display: flex;
     justify-content: center;
@@ -81,21 +29,212 @@
 }
 
 .cards{
-    color: white;
-    background-color: #3d573a;
-    width: 300px;
-    height: 300px;
+    color: var(--text-main-invert);
+    background-color: var(--clr-primary-a40);
+    width: 500px;
+    height: 200px;
     padding: 20px;
+    border-radius: 50px;
 }
 
-@media (max-width: 650px){
+.cardNumber{
+    font-size: 3rem;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+/* To style the buttons in the History page */
+#historyViewControl{
+    position: relative;
+    width: 100%;
+    display:flex;
+    flex-wrap: wrap;
+    gap:10px;
+    margin: 15px 0;
+}
+
+#historyViewControl a{
+    text-decoration: none;
+    padding: 8px 18px;
+    border-radius: 999px;
+    background-color: var(--clr-surface-a10);
+    color: var(--text-main);
+    font-weight: 600;
+    border: 2px solid transparent;
+    transition: all 0.2s ease;
+}
+
+#historyViewControl a:hover{
+     background-color: var(--clr-surface-a20);
+     transform: translateY(-2px);
+}
+
+#historyViewControl a.active{
+    background-color: var(--clr-primary-a40);
+    color: var(--clr-surface-a90);
+    border-color: var(--clr-primary-a40);
+}
+
+/* To style the buttons in the popups in every page and coloring it */
+.buttonGroup{
+    display:flex;
+    gap: 20px;
+    justify-content: center;
+    padding: 20px 0;
+    width: 100%;
+}
+
+.buttonGroup button{
+    padding: 14px 24px;
+    font-size: 1.2rem;
+    border-radius: 12px;
+}
+
+.buttonGroup button:first-child{
+    background-color: var(--clr-primary-a0);
+    border-color: var(--clr-primary-a0);
+    color: var(--text-main);  
+    font-weight: bold; 
+}
+
+.buttonGroup button:last-child{
+    background-color: var(--clr-danger-a0);
+    border-color: var(--clr-danger-a0);
+    color: var(--text-main);
+    font-weight: bold;
+}
+
+.buttonGroup button:last-child:hover{
+    background-color: var(--clr-danger-a0);
+    transform: translateY(-2px);
+    border-color: var(--clr-danger-a0);
+}
+
+/* To color the buttons on the table and give it "animation" when hovering over it*/
+button{
+    background-color:var(--clr-primary-a30);
+    border-color:var(--clr-primary-a30);
+    color: var(--clr-surface-a10);
+    padding: 12px 16px;
+    text-align: center;
+    border-radius: 999px;
+    font-weight: bold;
+}
+
+button:hover{
+    background-color: var(--clr-primary-a40);;
+    transform: translateY(-2px);
+    border-color: var(--clr-primary-a40);;
+}
+
+/* To style the filter and make sure that it is lined up on the left */
+.filter{
+    width: 25%;
+    height: 30px;
+    border-radius: 10px;
+    border: 2px solid var(--clr-primary-a20);
+    margin-bottom: 20px;
+    background-color: var(--clr-surface-a10);
+    color: var(--text-main);
+}
+
+#filterForm, #filterFormPartner{
+    display: flex;
+    width: 100%;
+    justify-content: flex-start;
+}
+
+/* To put a pill of color around statuses */
+.taskStatus{
+    padding: 10px;
+    border-radius: 20px;
+    display: inline-block;
+    color: var(--text-main-invert)
+}
+
+.taskStatus.Pending{
+    background-color: var(--clr-info-a0);
+}
+
+.taskStatus.Approved{
+    background-color: var(--clr-success-a0);
+}
+
+.taskStatus.Rejected{
+    background-color: var(--clr-danger-a0);
+}
+
+/* To make sure that the cards and the charts are fitted properly */
+.chartCards{
+    background-color:var(--clr-surface-a10);
+    color:var(--text-main);
+    padding: 20px;
+    border-radius: 50px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1 1 45%;
+    max-width: 500px;
+}
+
+.chartCards canvas{
+    width: 100% !important;
+    height: 100% !important;
+}  
+
+.chartContainer{
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 40px;
+}
+
+.canvas-container {
+    position: relative;
+    height: 250px; 
+    width: 100%;
+}
+
+/* To make the Fonts in the popups bigger */
+#submissionInfo p, #partnerInfo p{
+    font-size: 1.5rem;
+    text-align: center;
+}
+
+/* --- Mobile View for Profile Section --- */
+@media screen and (max-width: 800px) {
+    
+    /* To center history view control button and style the text inside the button */
+    #historyViewControl{
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    #historyViewControl a{
+        padding: 6px 12px;
+        font-size: 14px;
+    }
+
+    /* To center the filters */
+    #filterForm, #filterFormPartner{
+        justify-content: center;
+    }
+
+    /* To set the cards width and height */
     .cards{
-        width: 45%;
+        width: 80%;
         height: auto;
     }
-}
 
-@media (max-width: 650px){
+    .chartCards{
+        flex: 1 1 100%;
+        max-width: 80%;
+        margin-bottom: 20px;
+    }
+
+    /* To make all the tables responsive */
     th{
         display:none;
     }
@@ -120,79 +259,34 @@
     td:last-child{
         padding-bottom: 2rem;
     }
-}
 
-#historyViewControl{
-    position: absolute;
-    top: 115px;
-    left: 20px;
-    display:flex;
-    gap:10px;
-}
+    /* To make the buttons in the popups responsive */
+    .buttonGroup{
+        gap: 12px;
+        align-items: center;
+    }
 
-#historyViewControl a{
-    text-decoration: none;
-    padding: 8px 18px;
-    border-radius: 8px;
-    background-color: #f0f0f0;
-    color: #333;
-    font-weight: 600;
-    border: 2px solid transparent;
-    transition: all 0.2s ease;
-}
+    .buttonGroup button{
+        width: 80%;
+        font-size: 1rem;
+        padding: 12px 20px;
+    }
 
-#historyViewControl a:hover{
-     background-color: #e0e0e0;
-}
+    /* To make the images responsive */
+    #popupProof{
+        max-width: 100%;
+        height: auto;
+    }
 
-#historyViewControl a.active{
-    background-color: #3d573a;
-    color: white;
-    border-color: #3d573a;
-}
+    #partnerReceipt{
+        max-width: 300px;
+        height: auto;
+        display: block;
+        margin: 0 auto 15px;
+    }
 
-[data-theme="dark"] #historyViewControl a{
-    text-decoration: none;
-    padding: 8px 18px;
-    border-radius: 8px;
-    background-color: #f0f0f0;
-    color: #333;
-    font-weight: 600;
-    border: 2px solid transparent;
-    transition: all 0.2s ease;
+    /* To make status is centered in the pill of color */
+    .taskStatus{
+        text-align: center;
+    }
 }
-
-[data-theme="dark"] #historyViewControl a:hover{
-     background-color: #e0e0e0;
-}
-
-[data-theme="dark"] #historyViewControl a.active{
-    background-color: #89cf84;
-    color: #000000;
-    border-color: #89cf84;
-}
-
-.buttonGroup{
-    display:flex;
-    gap: 10px;
-    justify-content: center;
-    margin-top: 15px;
-}
-
-.buttonGroup{
-    padding: 10px 20px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-}
-
-.buttonGroup button:first-child{
-    background-color: #4CAF50;
-    color: white;
-}
-
-.buttonGroup button:last-child{
-    background-color: #f44336;
-    color: white;
-}
-

@@ -87,11 +87,23 @@
                 mysqli_commit($dbConn);
                 include "../include/badge_system.php";
                 // TODO add checkPointBadges
-                checkTaskBadges($dbConn, $submission_info['user_id']);
-                echo "<script>alert('Success! Points awarded.'); window.location.href = 'morderatorPartnerPoints.php';</script>";
+                // checkTaskBadges($dbConn, $submission_info['user_id']);
+                $_SESSION['popupMessage']=[
+                    'title' => 'Success',
+                    'text' => 'Points Awarded Successfully',
+                    'icon' => 'success'
+                ];
+                header("Location: moderatorPartnerPoints.php");
+                exit();
             }else{
                 mysqli_rollback($dbConn);
-                echo "<script>alert('Error: $err'); window.location.href = 'morderatorPartnerPoints.php';</script>";
+                $_SESSION['popupMessage']=[
+                    'title' => 'Error',
+                    'text' => 'Error While Awarding Points',
+                    'icon' => 'error'
+                ];
+                header("Location: moderatorPartnerPoints.php");
+                exit();
             }
                 
         }
@@ -103,7 +115,13 @@
             $stmt = mysqli_prepare($dbConn, $sql_update);
             mysqli_stmt_bind_param($stmt, "i", $transaction_id);
             if(mysqli_stmt_execute($stmt)){
-                echo "<script>alert('Rejected Point Award!'); window.location.href = 'morderatorPartnerPoints.php';</script>";
+                $_SESSION['popupMessage']=[
+                    'title' => 'Success',
+                    'text' => 'Points Awarding Rejected',
+                    'icon' => 'success'
+                ];
+                header("Location: moderatorPartnerPoints.php");
+                exit();
             }
         }
     }
@@ -114,32 +132,35 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Partner Points Approval</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../../css/header.css">
     <link rel="stylesheet" href="../../css/style.css">
     <link rel="stylesheet" href="../../css/moderator.css">
+    <?php include "../include/libraries.php";?> 
+    <title>Partner Points Approval</title>   
+</body>
+</html>
 </head>
 <body>
+    <script src="../../js/customSwal.js"></script>
+    <?php include "../include/header.php"; ?>
 
-<?php include "../include/header.php"; ?>
+    <h1>Pending Partner Point Transactions</h1>
 
-<h1>Pending Partner Point Transactions</h1>
-
-<table>
-    <thead>
-        <tr>
-            <th>Transaction ID</th>
-            <th>User</th>
-            <th>Partner</th>
-            <th>Award Time</th>
-            <th>Amount Spent</th>
-            <th>Points Awarded</th>
-            <th>Status</th>
-            <th></th>
-        </tr>
-    </thead>
+    <table>
+        <thead>
+            <tr>
+                <th>Transaction ID</th>
+                <th>User</th>
+                <th>Partner</th>
+                <th>Award Time</th>
+                <th>Amount Spent</th>
+                <th>Points Awarded</th>
+                <th>Status</th>
+                <th></th>
+            </tr>
+        </thead>
     <tbody>
-
     <?php while ($partnerRequest_info = mysqli_fetch_assoc($result_pending)): ?>
         <tr>
             <td data-label="Transaction ID"><?php echo $partnerRequest_info['partner_transaction_id']; ?></td>
@@ -148,8 +169,9 @@
             <td data-label="Award Time"><?php echo $partnerRequest_info['award_time']; ?></td>
             <td data-label="Amount Spent"><?php echo $partnerRequest_info['amount_spent']; ?></td>
             <td data-label="Points Awarded"><?php echo $partnerRequest_info['points_awarded']; ?></td>
-            <td data-label="Status"><?php echo $partnerRequest_info['status']; ?></td>
-            <td>
+            <td data-label="Status"><p class="taskStatus <?php echo $partnerRequest_info['status']; ?>">
+                <?php echo $partnerRequest_info['status']; ?></p></td>
+            <td data-label="View Button">
                 <button class="viewPartnerBtn"
                     data-id="<?php echo $partnerRequest_info['partner_transaction_id']; ?>"
                     data-username="<?php echo htmlspecialchars($partnerRequest_info['username'], ENT_QUOTES); ?>"
@@ -167,13 +189,14 @@
 </table>
 
 <div id="partnerPopup" class="modal">
-    <div class="modalContent">
+    <div class="modalContent" id="partnerModal">
         <h1>Review Partner Points</h1>
-        <p>Member: <span id="partnerUsername"></span></p>
-        <p>Amount Spent: <span id="partnerAmount"></span></p>
-        <p>Points Awarded: <span id="partnerPoints"></span></p>
-        <p>Receipt:</p>
-        <img id="partnerReceipt" src="" width="200">
+        <div id=partnerInfo>
+            <p>Member: <span id="partnerUsername"></span></p>
+            <p>Amount Spent: <span id="partnerAmount"></span></p>
+            <p>Points Awarded: <span id="partnerPoints"></span></p>
+            <p>Receipt:</p>
+        <img id="partnerReceipt" src="" width="Receipt Image">
 
         <form method="POST">
             <input type="hidden" name="partner_transaction_id" id="partnerTransactionID">
@@ -184,6 +207,7 @@
         </form>
     </div>
 </div>
+    <?php include "../include/showSWAL.php"?>
     <script src="../../js/moderator.js"></script>
 </body>
 </html>

@@ -19,7 +19,6 @@
 
     $submissionResult = mysqli_query($dbConn,$sql_submission);
 
-    
     // Moderator Approval Logic
     if ($_SERVER["REQUEST_METHOD"] == "POST") { 
 
@@ -92,10 +91,23 @@
                 mysqli_commit($dbConn);
                 include "../include/badge_system.php";
                 checkTaskBadges($dbConn, $submission_info['user_id']);
-                echo "<script>alert('Success! Points awarded.'); window.location.href = 'moderatorSubmissions.php';</script>";
-            }else {
+                $_SESSION['popupMessage']=[
+                    'title' => 'Success',
+                    'text' => 'Points Awarded Successfully',
+                    'icon' => 'success'
+                ];
+                header("Location: moderatorSubmissions.php");
+                exit();
+
+            }else{
                 mysqli_rollback($dbConn);
-                echo "<script>alert('Error: $err'); window.location.href = 'moderatorSubmissions.php';</script>";
+                $_SESSION['popupMessage']=[
+                    'title' => 'Error',
+                    'text' => 'Error While Awarding Points',
+                    'icon' => 'error'
+                ];
+                header("Location: moderatorSubmissions.php");
+                exit();
             }
 
         }else if ($decision == 'reject') {
@@ -109,10 +121,13 @@
             mysqli_stmt_bind_param($stmt, "ii", $moderator_id, $submission_id);
 
             if(mysqli_stmt_execute($stmt)){
-                echo "<script>
-                        alert('Submission Rejected.');
-                        window.location.href = '../moderator/moderatorSubmissions.php';
-                      </script>";
+                $_SESSION['popupMessage']=[
+                    'title' => 'Success',
+                    'text' => 'Points Awarding Rejected',
+                    'icon' => 'success'
+                ];
+                header("Location: moderatorSubmissions.php");
+                exit();
                 mysqli_stmt_close($stmt);
             }
         }     
@@ -128,12 +143,12 @@
     <link rel="stylesheet" href="../../css/header.css">
     <link rel="stylesheet" href="../../css/style.css">
     <link rel="stylesheet" href="../../css/moderator.css">
-    <title>Document</title>
+    <?php include "../include/libraries.php";?>  
+    <title>Submission Viewing</title>
 </head>
 <body>
-    <?php
-        include "../include/header.php";
-    ?>
+    <script src="../../js/customSwal.js"></script>
+    <?php include "../include/header.php";?>
     <h1>Submissions</h1>
     <section id="submissions">
         <?php if(mysqli_num_rows($submissionResult)>0):?>
@@ -154,9 +169,10 @@
                             <td data-label="Submission ID"><?php echo $submission_info['submission_id']?></td>
                             <td data-label="User"><?php echo $submission_info['username']?></td>
                             <td data-label="Activity"><?php echo $submission_info['activity_title']?></td>
-                            <td data-label="Status"><?php echo $submission_info['status']?></td>
+                            <td data-label="Status"><p class="taskStatus <?php echo $submission_info['status']; ?>">
+                                <?php echo $submission_info['status']?></p></td>
                             <td data-label="Submission Time"><?php echo $submission_info['submission_time']?></td>
-                            <td>
+                            <td data-label="View Button">
                                 <button class="viewSubmissionBtn"
                                     data-id="<?php echo $submission_info['submission_id'];?>"
                                     data-username="<?php echo htmlspecialchars($submission_info['username'], ENT_QUOTES);?>"
@@ -178,7 +194,7 @@
 
     <!-- Popup window -->
     <div id="submissionPopup" class="modal">
-        <div class="modalContent">
+        <div class="modalContent" id=submissionModal>
             <h1>Review Submission</h1>
             <div id="submissionInfo">
                 <p>Username: <span id="popupUsername"></span></p>
@@ -200,6 +216,7 @@
             </form>
         </div>
     </div>
+    <?php include "../include/showSWAL.php"?>
     <script src="../../js/moderator.js"></script>
 </body>
 </html>
