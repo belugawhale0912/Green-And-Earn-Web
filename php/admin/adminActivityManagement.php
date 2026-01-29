@@ -152,7 +152,7 @@
     
     <h3 class="tableTitle">Activities Table</h3>
     <div class="activityBar">
-        <form method="GET" id="filterForm">
+        <form method="GET" class="filterForm">
             <label for="statusFilter"></label>
             <select name="status" id="statusFilter" class="dropdown" onchange="this.form.submit()">
                 <option value="All" <?php if ($filter == "All") echo 'selected'; ?>>All</option>
@@ -218,7 +218,7 @@
         </table>
 
         <div id="activityModal" class="modal">
-            <div class="modalContent">
+            <div class="modalContent" id="activityAdditionModal">
                 <h2 id="activityModalTitle"></h2>
                 <form action="" id="activityForm" method="POST">
                     <input type="hidden" id="action" name="action">
@@ -238,8 +238,10 @@
                     <label for="startDate">End Date</label>
                     <input type="date" id="endDate" name="endDate">
 
+                <div class="buttonWrapper">
                     <button type="submit" id="confirmBtn">Confirm</button>
                     <button type="button" class="cancelBtn" data-modal="activityModal">Cancel</button>
+                </div>
                 </form>
             </div>
         </div>

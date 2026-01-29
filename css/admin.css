@@ -1,4 +1,4 @@
-
+/* general styling */
 *{
     box-sizing: border-box;
     margin: 0;
@@ -14,6 +14,158 @@
     margin-bottom: 10px;
 }
 
+.viewToggle{
+    display: flex;
+    gap: 8px;
+    margin-bottom: 24px;
+    justify-content: nowrap;
+    margin-left: 10px;
+}
+
+.viewToggle a{
+    padding: 16px 26px;
+    border-radius: 999px;
+    border: 1px solid var(--clr-primary-a30);
+    background-color: var(--clr-primary-a30);
+    color: white;
+    box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.6);
+    font-size: 14px;
+    font-weight: bold;
+    letter-spacing: 0.3px;
+    cursor: pointer;
+    transition:
+        background-color 0.25s,
+        color 0.25s,
+        transform 0.15s,
+        box-shadow 0.25s;
+}
+
+.viewToggle a:hover{
+    background-color: var(--clr-primary-a40);
+    transform: translateY(-2px);
+}
+
+.viewToggle a.active{
+    background-color: var(--clr-primary-a50);
+    border-color: var(--clr-primary-a50);
+    box-shadow: 0 6px 14px 0 rgba(0, 0, 0, 0.6);
+}
+
+.activityStatus,.rewardStatus, .userStatus{
+    padding: 10px;
+    border-radius: 20px;
+    color: var(--text-main-invert);
+    text-align: center;
+    max-width: 120px;
+}
+
+.rewardStatus.Pending{
+    background-color: var(--clr-info-a0);
+}
+
+.rewardStatus.Available{
+    background-color: var(--clr-success-a0);
+}
+
+.rewardStatus.Deactivated{
+    background-color: var(--clr-danger-a0);
+}
+
+.activityStatus.Active{
+    background-color: var(--clr-success-a0);
+}
+
+.activityStatus.Deleted{
+    background-color: var(--clr-danger-a0);
+}
+
+.userStatus.Active{
+    background-color: var(--clr-success-a0);
+}
+
+.userStatus.Inactive{
+    background-color: var(--clr-danger-a0);
+}
+
+button{
+    background-color: var(--clr-primary-a40);
+    border-color: var(--clr-primary-a50);
+    color: var(--clr-light-a0);
+    padding: 12px 16px;
+    text-align: center;
+    border-radius: 999px;
+    font-weight: bold;
+}
+
+button:hover{
+    background-color: var(--clr-primary-a50);
+    transform: translateY(-2px);
+    border-color: var(--clr-primary-a50);
+}
+
+.cancelBtn, .rejectBtn, .deleteBtn, .suspendBtn{
+    background-color: var(--clr-danger-a0);
+    color: var(--clr-light-a0);
+    border-color: var(--clr-danger-a0);
+    font-weight: bold;
+}
+
+.cancelBtn:hover, .rejectBtn:hover, .deleteBtn:hover, .suspendBtn:hover{
+    background-color: #a80000;
+    transform: translateY(-2px);
+    border-color: #a80000;
+}
+
+.dropdown{
+    width: 100px;
+    max-width: 100%;
+    height: 30px;
+    border-radius: 10px;
+    border: 2px solid var(--clr-primary-a20);
+    background-color: var(--clr-surface-a10);
+    color: var(--text-main);
+    padding: 0 0 0 7px;
+}
+
+.filterForm{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-left: 10px;
+}
+
+#userAdditionModal, #activityAdditionModal{
+    width: 100%;
+    max-width: 800px;
+}
+
+#userAdditionModal label, #activityAdditionModal label{
+    font-size: 18px;
+    font-weight: bold;
+    width: 100%;
+    max-width: 600px;
+    margin-top: 15px;
+}
+
+#userAdditionModal input, #userAdditionModal select, #activityAdditionModal input,#activityAdditionModal select{
+    width: 100%;
+    max-width: 600px;
+    padding: 12px;
+    
+}
+
+.buttonWrapper{
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    margin-top: 24px;
+}
+
+.buttonWrapper button{
+    width: 200px;
+}
+
+/* dashboard styling */
 #actionButtons{
     display: flex;
 }
@@ -22,6 +174,10 @@
     display: flex;
     flex-direction: column;
     gap: 24px;
+}
+
+.statsTitle {
+    margin-bottom: 10px;
 }
 
 .dashboardContainer{
@@ -97,138 +253,26 @@
     height: 85%;
 }
 
-.viewToggle{
-    display: flex;
-    gap: 8px;
-    margin-bottom: 24px;
-    justify-content: nowrap;
-    margin-left: 10px;
+/* user management styling */
+#addUserBtn{
+    margin-left: auto;
+    margin-right: 10px;
+    background-color: var(--clr-primary-a10);
+    border-color: var(--clr-primary-a0);
 }
 
-.viewToggle a{
-    padding: 16px 26px;
-    border-radius: 999px;
-    border: 1px solid var(--clr-primary-a30);
-    background-color: var(--clr-primary-a30);
-    color: white;
-    box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.6);
-    font-size: 14px;
-    font-weight: bold;
-    letter-spacing: 0.3px;
-    cursor: pointer;
-    transition:
-        background-color 0.25s,
-        color 0.25s,
-        transform 0.15s,
-        box-shadow 0.25s;
-}
-
-.viewToggle a:hover{
-    background-color:var(--clr-primary-a40);
-    transform: translateY(-2px);
-}
-
-.viewToggle a.active{
-    background-color:var(--clr-primary-a50);
-    border-color:var(--clr-primary-a50);
-    box-shadow: 0 6px 14px 0 rgba(0, 0, 0, 0.6);
-}
-
-.activityStatus, .rewardStatus, .userStatus{
-    padding: 10px;
-    border-radius: 20px;
-    color: var(--text-main-invert);
-    text-align: center;
-    max-width: 120px;
-}
-
-.rewardStatus.Pending{
-    background-color: var(--clr-info-a0);
-}
-
-.rewardStatus.Available{
-    background-color: var(--clr-success-a0);
-}
-
-.rewardStatus.Deactivated{
-    background-color: var(--clr-danger-a0);
-}
-
-.activityStatus.Active{
-    background-color: var(--clr-success-a0);
-}
-
-.activityStatus.Deleted{
-    background-color: var(--clr-danger-a0);
-}
-
-.userStatus.Active{
-    background-color: var(--clr-success-a0);
-}
-
-.userStatus.Inactive{
-    background-color: var(--clr-danger-a0);
-}
-
-button{
-    background-color: var(--clr-primary-a40);
-    border-color: var(--clr-primary-a50);
-    color: var(--clr-light-a0);
-    padding: 12px 16px;
-    text-align: center;
-    border-radius: 999px;
-    font-weight: bold;
-}
-
-button:hover{
-    background-color: var(--clr-primary-a50);
-    transform: translateY(-2px);
-    border-color: var(--clr-primary-a50);
-}
-
-.cancelBtn, .rejectBtn, .deleteBtn, .suspendBtn{
-    background-color: var(--clr-danger-a0);
-    color: var(--clr-light-a0);
-    border-color: var(--clr-danger-a0);
-    font-weight: bold;
-}
-
-.cancelBtn:hover, .rejectBtn:hover, .deleteBtn:hover, .suspendBtn:hover{
-    background-color: #a80000;
-    ;
-    transform: translateY(-2px);
-    border-color: #a80000;
-    ;
-}
-
+/* activity management styling */
 .editActivityBtn{
     display: block;
     width: 100%;
     margin: 0;
-}
-
-.dropdown{
-    width: 100px;
-    max-width: 100%;
-    height: 30px;
-    border-radius: 10px;
-    border: 2px solid var(--clr-primary-a20);
-    margin-bottom: 20px;
-    background-color: var(--clr-surface-a10);
-    color: var(--text-main);
+    color: var(--clr-dark-a0);
 }
 
 .activityBar{
     display: flex;
     align-items: center;
     justify-content: space-between;
-}
-
-#addUserBtn{
-    margin-left: auto;
-    margin-right: 10px;
-    background-color: var(--clr-primary-a10);
-    border-color: var(--clr-primary-a0);
 }
 
 #addActivityBtn{
@@ -238,15 +282,8 @@ button:hover{
     border-color: var(--clr-primary-a0);
 }
 
-#filterForm{
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-left: 10px;
-    margin-bottom: 10px;
-}
-
-.statsTitle{
+/* reward management styling */
+#rewardFilter{
     margin-bottom: 10px;
 }
 
@@ -285,6 +322,18 @@ button:hover{
         flex: 1 1 auto;
         text-align: center;
         margin-left: 0;
+    }
+
+    #additionModal input, #additionModal select{
+        max-width: 100%;
+    }
+
+    .buttonWrapper{
+        flex-direction: column;
+    }
+
+    .buttonWrapper button{
+        width: 100%;
     }
 
     /* dashboard */

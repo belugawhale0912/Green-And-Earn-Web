@@ -7,7 +7,7 @@
     $view = isset($_GET['view']) ? $_GET['view'] : 'pendingPage';
     
     // $sqlComplete = "SELECT * FROM reward WHERE status IN ('Approved', 'Available', 'Deactivated') ORDER BY reward_id ASC";
-    $sqlPending = "SELECT * FROM reward WHERE status='pending' ORDER BY reward_ID ASC";
+    $sqlPending = "SELECT * FROM reward WHERE status='Pending' ORDER BY reward_ID ASC";
     $resultPending = mysqli_query($dbConn, $sqlPending);
     
     if($filter == "Available"){
@@ -189,7 +189,7 @@
     <?php elseif($view=='approvedPage'):?>
         <div id="approvedTable">
             <h3 class="tableTitle">Approved Rewards Table</h3> 
-            <form method="GET" id="filterForm">
+            <form method="GET" class="filterForm" id="rewardFilter">
                 <input type="hidden" name="view" value="approvedPage">
                 <label for="statusFilter"></label>
                 <select name="status" id="statusFilter" class="dropdown" onchange="this.form.submit()">

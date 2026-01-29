@@ -158,7 +158,7 @@
                                 <td data-label="Suspend/Activate Button"> 
                                 <!--Suspend Button -->
                                     <?php if($user_info['active_status'] == 1): ?>
-                                        <form  method="POST">
+                                        <form method="POST">
                                             <input type="hidden" name="action" value="suspend">
                                             <input type="hidden" name="user_id" value="<?php echo $user_info['user_id'];?>">
                                             <button type="submit" class="suspendBtn">Suspend</button>
@@ -344,7 +344,7 @@
     </div>
     
     <div id="userModal" class="modal">
-        <div class="modalContent">
+        <div class="modalContent" id="userAdditionModal">
             <h2>Add New User</h2>
             <form action="" id="userForm" method="post">
                 <input type="hidden" id="action" name="action">
@@ -364,8 +364,10 @@
                     <option value="4">Partner/Sponsor</option>
                 </select>
                 
-                <button type="submit" id="submitBtn">Submit</button>
-                <button type="button" class="cancelBtn" data-modal="userModal">Cancel</button>
+                <div class="buttonWrapper">
+                    <button type="submit" id="submitBtn">Submit</button>
+                    <button type="button" class="cancelBtn" data-modal="userModal">Cancel</button>
+                </div>
             </form>
 
         </div>
