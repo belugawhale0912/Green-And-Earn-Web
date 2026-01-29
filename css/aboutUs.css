@@ -1,0 +1,93 @@
+body{
+    overflow: hidden;
+    background-image: url('../assets/view-spectacular-nature-landscape.jpg');
+    background-size: cover;
+    box-shadow: inset 0 0 0 1000px var(--clr-backdrop);
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center;
+}
+
+.bigContainer{
+    color: rgb(255, 255, 255);
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
+    height: 90vh;
+    overflow-y: scroll;
+}
+
+.bigContainer h3{
+    font-weight: bolder;
+}
+
+.bigContainer p{
+    font-size: 17px;
+}
+
+.wordContainer{
+    display: flex;
+    flex-wrap: wrap;
+    text-align: center;
+    hyphens: auto;
+    justify-content: space-evenly;
+}
+
+.aboutUsContainer{
+    flex-grow: 1.5;
+    padding-top: 5px;
+    max-width: 85%;
+}
+
+.visionContainer{
+    max-width: 40%;
+    flex-grow: 1;
+}
+
+.missionContainer{
+    max-width: 40%;
+    flex-grow: 1;
+}
+
+.profileContainer{
+    margin: 0 auto;
+    gap: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.profile{
+    width: 360px;
+    height: 300px;
+    border-radius: 20px;
+    background-color: rgba(194, 194, 194, 0.452);
+    padding-top: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+}
+
+.profile h3{
+    margin-top: 7px;
+}
+
+.profilePic{
+    height: 240px;
+    width: 240px;
+    border: 1px;
+    border-color: var(--clr-primary-a50);;
+    overflow: hidden;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+@media (max-width: 800px){
+    .visionContainer{
+        max-width: 90%;
+    }
+    .missionContainer {
+        max-width: 90%;
+    }
+}

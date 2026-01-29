@@ -14,6 +14,7 @@
                 <a href="../admin/adminUserManagement.php">Manage User</a>
                 <a href="../admin/adminActivityManagement.php">Manage Activity</a>
                 <a href="../admin/adminRewardManagement.php">Manage Rewards</a>
+                <a href="../admin/adminContactUs.php">Contact Us Inbox</a>
                 <a href="../pages/profile.php">Profile</a>
             <?php elseif($loggedInRole==2):?>
                 <a href="../member/memberDashboard.php">Dashboard</a>

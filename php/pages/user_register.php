@@ -1,4 +1,6 @@
 <?php
+    include "../include/conn.php";
+
     if($_SERVER["REQUEST_METHOD"] == "POST"){
         echo "<script>alert('Register Service Connected')</script>";
         $username = $_POST["username"];
@@ -23,9 +25,15 @@
             die("<script>alert('Error While Adding User!')</script>");
         }
 
-        echo "<script>alert('Successfully Added User!')window.location.href = '../pages/login.php'</script>";
-    }
+        $_SESSION['popupMessage']=[
+            'title' => 'Error!',
+            'text' => 'Invalid Password',
+            'icon' => 'error'
+        ];
 
+        header("Location: login.php");
+        exit();
+    }
 ?>
 
 
@@ -34,28 +42,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Register</title>
     <link rel="stylesheet" href="../../css/style.css">
-    <link rel="stylesheet" href="../../css/layout.css">
+    <link rel="stylesheet" href="../../css/register.css">
+    <link rel="icon" href="/GreenAndEarnWeb/favicon.ico">
+    <?php include "../include/libraries.php"?>
 </head>
 <body>
+    <script src="../../js/customSwal.js"></script>
     <a id="back" href="Landingpage.php">Back</a>
-    <h1>Register</h1>
-    <?php
-        include("../include/conn.php");
-    ?>
+    
     <div class="form_container">
-        <form action="" method="post">
-            <label for="username">Username:</label>
-            <input type="text" id="username" name="username" placeholder="Enter Username" required>
-            <label for="password">Password:</label>
-            <input type="password" id="password" name="password" placeholder="Enter Password" required>
-            <label for="confirm_password">Confirm Password:</label>
-            <input type="password" id="confirm_password" name="confirm_password" placeholder="Enter Password Again" required>
-            <label for="email">Email Address:</label>
-            <input type="email" id="email" name="email" placeholder="eg: 123@example.com" required>
-            <button type="submit">Register</button>
+        <h1>Join Green&Earn</h1> <form action="" method="post">
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username" placeholder="Enter username" required>
+            
+            <label for="email">Email Address</label>
+            <input type="email" id="email" name="email" placeholder="name@example.com" required>
+            
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" placeholder="Create a password" required>
+            
+            <label for="confirm_password">Confirm Password</label>
+            <input type="password" id="confirm_password" name="confirm_password" placeholder="Confirm password" required>
+            
+            <button type="submit">Create Account</button>
         </form>
     </div>
+    <?php include "../include/showSWAL.php";?>
 </body>
 </html>
