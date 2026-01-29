@@ -29,15 +29,21 @@
                         VALUES ($adminID, '$title', '$description', $pointAward, 'Active', '$start', '$end')";
 
                 if(mysqli_query($dbConn,$sql)){
-                    echo("<script>
-                            alert('Successfully Added Activity!');
-                            window.location.href = '../admin/adminActivityManagement.php';
-                        </script>");
+                    $_SESSION['popupMessage']=[
+                        'title' => 'Success',
+                        'text' => 'Activity Added Successfully',
+                        'icon' => 'success'
+                    ];
+                    header("Location: ../admin/adminActivityManagement.php");
+                    exit();
                 }else{
-                    echo("<script>
-                            alert('Failed to Add Activity!');
-                            window.location.href = '../admin/adminActivityManagement.php';
-                        </script>");
+                    $_SESSION['popupMessage']=[
+                        'title' => 'Error',
+                        'text' => 'Failed to Add Activity',
+                        'icon' => 'error'
+                    ];
+                    header("Location: ../admin/adminActivityManagement.php");
+                    exit();
                 }
             }
             if($_POST['action']=="update"){
@@ -53,19 +59,25 @@
                         WHERE activity_id = $activity_id";
 
                 if(mysqli_query($dbConn,$sql)){
-                    echo("<script>
-                            alert('Successfully Updated Activity');
-                            window.location.href = '../admin/adminActivityManagement.php';
-                        </script>");
+                    $_SESSION['popupMessage']=[
+                        'title' => 'Success',
+                        'text' => 'Activity Updated Successfully',
+                        'icon' => 'success'
+                    ];
+                    header("Location: ../admin/adminActivityManagement.php");
+                    exit();
                 }else{
-                    echo("<script>
-                            alert('Failed to Add Activity!');
-                            window.location.href = '../admin/adminActivityManagement.php';
-                        </script>");
+                    $_SESSION['popupMessage']=[
+                        'title' => 'Error',
+                        'text' => 'Failed to Update Activity',
+                        'icon' => 'error'
+                    ];
+                    header("Location: ../admin/adminActivityManagement.php");
+                    exit();
                 }
             }
         }
-        if(isset($_POST['delete_btn'])){
+        if(isset($_POST['deleteBtn'])){
             $activity_id = $_POST['activity_id'];
 
             $sql = "UPDATE activity SET 
@@ -73,19 +85,25 @@
                     WHERE activity_id = $activity_id";
 
             if(mysqli_query($dbConn,$sql)){
-                echo "<script> 
-                        alert('Successfully Deleted Activity! :(')
-                        window.location.href = '../admin/adminActivityManagement.php?'
-                    </script>";
+                $_SESSION['popupMessage']=[
+                        'title' => 'Success',
+                        'text' => 'Activity Deleted Successfully',
+                        'icon' => 'success'
+                    ];
+                    header("Location: ../admin/adminActivityManagement.php");
+                    exit();
             }else{
-                echo("<script>
-                        alert('Error!');
-                        window.location.href = '../admin/adminUserManagement.php';
-                    </script>"); 
+                $_SESSION['popupMessage']=[
+                        'title' => 'Error',
+                        'text' => 'Failed to Delete Activity',
+                        'icon' => 'error'
+                    ];
+                    header("Location: ../admin/adminActivityManagement.php");
+                    exit();
             }
         }
 
-        if(isset($_POST['restore_btn'])){
+        if(isset($_POST['restoreBtn'])){
             $activity_id = $_POST['activity_id'];
 
             $sql = "UPDATE activity SET 
@@ -93,15 +111,21 @@
                     WHERE activity_id = $activity_id";
 
             if(mysqli_query($dbConn,$sql)){
-                echo "<script> 
-                        alert('Successfully Restored Activity! :)')
-                        window.location.href = '../admin/adminActivityManagement.php?'
-                    </script>";
+                $_SESSION['popupMessage']=[
+                        'title' => 'Success',
+                        'text' => 'Activity Restored Successfully',
+                        'icon' => 'success'
+                    ];
+                    header("Location: ../admin/adminActivityManagement.php");
+                    exit();
             }else{
-                echo("<script>
-                        alert('Error!');
-                        window.location.href = '../admin/adminUserManagement.php';
-                    </script>"); 
+                $_SESSION['popupMessage']=[
+                        'title' => 'Error',
+                        'text' => 'Failed to Restore Activity',
+                        'icon' => 'error'
+                    ];
+                    header("Location: ../admin/adminActivityManagement.php");
+                    exit();
             }
         }
     }
@@ -115,26 +139,29 @@
     <link rel="stylesheet" href="../../css/header.css">
     <link rel="stylesheet" href="../../css/style.css">
     <link rel="stylesheet" href="../../css/admin.css">
+    <?php include "../include/libraries.php";?>
     <title>Manage Activities</title>
+    <link rel="icon" href="/Green-Earn-Web/favicon.ico">
 </head>
 <body>
+    <script src="../../js/customSwal.js"></script>  
     <?php
         include "../include/header.php";
     ?>
-    <h2>Activity Management</h2>
-    <div>
-    <button id="addActivityBtn">Add Activity</button>
-    <h1></h1>
-    <form method="GET" id="filterForm">
-        <label for="statusFilter">Filter:</label>
-        <select name="status" id="statusFilter" class="dropdown">
+    <h2 class="pageTitle">Activity Management</h2>
+    
+    <h3 class="tableTitle">Activities Table</h3>
+    <div class="activityBar">
+        <form method="GET" id="filterForm">
+            <label for="statusFilter"></label>
+            <select name="status" id="statusFilter" class="dropdown" onchange="this.form.submit()">
                 <option value="All" <?php if ($filter == "All") echo 'selected'; ?>>All</option>
                 <option value="Active" <?php if ($filter == "Active") echo 'selected'; ?>>Active</option>
                 <option value="Deleted" <?php if ($filter == "Deleted") echo 'selected'; ?>>Deleted</option>
-        </select>
-    </form>
+            </select>
+        </form>
+        <button id="addActivityBtn">Add Activity</button>
     </div>
-    <h3>Activities Table</h3>
     <?php if(mysqli_num_rows($result)>0):?>
         <table>
             <thead>
@@ -157,30 +184,30 @@
                         <td data-label="Description"><?php echo $activity_info['description'];?></td>
                         <td data-label="Admin ID"><?php echo $activity_info['admin_id'];?></td>
                         <td data-label="Points Awarded"><?php echo $activity_info['points_awarded'];?></td>
-                        <td data-label="Status"><?php echo $activity_info['status'];?></td>
+                        <td data-label="Status"><p class="activityStatus <?php echo $activity_info['status']?>"><?php echo $activity_info['status'];?></p></td>
                         <td data-label="Start Date"><?php echo $activity_info['start_date'];?></td>
                         <td data-label="End Date"><?php echo $activity_info['end_date'];?></td>
                         <td data-label="Edit Button">
-                                    <button class="editActivityBtn"
-                                        data-id="<?php echo $activity_info['activity_id'];?>"
-                                        data-title="<?php echo $activity_info['title'];?>"
-                                        data-desc="<?php echo $activity_info['description'];?>"
-                                        data-point="<?php echo $activity_info['points_awarded'];?>"
-                                        data-start="<?php echo $activity_info['start_date'];?>"
-                                        data-end="<?php echo $activity_info['end_date'];?>"
-                                    >Edit
-                                    </button>
+                                <button class="editActivityBtn"
+                                    data-id="<?php echo $activity_info['activity_id'];?>"
+                                    data-title="<?php echo $activity_info['title'];?>"
+                                    data-desc="<?php echo $activity_info['description'];?>"
+                                    data-point="<?php echo $activity_info['points_awarded'];?>"
+                                    data-start="<?php echo $activity_info['start_date'];?>"
+                                    data-end="<?php echo $activity_info['end_date'];?>"
+                                >Edit
+                                </button>
                         </td>
                         <td data-label="Delete/Restore Button">
                             <?php if($activity_info['status'] !='Deleted'):;?>
-                                <form action="Delete/Restore Button" method="POST">
+                                <form action="" method="POST">
                                     <input type="hidden" name="activity_id" value="<?php echo $activity_info['activity_id'];?>">
-                                    <button type="submit" class="deleteBtn">Delete</button>
+                                    <button type="submit" class="deleteBtn" name="deleteBtn">Delete</button>
                                 </form>
                             <?php else:;?>
                                 <form action="" method="POST">
                                     <input type="hidden" name="activity_id" value="<?php echo $activity_info['activity_id'];?>">
-                                    <button type="submit" class="restoreBtn">Restore</button>
+                                    <button type="submit" class="restoreBtn" name="restoreBtn">Restore</button>
                                 </form>
                             <?php endif;?>
                         </td>
@@ -217,6 +244,19 @@
             </div>
         </div>
     <?php endif;?>
+    
+    <?php if (isset($_SESSION['popupMessage'])): ?>
+        <script>
+            Swal.fire({
+                title: <?= json_encode($_SESSION['popupMessage']['title']) ?>,
+                text: <?= json_encode($_SESSION['popupMessage']['text']) ?>,
+                icon: <?= json_encode($_SESSION['popupMessage']['icon']) ?>,
+                confirmButtonColor: '#3085d6'
+            });
+        </script>
+    <?php unset($_SESSION['popupMessage']); endif; ?>
+
+    <?php include "../include/showSWAL.php"?>
     <script src="../../js/admin.js"></script>
 </body>
 </html>

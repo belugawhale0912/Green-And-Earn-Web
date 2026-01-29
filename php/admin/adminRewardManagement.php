@@ -10,14 +10,12 @@
     $sqlPending = "SELECT * FROM reward WHERE status='pending' ORDER BY reward_ID ASC";
     $resultPending = mysqli_query($dbConn, $sqlPending);
     
-    if($filter == "Approved"){
-        $sql = "SELECT * FROM reward WHERE status = 'Approved'";
-        }else if($filter == "Available"){
-            $sql = "SELECT * FROM reward WHERE status = 'Available'";
+    if($filter == "Available"){
+        $sql = "SELECT * FROM reward WHERE status = 'Available'";
         }else if($filter == "Deactivated"){
             $sql = "SELECT * FROM reward WHERE status = 'Deactivated'";
         }else{
-            $sql = "SELECT * FROM reward WHERE status IN ('Approved','Available','Deactivated') ORDER BY reward_id ASC";
+            $sql = "SELECT * FROM reward WHERE status IN ('Available','Deactivated') ORDER BY reward_id ASC";
         }
     $resultComplete = mysqli_query($dbConn, $sql);
                  
@@ -27,17 +25,23 @@
             $reward_id = $_POST['reward_id'];
             $admin_id = $_SESSION['user_id'];
 
-            $sql = "UPDATE reward SET status = 'Approved', admin_id = $admin_id WHERE reward_id = $reward_id";
+            $sql = "UPDATE reward SET status = 'Available', admin_id = $admin_id WHERE reward_id = $reward_id";
             if(mysqli_query($dbConn, $sql)){
-                echo "<script>
-                        alert('Successfully Approved Reward! :)')
-                        window.location.href = '../admin/adminRewardManagement.php'
-                    </script>";
+                $_SESSION['popupMessage']=[
+                        'title' => 'Success',
+                        'text' => 'Approved Reward Successfully',
+                        'icon' => 'success'
+                    ];
+                    header("Location: ../admin/adminRewardManagement.php ?view=$view");
+                    exit();
             }else{
-                echo("<script>
-                        alert('Error!');
-                        window.location.href = '../admin/adminRewardManagement.php';
-                    </script>"); 
+                $_SESSION['popupMessage']=[
+                        'title' => 'Error',
+                        'text' => 'Failed to Approve Reward',
+                        'icon' => 'error'
+                    ];
+                    header("Location: ../admin/adminRewardManagement.php ?view=$view");
+                    exit();
             }
         }
         if(isset($_POST['rejectBtn'])){
@@ -47,34 +51,49 @@
             $sql = "UPDATE reward SET status = 'Rejected', admin_id = $admin_id WHERE reward_id = $reward_id";
 
             if(mysqli_query($dbConn, $sql)){
-                echo "<script>
-                        alert('Successfully Rejected Reward! :)')
-                        window.location.href = '../admin/adminRewardManagement.php'
-                    </script>";
+                $_SESSION['popupMessage']=[
+                        'title' => 'Success',
+                        'text' => 'Rejected Reward Successfully',
+                        'icon' => 'success'
+                    ];
+                    header("Location: ../admin/adminRewardManagement.php ?view=$view");
+                    exit();
             }else{
-                echo("<script>
-                        alert('Error!');
-                        window.location.href = '../admin/adminRewardManagement.php';
-                    </script>"); 
+                $_SESSION['popupMessage']=[
+                        'title' => 'Error',
+                        'text' => 'Failed to Reject Reward',
+                        'icon' => 'error'
+                    ];
+                    header("Location: ../admin/adminRewardManagement.php ?view=$view");
+                    exit();
             }
         }
+
         if(isset($_POST['activateBtn'])){
             $reward_id = $_POST['reward_id'];
             $admin_id = $_SESSION['user_id'];
 
             $sql = "UPDATE reward SET status = 'Available', admin_id = $admin_id WHERE reward_id = $reward_id";
+
             if(mysqli_query($dbConn, $sql)){
-                echo "<script>
-                        alert('Successfully Activated Reward! :)')
-                        window.location.href = '../admin/adminRewardManagement.php'
-                    </script>";
+                $_SESSION['popupMessage']=[
+                        'title' => 'Success',
+                        'text' => 'Activated Reward Successfully',
+                        'icon' => 'success'
+                    ];
+                    header("Location: ../admin/adminRewardManagement.php ?view=$view");
+                    exit();
             }else{
-                echo("<script>
-                        alert('Error!');
-                        window.location.href = '../admin/adminRewardManagement.php';
-                    </script>"); 
+                $_SESSION['popupMessage']=[
+                        'title' => 'Error',
+                        'text' => 'Failed to Activate Reward',
+                        'icon' => 'error'
+                    ];
+                    header("Location: ../admin/adminRewardManagement.php ?view=$view");
+                    exit();
             }
         }
+    
         if(isset($_POST['deactivateBtn'])){
             $reward_id = $_POST['reward_id'];
             $admin_id = $_SESSION['user_id'];
@@ -82,15 +101,21 @@
             $sql = "UPDATE reward SET status = 'Deactivated', admin_id = $admin_id WHERE reward_id = $reward_id";
 
             if(mysqli_query($dbConn, $sql)){
-                echo "<script>
-                        alert('Successfully Deactivated Reward! :)')
-                        window.location.href = '../admin/adminRewardManagement.php'
-                    </script>";
+                $_SESSION['popupMessage']=[
+                        'title' => 'Success',
+                        'text' => 'Deactivated Reward Successfully',
+                        'icon' => 'success'
+                    ];
+                    header("Location: ../admin/adminRewardManagement.php ?view=$view");
+                    exit();
             }else{
-                echo("<script>
-                        alert('Error!');
-                        window.location.href = '../admin/adminRewardManagement.php';
-                    </script>"); 
+                $_SESSION['popupMessage']=[
+                        'title' => 'Error',
+                        'text' => 'Failed to Deactivate Reward',
+                        'icon' => 'error'
+                    ];
+                    header("Location: ../admin/adminRewardManagement.php ?view=$view");
+                    exit();
             }
         }
     }
@@ -101,7 +126,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reward Management</title>
-
+    <link rel="icon" href="/Green-Earn-Web/favicon.ico">
     <link rel="stylesheet" href="../../css/header.css">
     <link rel="stylesheet" href="../../css/style.css">
     <link rel="stylesheet" href="../../css/admin.css">
@@ -110,19 +135,16 @@
     <?php 
         include "../include/header.php"; 
     ?>
-    <h2>Reward Management</h2>
+    <h2 class="pageTitle">Reward Management</h2>
 
-    <!-- <div class="tabs">
-        <button class="tab active" data-target="pendingTable">Pending Rewards</button>
-        <button class="tab" data-target="approvedTable">Approved Rewards</button>
-    </div> -->
+    <div class="viewToggle">
+        <a href="?view=pendingPage" class="<?php echo ($view == 'pendingPage')? 'active':'' ?>">Pending Rewards</a>
+        <a href="?view=approvedPage" class="<?php echo ($view == 'approvedPage')? 'active':'' ?>">Approved Rewards</a>
+    </div>
 
-    <a href="?view=pendingPage" class="<?php echo ($view == 'available')? 'active':'' ?>">Pending Rewards</a>
-    <a href="?view=approvedPage" class="<?php echo ($view == 'available')? 'active':'' ?>">Approved Rewards</a>
-
-    <?php if(isset($_GET['view'])&&$_GET['view']=='pendingPage'):?>
+    <?php if($view=='pendingPage'):?>
         <div id="pendingTable">
-            <h3>Pending Rewards Table</h3>
+            <h3 class="tableTitle">Pending Rewards Table</h3>
                 <?php if(mysqli_num_rows($resultPending)>0):?>
                     <table>
                         <thead>
@@ -135,7 +157,7 @@
                                 <th></th> <!-- Approve -->
                                 <th></th> <!-- Reject -->
                             </tr>
-                        </thead>
+                        </thead>   
                         <tbody>
                             <?php while($reward_info = mysqli_fetch_assoc($resultPending)):?>
                                 <tr>
@@ -143,7 +165,7 @@
                                     <td data-label="Title"><?php echo $reward_info['title'];?></td>
                                     <td data-label="Description"><?php echo $reward_info['description'];?></td>
                                     <td data-label="Required Points"><?php echo $reward_info['required_points'];?></td>
-                                    <td data-label="Status"><?php echo $reward_info['status'];?></td>
+                                    <td data-label="Status"><p class="rewardStatus <?php echo $reward_info['status']?>"><?php echo $reward_info['status'];?></p></td>
                                     <td data-label="Approve Button"> 
                                     <!--Approve Button -->
                                         <form method="POST">
@@ -164,20 +186,18 @@
                 </table>
             <?php endif; ?>
         </div>
-    <?php elseif(isset($_GET['view'])&&$_GET['view']=='approvedPage'):?>
+    <?php elseif($view=='approvedPage'):?>
         <div id="approvedTable">
-            <h3>Approved Rewards Table</h3> 
+            <h3 class="tableTitle">Approved Rewards Table</h3> 
             <form method="GET" id="filterForm">
                 <input type="hidden" name="view" value="approvedPage">
-                <label for="statusFilter">Filter:</label>
+                <label for="statusFilter"></label>
                 <select name="status" id="statusFilter" class="dropdown" onchange="this.form.submit()">
                     <option value="All" <?= $filter=='All'?'selected':'' ?>>All</option>
-                    <option value="Approved" <?= $filter=='Approved'?'selected':'' ?>>Approved</option>
                     <option value="Available" <?= $filter=='Available'?'selected':'' ?>>Available</option>                
                     <option value="Deactivated" <?= $filter=='Deactivated'?'selected':'' ?>>Deactivated</option>
                 </select>
             </form>
-            <hr>
                 <?php if(mysqli_num_rows($resultComplete)>0):?>
                     <table>
                         <thead>
@@ -197,19 +217,19 @@
                                         <td data-label="Title"><?php echo $reward_info['title'];?></td>
                                         <td data-label="Description"><?php echo $reward_info['description'];?></td>
                                         <td data-label="Required Points"><?php echo $reward_info['required_points'];?></td>
-                                        <td data-label="Status"><?php echo $reward_info['status'];?></td>
-                                        <td data-label="Activate/Deactivate Button"> 
-                                            <?php if($reward_info['status'] =='Approved'):;?>
-                                            <!--Activate Button -->
-                                                <form method="POST">
-                                                    <input type="hidden" name="reward_id" value="<?php echo $reward_info['reward_id'];?>">
-                                                    <button type="submit" name="activateBtn" class="activateBtn">Activate</button>
-                                                </form>
-                                                <?php elseif($reward_info['status'] =='Available'):;?>
+                                        <td data-label="Status"><p class="rewardStatus <?php echo $reward_info['status']?>"><?php echo $reward_info['status'];?></p></td>
+                                        <td data-label="Deactivate Button"> 
+                                                <?php if($reward_info['status'] =='Available'):;?>
                                                 <!--Deactivate Button -->
                                                 <form method="POST">
                                                     <input type="hidden" name="reward_id" value="<?php echo $reward_info['reward_id'];?>">
                                                     <button type="submit" name="deactivateBtn" class="deactivateBtn">Deactivate</button>
+                                                </form>
+                                                <?php elseif($reward_info['status'] =='Deactivated'):;?>
+                                                <!--Deactivate Button -->
+                                                <form method="POST">
+                                                    <input type="hidden" name="reward_id" value="<?php echo $reward_info['reward_id'];?>">
+                                                    <button type="submit" name="activateBtn" class="activateBtn">Activate</button>
                                                 </form>
                                             <?php endif;?>
                                         </td>
@@ -220,6 +240,19 @@
                 <?php endif; ?>
             </div>
         <?php endif?>
-        <script src="../../js/admin.js"> </script>
+
+    <?php if (isset($_SESSION['popupMessage'])): ?>
+        <script>
+            Swal.fire({
+                title: <?= json_encode($_SESSION['popupMessage']['title']) ?>,
+                text: <?= json_encode($_SESSION['popupMessage']['text']) ?>,
+                icon: <?= json_encode($_SESSION['popupMessage']['icon']) ?>,
+                confirmButtonColor: '#3085d6'
+            });
+        </script>
+    <?php unset($_SESSION['popupMessage']); endif; ?>
+
+    <?php include "../include/showSWAL.php"?>
+    <script src="../../js/admin.js"> </script>
 </body>
 </html>

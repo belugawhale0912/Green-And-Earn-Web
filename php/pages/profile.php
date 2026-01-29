@@ -28,6 +28,7 @@
     <link rel="stylesheet" href="../../css/style.css">
     <link rel="stylesheet" href="../../css/layout.css">
     <title>Profile</title>
+    <link rel="icon" href="/Green-Earn-Web/favicon.ico">
 </head>
 <body>
     <?php
@@ -37,9 +38,7 @@
     <div class="profileCard">
         <img class="profileImg" src="<?php echo $profile_img?>" alt="Profile Photo"><br>
     </div>
-    <h4></h4>
     <button class="editBtn" onclick="openModal()">Edit Profile</button>
-    <h4></h4>
     <div class="list_container">
 
         <div class="list_card">

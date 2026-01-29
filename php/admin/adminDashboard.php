@@ -67,6 +67,7 @@
 }
 ?>
 
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <!DOCTYPE html>
@@ -75,7 +76,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard</title>
-    
+    <link rel="icon" href="/Green-Earn-Web/favicon.ico">
     <link rel="stylesheet" href="../../css/header.css">
     <link rel="stylesheet" href="../../css/style.css">
     <link rel="stylesheet" href="../../css/admin.css">
@@ -85,44 +86,48 @@
         include "../include/header.php"; 
     ?>
 
-    <h2>Dashboard</h2>
+    <h2 class="pageTitle">Dashboard</h2>
     <section id="stats" class="dashboardContainer">
-                <h3>Statistics</h3><br>
-                    <div class="cardContainer">
-                        <div class="cards">
-                            <h3><span class="statistics"><?php echo $rewardPendingCount?></span> <br>
-                                <span class="statLabel">Total Pending Rewards</span>
-                            </h3>
-                        </div>
-    
-                        <div class="cards">
-                            <h3><span class="statistics"><?php echo $rewardApprovedCount?></span> <br>
-                                <span class="statLabel">Total Approved Rewards</span>
-                            </h3>
-                        </div>
-    
-                        <div class="cards">
-                            <h3><span class="statistics"><?php echo $rewardAvailableCount?></span> <br>
-                                <span class="statLabel">Total Available Rewards</span>
-                            </h3>
-                        </div>
-    
-                        <div class="cards">
-                            <h3><span class="statistics"><?php echo $activityCount?></span> <br> 
-                                <span class="statLabel">Total Active Activities</span>
-                            </h3>
-                        </div>
+        <div class="statsContainer">
+            <h3 class="statsTitle">Statistics</h3>
+                <div class="cardContainer">
+                    <div class="cards">
+                        <h3><span class="statistics"><?php echo $rewardPendingCount?></span>
+                            <span class="statLabel">Total Pending Rewards</span>
+                        </h3>
                     </div>
-            </div>
-        
+
+                    <div class="cards">
+                        <h3><span class="statistics"><?php echo $rewardApprovedCount?></span>
+                            <span class="statLabel">Total Approved Rewards</span>
+                        </h3>
+                    </div>
+
+                    <div class="cards">
+                        <h3><span class="statistics"><?php echo $rewardAvailableCount?></span>
+                            <span class="statLabel">Total Available Rewards</span>
+                        </h3>
+                    </div>
+
+                    <div class="cards">
+                        <h3><span class="statistics"><?php echo $activityCount?></span>
+                            <span class="statLabel">Total Active Activities</span>
+                        </h3>
+                    </div>
+                </div>
+        </div>
             <div class="chartContainer">
                 <div class="memberChartWrapper">
-                    <h3>Users Distribution</h3><br>
-                    <canvas id="memberChart"></canvas>
+                    <h3 class="statsTitle">User Distribution</h3>
+                        <div>
+                            <canvas id="memberChart"></canvas>
+                        </div>
                 </div>
                 <div class="pointChartWrapper">
-                    <h3>Points Distribution</h3><br>
-                    <canvas id="pointChart"></canvas>
+                    <h3 class="statsTitle">Points Distribution</h3>
+                        <div>
+                            <canvas id="pointChart"></canvas>
+                        </div>
                 </div>
             </div>
         <script>
@@ -140,7 +145,7 @@
                 },
                 options: {
                     responsive: true,
-                    maintainAspectRatio: false
+                    maintainAspectRatio: false,
                 }
             });
         </script>

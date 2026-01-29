@@ -345,24 +345,16 @@ tbody tr:last-of-type{
     color: #3c720a;
 }
 
-.editBtn{
-    background-color: #304e00;
-    border-color: #304e00;
+.editBtn, .logoutBtn {
+    background-color: var(--clr-primary-a40);
+    ;
+    border-color: var(--clr-primary-a50);
     color: white;
     padding: 12px 16px;
     text-align: center;
     border-radius: 999px;
     font-weight: bold;
-}
-
-.logoutBtn{
-    background-color: #304e00;
-    border-color: #304e00;
-    color: white;
-    padding: 12px 16px;
-    text-align: center;
-    border-radius: 999px;
-    font-weight: bold;
+    margin-bottom: 15px;
 }
 
 .profileCard{
@@ -381,7 +373,7 @@ tbody tr:last-of-type{
     height: 300px;
     object-fit: cover;
     border-radius: 30px;
-    border: 2px solid #304e00;
+    border: 2px solid var(--clr-surface-tonal-a20);
 }
 
 .list_container{
@@ -394,8 +386,9 @@ tbody tr:last-of-type{
 .list_card{
     width: 650px;
     border: 2px solid;
-    border-color: var(--fs);
+    border-color: var(--clr-surface-tonal-a10);
     border-radius: 10px;
+    background-color: var(--clr-surface-tonal-a0);
     padding: 0;
     text-align: center;
     box-sizing: border-box;
@@ -409,5 +402,17 @@ tbody tr:last-of-type{
 
     .modalContent form{
     max-width: 300px;
+    }
+
+    .list_card {
+        width: 400px;
+    }
+
+    .title {
+        font-size: 80%;
+    }
+
+    .subject {
+        font-size: 80%;
     }
 }
