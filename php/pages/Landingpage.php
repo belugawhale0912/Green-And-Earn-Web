@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bitcount+Prop+Single:wght@100..900&display=swap" rel="stylesheet">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Green&Earn</title>
@@ -19,8 +22,10 @@
      ?>
 
     <section id="hero">
-        <h1>Welcome To Green&Earn, Where Your Gamified Eco Quest Begin</h1>
-        <img id="topBanner" src="../../assets/placeholder.jpg" alt="hero_img">
+        <div id="imageHolder">
+            <h1 id="pageTitle">Welcome To Green & Earn, Where Your Gamified Eco Quest Begins</h1>
+            <img id="topBanner" src="../../assets/placeholder.jpg" alt="hero_img">
+        </div>
     </section>
 
 
