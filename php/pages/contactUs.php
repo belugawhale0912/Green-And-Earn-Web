@@ -48,6 +48,10 @@
     <script src="../../js/customSwal.js"></script>
     <?php include "../include/header.php"; ?>
 
+    <div id="backContainer">
+        <a id="backLink" href="Landingpage.php">Back</a>
+    </div>
+
     <h2>Contact Our Team</h2>
     <p class="description">Got any questions or inquiries about our platform? We're here to help. Chat with us now!</p>
     
@@ -64,7 +68,7 @@
                 <input type="text" name="email" id="email" placeholder="you@email.com" required>
 
                 <label for="Phone Number">Phone Number</label>
-                <input type="text" name="phoneNumber" id="phoneNumber" placeholder="+(60)00-000-0000" required>
+                <input type="text" name="phoneNumber" id="phoneNumber" placeholder="Contact Number" required>
 
                 <label for="Message">Message</label>
                 <textarea name="message" id="message" placeholder="Leave us a message..." required></textarea>

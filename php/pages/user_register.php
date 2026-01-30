@@ -17,22 +17,18 @@
         include "../include/conn.php";
 
         $sql = "INSERT INTO user(username,role_id,password_hash,email)
-                VALUES('$username','$role_id','$password_hash','$email')";
+                VALUES('$username','$role_id','$password_hash','$email','profile_photo')";
 
-        mysqli_query($dbConn, $sql);
+        if(mysqli_query($dbConn, $sql)){
+            $_SESSION['popupMessage']=[
+                'title' =>'Success',
+                'text' => 'Account Created Successfully',
+                'icon' => 'Success'
+            ];
 
-        if (mysqli_affected_rows($dbConn) == 0) {
-            die("<script>alert('Error While Adding User!')</script>");
+            header("Location: login.php");
+            exit();
         }
-
-        $_SESSION['popupMessage']=[
-            'title' => 'Error!',
-            'text' => 'Invalid Password',
-            'icon' => 'error'
-        ];
-
-        header("Location: login.php");
-        exit();
     }
 ?>
 
@@ -70,5 +66,6 @@
         </form>
     </div>
     <?php include "../include/showSWAL.php";?>
+    <script src="../../js/header.js"></script>
 </body>
 </html>

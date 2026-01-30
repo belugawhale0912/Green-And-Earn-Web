@@ -324,7 +324,7 @@
 
 .historyContent {
     flex-grow: 1; 
-    text-align: left;
+    /* text-align: left; */
     align-self: flex-start;
     padding-left: 20px;
     display: flex;

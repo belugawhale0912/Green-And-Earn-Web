@@ -90,7 +90,7 @@
         </div>
 
         <div id="right_pane">
-            <img src="../../assets/placeholder.jpg" alt="">
+            <img src="../../assets/login.jpg" alt="">
         </div>
     </div>
 
