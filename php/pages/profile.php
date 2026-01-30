@@ -16,7 +16,6 @@
     }
 
     $profile_img = !empty($user_info['profile_photo']) ? $user_info['profile_photo']:"../../uploads/profileImg/Placeholder.png";
-
 ?>
 
 <!DOCTYPE html>

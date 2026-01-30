@@ -358,7 +358,7 @@ tbody tr:last-of-type{
     background-color: var(--clr-primary-a40);
     ;
     border-color: var(--clr-primary-a50);
-    color: white;
+    color: var(--text-main-invert);
     padding: 12px 16px;
     text-align: center;
     border-radius: 999px;

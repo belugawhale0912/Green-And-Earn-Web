@@ -9,9 +9,9 @@
         $message = $_POST["message"];
 
         $sql = "INSERT INTO contact_us(firstName, lastName, email, phoneNumber, message) VALUES ('$firstName', '$lastName', '$email', '$phoneNumber', '$message')";
-        mysqli_query($dbConn, $sql);
+        $result = mysqli_query($dbConn, $sql);
 
-        if(mysqli_query($dbConn, $sql)){
+        if($result){
             $_SESSION['popupMessage']=[
                 'title' => 'Success',
                 'text' => 'Message Successfully Delivered',
@@ -54,7 +54,6 @@
 
     <h2>Contact Our Team</h2>
     <p class="description">Got any questions or inquiries about our platform? We're here to help. Chat with us now!</p>
-    
     <div class="big_container">
         <div class="form_container">
             <form action="" method="POST">

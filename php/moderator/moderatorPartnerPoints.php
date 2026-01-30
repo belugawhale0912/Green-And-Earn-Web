@@ -86,7 +86,7 @@
             if($success){
                 mysqli_commit($dbConn);
                 include "../include/badge_system.php";
-                checkPointBadges($dbConn, $submission_info['user_id']);
+                checkPointBadges($dbConn, $data['user_id']);
                 $_SESSION['popupMessage']=[
                     'title' => 'Success',
                     'text' => 'Points Awarded Successfully',

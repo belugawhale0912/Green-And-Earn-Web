@@ -130,11 +130,12 @@
     <link rel="stylesheet" href="../../css/header.css">
     <link rel="stylesheet" href="../../css/style.css">
     <link rel="stylesheet" href="../../css/admin.css">
+    <?php include "../include/libraries.php";?>
 </head>
 <body>
-    <?php 
-        include "../include/header.php"; 
-    ?>
+    <script src="../../js/customSwal.js"></script>      
+    <?php include "../include/header.php"; ?>
+
     <h2 class="pageTitle">Reward Management</h2>
 
     <div class="viewToggle">

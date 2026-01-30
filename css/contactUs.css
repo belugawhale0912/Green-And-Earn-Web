@@ -1,3 +1,7 @@
+body {
+    overflow: hidden;
+}
+
 .big_container{
     display: flex;
     max-width: 80%;
@@ -61,14 +65,7 @@ textarea{
     background-color: var(--bg-body);
     border: 2px solid var(--border-main);
     padding-left: 10px;
-    transition: border 0.3s;
 }
-
-textarea:focus{
-    border-color: var(--clr-primary-a40);
-    outline: none;
-}
-
 
 .form_container input:focus{
     border-color: var(--clr-primary-a40);
@@ -86,6 +83,7 @@ textarea:focus{
     margin-left: auto;
     margin-right: auto;
     margin-top: 12px;
+    color: var(--text-main-invert);
 }
 
 button:hover{
@@ -96,6 +94,11 @@ button:hover{
 
 .contacts_container{
     text-align: left;
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-main);
+    border-radius: 20px;
+    padding-left: 20px;
+    padding-right: 20px;
 }
 
 .contacts_container h4{
