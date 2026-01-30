@@ -4,6 +4,13 @@ document.addEventListener("DOMContentLoaded", function() {
     const btnAddReward = document.querySelectorAll(".addRewardButton");
     const rewardModal = document.getElementById("rewardModal");
 
+    const rewardFilter = document.getElementById("statusFilter");
+    if(rewardFilter){
+        const rewardFilterForm = document.getElementById("filterForm");
+        rewardFilter.addEventListener("change", function(){
+            rewardFilterForm.submit();
+        });
+    }
 
     if(btnAddReward){
         btnAddReward.forEach(function(btn){

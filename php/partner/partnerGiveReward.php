@@ -31,12 +31,21 @@
             mysqli_stmt_bind_param($stmt, "i", $redemption_id);
 
             if(mysqli_stmt_execute($stmt)){
-                echo "<script> 
-                        alert('Reward Approved');
-                        window.location.href = '../partner/partnerGiveReward.php';
-                    </script>";
+                $_SESSION['popupMessage']=[
+                    'title' => 'Success',
+                    'text' => 'Reward Approved!',
+                    'icon' => 'success'
+                ];
+                header("Location: partnerGiveReward.php");
+                exit();
             }else{
-                echo"Error";
+                $_SESSION['popupMessage']=[
+                    'title' => 'Failed',
+                    'text' => 'Failed to Approve Reward!',
+                    'icon' => 'error'
+                ];
+                header("Location: partnerGiveReward.php");
+                exit();
             }
         }
 
@@ -99,10 +108,22 @@
 
                 if($success){
                     mysqli_commit($dbConn);
-                    echo "<script>alert('Reward Rejected & Points Refunded.'); window.location.href = 'partnerGiveReward.php';</script>";
+                    $_SESSION['popupMessage']=[
+                        'title' => 'Success',
+                        'text' => 'Reward Rejected!<br>Points Refunded.',
+                        'icon' => 'success'
+                    ];
+                    header("Location: partnerGiveReward.php");
+                    exit();
                 } else {
                     mysqli_rollback($dbConn);
-                    echo "<script>alert('Error processing refund.'); window.location.href = 'partnerGiveReward.php';</script>";
+                    $_SESSION['popupMessage']=[
+                        'title' => 'Failed',
+                        'text' => 'Error Processing Refund.',
+                        'icon' => 'error'
+                    ];
+                    header("Location: partnerGiveReward.php");
+                    exit();
                 }
             }
         }
@@ -119,9 +140,11 @@
     <link rel="stylesheet" href="../../css/style.css">
     <link rel="stylesheet" href="../../css/layout.css">
     <link rel="stylesheet" href="../../css/partner.css">
+    <?php include "../include/libraries.php";?>
     <title>Document</title>
 </head>
 <body>
+    <script src="../../js/customSwal.js"></script>
     <?php
         include "../include/header.php";    
     ?>
@@ -152,5 +175,6 @@
             echo("<p>No Pending Redemption!</p>");?>
         <?php endif;?>
     </div>
+    <?php include "../include/showSWAL.php"?>
 </body>
 </html>
