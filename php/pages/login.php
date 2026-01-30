@@ -94,19 +94,8 @@
         </div>
     </div>
 
-    <?php if(isset($_SESSION['popupMessage'])):?>
-        <script>
-            CustomSwal.fire({
-                title: "<?php echo $_SESSION['popupMessage']['title']?>",
-                text: "<?php echo $_SESSION['popupMessage']['text']?>",
-                icon: "<?php echo $_SESSION['popupMessage']['icon']?>",
-                confirmButtonText: 'Try Again',
-                heightAuto: false
-            });
-        </script>
-        <?php unset($_SESSION['popupMessage'])?>
-    <?php endif;?>
 
+    <?php include "../include/showSWAL.php";?>
     <script src="../../js/login.js"></script>
     <script src="../../js/header.js"></script>
 </body>

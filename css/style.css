@@ -271,7 +271,7 @@ tbody tr:last-of-type{
     border-radius: 10px;
     text-align: center;
     /* Scroll, set max height to 80% of view and overflow enable scrollbar */
-    height: 80vh;
+    height: 70vh;
     overflow-y: auto;
     border-radius: 10px;
 }
@@ -397,7 +397,7 @@ tbody tr:last-of-type{
 @media(max-width:800px){
     .modalContent{
         height: 70vh;
-        margin: 40% auto;
+        margin: 25% auto;
     }
 
     .modalContent form{

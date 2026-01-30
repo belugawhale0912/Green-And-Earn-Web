@@ -1,53 +1,184 @@
-body{
+/* --- SIMPLIFIED HERO SECTION --- */
+#hero {
+    /* 1. Size & Spacing */
+    width: 100%;
+    height: 90vh; /* Fixed height */
+    padding: 0 20px; /* Padding prevents text from hitting edge on mobile */
+    box-sizing: border-box; 
+    
+    background-image: url('../assets/placeholder.jpg');
+    box-shadow: inset 0 0 0 1000px var(--clr-backdrop); 
+
+    
+    /* 3. Background Settings */
+    background-size: cover;   /* Ensures image covers the whole box */
+    background-position: center; /* Centers the image */
+    background-repeat: no-repeat;
+    
+    display: flex;
+    align-items: center;   
+    justify-content: center; 
     text-align: center;
 }
 
-#imageHolder{
-    background: rgba(0, 0, 0, 0.836);
-    opacity: 90%;
-    z-index: 600;
+/* --- HERO TEXT STYLING --- */
+#hero h1 {
+    color: #ffffff;
+    font-size: 3.5rem;
+    font-weight: 800;
+    line-height: 1.2;
+    max-width: 900px;
+    margin: 0;
+    
+    /* Text Shadow to ensure readability */
+    text-shadow: 0 4px 15px rgba(0,0,0,0.5);
+    
+    /* Optional Animation */
+    animation: fadeUp 1s ease-out;
 }
 
-#topBanner{
-    position: relative;
-    width: 98%;
-    height: auto;
-    border-radius: 20px;
+
+.stepContainer{
+    display: flex;
+    justify-content: space-evenly;
+    flex-wrap: wrap;
+    gap: 20px;
+    padding: 20px;
 }
 
-#pageTitle{
-    position: absolute;
-    color: var(--clr-primary-a50);
-    margin-left: 70px;
-    z-index: 800;
-    font-family: "Bitcount Prop Single";
-    font-size: 55px;
-    font-weight: bold;
+.stepCards{
+    display: flex;
+    flex-grow: 1;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 300px;
+    width: 30%;
+    min-width: 300px;
+    max-width: 90%;
+    background-color: var(--bg-highlight);
+    border-radius: 15px;
+    border: 1px solid var(--clr-primary-a10);
+    color: white;
+    overflow: hidden;
+    background-size: cover;
 }
 
-#impact_stats{
+.stepCards h1{
+    color: #3d573a;
+}
+
+.step1{
+    background-image: url('../assets/placeholder.jpg');
+    box-shadow: inset 0 0 0 1000px rgba(37, 39, 37, 0.7); 
+}
+
+.step2{
+    background-image: url('../assets/placeholder.jpg'); 
+    box-shadow: inset 0 0 0 1000px rgba(37, 39, 37, 0.7); 
+}
+
+.step3{
+    background-image: url('../assets/placeholder.jpg'); 
+    box-shadow: inset 0 0 0 1000px rgba(37, 39, 37, 0.7); 
+}
+
+.stepNumber{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 70px;
+    width: 70px;
+    background-color: var(--clr-primary-a10);
+    border-radius: 999px;
+}
+
+.impact_stats{
     display: flex;
     flex-direction: column;
+    gap: 20px;
     align-items: center;
-    gap: 15px;
 }
 
-#impact_stats .cards{
-    width: 100%;
-    max-width: 400px;
-    box-sizing: border-box;
+.impactCards{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    height: 200px;
+    width: 80%;
+    max-width: 600px;
+    background-color: var(--clr-primary-a10);
+    border-radius: 30px;
+
+}
+
+.impactCards h3{
+    font-size: 3rem;
+}
+
+.impactCards p{
+    font-size: 2rem;
+}
+
+.partnercontainer{
+    display: flex;
+    flex-wrap: wrap;
+    width: 90%;
+    margin: 0 auto;
+    gap: 10px;
 }
 
 .partner_card{
-    border: 1px black solid;
-    width: 150px;
-    padding: 10px;
+    min-width: 300px;
+    flex: 1;
+    border-radius: 20px;
+    background-size: cover;   
+    background-position: center; 
+    background-repeat: no-repeat;
+    height: 500px;
+    box-shadow: inset 0 0 0 1000px rgba(65, 65, 65, 0.438); 
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-section{
-    margin: 10px 0;
+.partner_card h3{
+    font-size: 3rem;
+    color: white;
 }
 
-#rewards_partners{
-    justify-self: center;
+.blabla{
+    background-image: url('../assets/blablaMart.png');
+}
+
+.rito{
+    background-image: url('../uploads/profileImg/ritoGame.jpg'); 
+}
+
+.apu{
+    background-image: url('../uploads/profileImg/apu.jpg');
+}
+
+/* Responsive Tweaks */
+@media (max-width: 768px) {
+    
+    #hero h1 {
+        font-size: 2rem; /* Smaller text on mobile */
+    }
+
+    .impactCards h3{
+        font-size: 2.2rem;
+    }
+
+    .impactCards p{
+        font-size: 1.2rem;
+    }
+}
+
+/* Simple fade up animation */
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
 }

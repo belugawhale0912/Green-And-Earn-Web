@@ -91,6 +91,7 @@
                 mysqli_commit($dbConn);
                 include "../include/badge_system.php";
                 checkTaskBadges($dbConn, $submission_info['user_id']);
+                checkPointBadges($dbConn, $submission_info['user_id']);
                 $_SESSION['popupMessage']=[
                     'title' => 'Success',
                     'text' => 'Points Awarded Successfully',
@@ -195,6 +196,11 @@
     <!-- Popup window -->
     <div id="submissionPopup" class="modal">
         <div class="modalContent" id=submissionModal>
+            <button class="closeModalBtn" id="closeModalBtn">
+                <svg width="30px" height="30px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M19 5L4.99998 19M5.00001 5L19 19" stroke="#1a5021" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </button>
             <h1>Review Submission</h1>
             <div id="submissionInfo">
                 <p>Username: <span id="popupUsername"></span></p>

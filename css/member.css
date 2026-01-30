@@ -4,20 +4,118 @@
     box-sizing: border-box;
 }
 
-
-h2{
-    color: var(--text);
-}
-
-h3{
-    color: var(--text-muted);
-}
-
 .modalContent{
     border-radius: 20px;
 }
 
+.card{
+    background-color: var(--bg-highlight);
+    border: 1px solid var(--clr-surface-a40);
+    transition: background-color 0.5s;
+}
 
+.filter{
+    width: 50%;
+    max-width: 400px;
+    height: 30px;
+    border-radius: 10px;
+    border: 2px solid var(--clr-primary-a20);
+    margin-bottom: 20px;
+    background-color: var(--clr-surface-a10);
+    color: var(--text-main);
+}
+
+
+.viewToggle {
+    margin: 20px auto;
+    width: 80%;
+    max-width: 500px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    
+    background-color: var(--clr-surface-a20); 
+    border-radius: 50px;
+    padding: 5px; 
+}
+
+.viewToggle a {
+    flex: 1; 
+    text-align: center;
+    text-decoration: none;
+    padding: 10px 0; 
+    color: var(--text-muted); /* Gray text when not selected */
+    border-radius: 40px;
+    transition: all 0.3s ease;
+}
+
+/* HOVER STATE */
+.viewToggle a:hover {
+    color: var(--clr-primary-a40);
+    background-color: var(--clr-surface-a10); 
+}
+
+/* When selected */
+.viewToggle a.active {
+    background-color: var(--clr-surface-a10); 
+    border: 2px solid var(--clr-primary-a40);
+    color: var(--clr-primary-a50);
+    font-weight: bold;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1); 
+}
+
+.closeModalBtn{
+    align-self: flex-end;
+    border: none;
+    background-color: transparent;
+    width: 50px;
+    height: 50px;
+    cursor: pointer;
+}
+
+
+
+/* Dashboard */
+.dashboardContainer{
+    margin: 0 auto;
+    width: 90%;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.chartContainer{
+    display: flex;
+    gap: 10px;
+    width: 100%;
+}
+
+.chartCard{
+    flex-grow: 1;
+    border-radius: 20px;
+    padding: 20px;
+}
+
+.canvas-container {
+    position: relative;
+    height: 250px; 
+    width: 100%;
+}
+
+.quickAccess{
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.quickAccessCard{
+    flex-grow: 1;
+    border-radius: 20px;
+    padding: 10px;
+}
 
 
 /* Tasklist Page */
@@ -29,35 +127,32 @@ h3{
 .taskCard{
     margin-bottom: 20px;
     align-self: center;
-    background-color: var(--bg-dark);
     border-radius: 25px;
-    width: 95%;
+    width: 80%;
     display: flex;
     flex-direction: column;
     text-align: left;
     padding: 20px;
-    border: 1px solid var(--border);
-
     transition: all 0.5s;
 }
 
-.taskCard:hover{
-    background-color: var(--primary);
-    color: white;
-}
-
 .taskCard button{
+    background-color: var(--clr-primary-a20);
     border-radius: 999px;
     align-self: flex-end;
-    width: 150px;
-    height: 40px;
+    width: 200px;
+    height: 50px;
+    font-size: 1.1rem;
+    transition: background-color 0.5s;
 }
 
 .taskCard button:hover{
-    background-color: black;
-    color: white;
+    background-color: var(--clr-primary-a0);
 }
 
+#submissionFilter{
+    margin-left: 10%;
+}
 
 #submissionModal{
     border-radius: 10px;
@@ -65,166 +160,305 @@ h3{
 }
 
 
-
 #submissionWindow{
+    width: 100%;
     display: flex;
     flex-direction: column;
+    align-items: center;
 }
 
-#submissionWindow p{
-    align-self: center;
+
+#activityPoints {
+    font-size: 1.1rem;
+    color: #fff;
+    background-color: #2e7d32; /* Badge background */
+    padding: 8px 16px;
+    border-radius: 50px; /* Pill shape */
+    margin: 0 0 30px 0;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+#activityDescription{
+    font-size: 1.1rem;
+    max-width: 700px;
     text-align: justify;
-    width: 80%;
 }
 
+#submitProofBtn{
+    background-color: var(--clr-primary-a50);
+    color: var(--text-main-invert);
+    font-size: 1rem;
+    font-weight: bold;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background-color 0.3s ease, transform 0.1s ease;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+#submitProofBtn:hover{
+    background-color: var(--clr-primary-a30);
+    transform: translateY(-2px);
+}
+
+.tstatusContainer{
+    display: flex;
+    align-items: center;
+}
+
+.taskStatus{
+    padding: 10px;
+    border-radius: 20px;
+    margin-left: 20px;
+    color: var(--text-main-invert);
+}
+
+
+.taskStatus.Pending{
+    background-color: var(--clr-info-a0);
+}
+
+.taskStatus.Approved{
+    background-color: var(--clr-success-a0);
+}
+
+.taskStatus.Rejected{
+    background-color: var(--clr-danger-a0);
+}
+
+
+#proofImg{
+    width: 80%;
+    max-width: 500px;
+    border-radius: 15px;
+    border: 2px solid var(--clr-primary-a10);
+}
 
 
 /* Reward Page */
 .rewardContainer {
     display: grid;
-    /* This magic line makes columns automatic! */
-    /* Min 250px wide. If screen is smaller, it wraps. */
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); 
+    margin: 0 auto;
+    max-width: 1400px;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); 
     gap: 20px; /* Space between cards */
-    padding: 20px;
-    /* background-color: var(--bg); */
+    padding: 30px;
 }
 
 
 .rewardCard {
-    background: white;
-    border: 1px solid var(--border);
-    border-radius: 8px;
+    border-radius: 10px;
     padding: 15px;
     text-align: center;
-    transition: transform 0.2s, box-shadow 0.2s;
     display: flex;       
     /* Flexbox to push button to bottom */
     flex-direction: column;
     height: 100%;        
-    /* Make all cards same height */
 }
 
-/* Hover Effect */
-.rewardCard:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-}
 
-/* --- 3. Product Image --- */
 .rewardCard img {
     width: 100%;
-    height: 180px;       /* Fixed height for uniformity */
-    object-fit: cover;   /* Crops image nicely without stretching */
+    height: 180px;      
+    object-fit: cover;  
     border-radius: 5px;
     margin-bottom: 10px;
 }
 
-/* --- 4. Typography --- */
+
 .rewardCard h2 {
     font-size: 1.2rem;
-    margin: 10px 0;
-    color: #333;
 }
 
 .rewardCard h3 {
     font-size: 0.9rem;
-    color: #666;
+    color: var(--text-main);
     flex-grow: 1; /* Pushes the price/button down */
     margin-bottom: 15px;
 }
 
-/* --- 6. The Button --- */
 .rewardCard button {
-    background-color: var(--highlight);
-    color: var(--border);
-    border: 1px solid var(--border);
+    background-color: var(--clr-primary-a0);
     padding: 10px;
     width: 100%;
     border-radius: 10px;
     cursor: pointer;
     font-weight: bold;
-    transition: all 0.5s;
+    transition: all 0.2s;
 }
 
 .rewardCard button:hover{
-    background-color: var(--primary);
-    color: white;
-    border: 1px solid var(--primary);
+    background-color: var(--clr-primary-a20);
 }
 
 
+.rewardHistoryContainer {
+    display: flex;
+    flex-direction: column; /* Stack them like a list */
+    gap: 15px;
+    width: 90%;
+    max-width: 1100px; /* Prevent them from getting too wide on huge screens */
+    margin: 0 auto 50px auto;
+}
+
+.historyCard {
+    display: flex; 
+    background-color: var(--bg-highlight);
+    border: 1px solid var(--clr-surface-a30);
+    border-radius: 15px;
+    height: 200px; /* Fixed height for consistency */
+    padding: 20px; /* Space for the right-side status */
+}
+
+
+.historyCard img {
+    width: 200px;
+    height: auto;
+    object-fit: cover;
+    border-radius: 15px;
+    border: 2px solid var(--clr-primary-a10);
+}
+
+
+.historyContent {
+    flex-grow: 1; 
+    text-align: left;
+    align-self: flex-start;
+    padding-left: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+
+.historyContent p {
+    color: var(--text-muted);
+}
+
+/* 3. Right: Status & Date */
+.historyStatus {
+    display: flex;
+    flex-direction: column;
+    align-self: flex-end;
+}
+
+.history-date {
+    color: var(--text-muted);
+    font-weight: bold;
+}
+
+/* Status Pill */
+.status-pill {
+    padding: 5px 15px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    color: var(--text-main-invert);
+}
+
+.status-pill.Approved{ 
+    background-color: var(--clr-success-a0);
+}
+
+.status-pill.Pending{
+    background-color: var(--clr-info-a0);
+}
+
+.status-pill.Refunded{
+    background-color: var(--clr-danger-a0);
+}
+
+
+
+
 /* Transaction Page */
+
 .transactionContainer{
     margin-top: 10px;
     display: flex;
     flex-direction: column;
     gap: 10px;
+    width: 80%;
+    max-width: 1100px;
+    margin: 0 auto;
 }
 
 .transactionCard{
+    display: flex;
+    justify-content: space-between;
     align-self: center;
-    width: 90%;
-    background-color: white;
-    border: solid 2px var(--border);
+    width: 100%;
     border-radius: 30px;
     padding: 20px;
 }
 
 .transactionInfo{
     display: flex;
-    justify-content: space-between;
-    align-items: center;
+    flex-direction: column; 
 }
+
+.transactionName{
+    text-align: left;
+    font-size: 1.2rem;
+}
+
+.transactionInfo h2{
+    color: var(--clr-primary-a30);
+}
+
+
+.tamountContainer{
+    display: flex;
+}
+
+.transactionType{
+    margin-left: 10px
+}
+.transactionType.Redemption{
+    color: var(--clr-danger-a0);
+}
+
+.transactionType.Earned, .transactionType.Refund{
+    color: var(--clr-success-a0);
+}
+
+.transactionTime{
+    text-align: right;
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
 
 
 /* Leaderboard */
-/* --- Leaderboard Container --- */
 .leaderboardContainer {
-    max-width: 900px;
+    max-width: 1000px;
     margin: 0 auto;
 }
 
-.leaderboardContainer h1{
-    margin-left: 0;
-    text-align: center;
-    display: block;
-}
 
-
-.leaderboardContainer h1::after{
-    display: block;
-    content: "";
-    width: 100%;
-    height: 5px;
-    background-color: #27ae60;
-}
-
-
-
-/* --- Top 3 Podium (The Steps) --- */
 .top3Container {
     display: flex;
     justify-content: center;
     align-items: flex-end; /* This aligns them at the bottom to create steps */
     gap: 15px;
-    margin-bottom: 40px;
     min-height: 400px; /* Ensure enough height for the tallest step */
+    width: 90%;
+    margin: 0 auto 20px auto;
 }
 
 .top3 {
     text-align: center;
     width: 30%;
-    background: white;
-    border-radius: 15px 15px 0 0; /* Rounded top only */
+    border-radius: 15px 15px 0 0; 
     padding: 20px 10px;
-    box-shadow: 0 -5px 15px rgba(0,0,0,0.1);
     position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: flex-end;
-    background-color: var(--bg-dark);
+    background-color: var(--bg-highlight);
+    border: 2px solid var(--border-main);
 }
 
 .top3 img {
@@ -232,21 +466,33 @@ h3{
     height: 100px;
     border-radius: 999px;
     object-fit: cover;
-    border: 3px solid white;
+    border: 3px solid var(--clr-primary-a20);
     margin-bottom: 10px;
     position: absolute;
     top: -100px; /* Floats the image above the box */
 }
 
+.rankNumber {
+    font-size: 3rem;
+    font-weight: bold;
+    opacity: 0.3;
+    position: absolute;
+    top: 0px;
+}
+
+.top3 p{
+    font-weight: bold;
+    color: var(--clr-primary-a10);
+}
 
 .top3.firstPlace {
-    height: 300px;
+    height: 290px;
     order: 2; /* Force it to the middle */
 }
 
 
 .top3.secondPlace {
-    height: 240px;
+    height: 250px;
     order: 1; /* Force it to the left */
 }
 
@@ -256,71 +502,81 @@ h3{
     order: 2; /* Force it to the right */
 }
 
-.rank-number {
-    font-size: 3rem;
-    font-weight: bold;
-    opacity: 0.3;
-    position: absolute;
-    top: 0px;
-}
+
 
 /* --- The Rest of the List --- */
 .leaderboardList {
-    background: white;
-    border-radius: 10px;
-    overflow: hidden;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 170px;
 }
 
 .listItem {
     display: flex;
     align-items: center;
     padding: 15px 20px;
-    border-bottom: 1px solid #eee;
-}
-
-.listItem:last-child {
-    border-bottom: none;
+    border-radius: 15px;
+    border: 1px solid var(--clr-surface-tonal-a30);
+    width: 90%;
+    margin: 0 auto;
+    background-color: var(--bg-card);
 }
 
 .listRank {
-    font-size: 1.2rem;
+    font-size: 1.5rem;
     font-weight: bold;
-    width: 40px;
-    color: #888;
+    width: 50px;
+    color: var(--clr-primary-a30);
 }
 
 .listImg {
-    width: 40px;
-    height: 40px;
+    width: 70px;
+    height: 70px;
     border-radius: 50%;
     object-fit: cover;
-    margin-right: 15px;
+    margin-left: 15px;
 }
 
 .listInfo {
+    margin-left: 5%;
+    text-align: left;
     flex-grow: 1;
 }
 
 .listPoints {
     font-weight: bold;
-    color: #27ae60;
+    color: var(--clr-primary-a10);
 }
+
+
+.myRankSticky {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: var(--bg-body);
+    padding: 10px 0;
+    z-index: 100; 
+    display: flex;
+    justify-content: center;
+}
+
+.myRankItem {
+    width: 90%;
+    max-width: 900px;
+    background-color: var(--bg-highlight); /* Light Green background to highlight */
+    border: 2px solid var(--clr-primary-a50); /* Dark Green border */
+    border-radius: 10px;
+    margin: 0; /* Override default listItem margin */
+}
+
+
+
+
+
 
 /* Firend Page */
-.viewToggle{
-    margin: 0 auto;
-    margin-top: 20px;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-evenly;
-    width: 80%;
-    max-width: 500px;
-    background-color: var(--bg-dark);
-    border-radius: 20px;
-    padding: 10px;
-}
-
 .friendContainer{
     margin: 0 auto;
     width: 80%;
@@ -330,30 +586,449 @@ h3{
     gap: 20px;
 }
 
-.friendCard{
+#friendSearch{
+    align-self: flex-start;
+    background-color: var(--clr-surface-a10);
+    border: 3px solid var(--clr-surface-tonal-a50);
+    color: var(--text-main);
     width: 100%;
-    height: 300px;
-    display: flex;
-    justify-content: space-between;
-    background-color: var(--bg);
+    height: 50px;
+    border-radius: 10px;
+    padding-left: 20px;
 }
 
-.friendCard form{
+#friendSearch:focus{
+    border: 3px solid var(--clr-primary-a20);
+    outline: none;
+}
+
+.friendCard{
+    width: 100%;
+    height: 280px;
+    display: flex;
+    border-radius: 20px;
+    background-color: var(--bg-highlight);
+}
+
+.friendCard h1{
+    flex-grow: 1;
+    align-self: center;
+    text-align: left;
+}
+
+.friendAction{
+    display: flex;
+    flex-wrap: wrap;
     align-self: flex-end;
-    margin: 50px;
+    justify-content: center;
+    margin: 20px;
+}
+
+.fCardButtons{
+    align-self: flex-end;
+    margin: 20px;
 }
 
 .friendCard button{
     height: 50px;
-    width: 100px;
+    width: 200px;
     border-radius: 30px;
+    background-color: var(--clr-primary-a0);
+    transition: all 0.5s;
+    font-weight: bold;
+    margin: 10px;
 }
 
-.friendCard img{
+.friendCard button:hover{
+    background-color: var(--clr-primary-a30);
+    cursor: pointer;
+}
+
+.friendpfp{
     width: 250px;
     height: 250px;
     padding: 20px;
     align-self: center;
     border-radius: 999px;
     border: 1px solid var(--highlight);
+    object-fit: cover;
+}
+
+/* --- Top Section (Header & PFP) --- */
+.fpTop {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    background-color: var(--clr-primary-a0);
+    border-bottom: 1px solid var(--clr-surface-tonal-a50);
+    border-radius: 20px;
+}
+
+.fpTop h1 {
+    margin: 0 0 20px 0;
+}
+
+
+/* Profile Picture styling */
+#friendImg {
+    width: 140px;
+    height: 140px;
+    border-radius: 50%; /* Perfect circle */
+    object-fit: cover; /* Prevents image distortion */
+    border: 4px solid #fff;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.15); /* Drop shadow for pop */
+    margin-bottom: 15px;
+}
+
+/* Username and Email container */
+#friendInfo {
+    text-align: center;
+}
+
+#friendInfo h3 {
+    margin: 5px 0;
+    font-size: 1rem;
+    color: #555;
+    font-weight: 500;
+}
+
+
+
+/* The dynamic text (spans) inside h3 */
+#friendInfo span {
+    font-weight: 700;
+    color: var(--clr-primary-a50);
+}
+
+/* --- Bottom Container (Grid Layout) --- */
+.fpContainer {
+    width: 100%;
+    display: grid;
+    /* Creates a responsive grid: 2 columns on wide screens, 1 on mobile */
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+    padding: 10px;
+    box-sizing: border-box; /* Ensures padding doesn't break width */
+}
+
+/* --- Info Cards --- */
+.fpCard {
+    background-color: var(--bg-highlight); /* Light grey background */
+    padding: 20px;
+    border-radius: 12px;
+    border: 1px solid var(--clr-primary-a0);
+    text-align: center;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Hover effect for cards */
+.fpCard:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    border-color: var(--clr-primary-a30); /* Green border on hover */
+}
+
+.fpCard h3{
+    margin-top: 0;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-muted);
+    margin-bottom: 5px;
+}
+
+/* Card Data */
+.fpCard p{
+    font-size: 1.1rem;
+    color: var(--clr-primary-a40);
+    font-weight: 600;
+    margin: 0;
+    line-height: 1.5;
+}
+
+#bio{
+    text-align: justify;
+    hyphens: auto;
+    color: var(--clr-primary-a40);
+}
+
+
+
+
+
+/* Profile Page */
+.profileImg{
+    border-radius: 999px;
+    border: 3px solid var(--clr-primary-a10);
+    margin-top: 20px;
+    width: 250px;
+    height: 250px;
+    object-fit: cover;
+}
+
+
+.profileBox{
+    display: flex;
+    width: 90%;
+    max-width: 1000px;
+    border-radius: 25px;
+    margin: 20px auto;
+    padding: 20px;
+}
+
+#editProfileBtn{
+    align-self: flex-end;
+    width: 180px;
+    height: 50px;
+    font-size: 1.1rem;
+    border-radius: 20px;
+    background-color: var(--clr-primary-a20);
+}
+
+.userinfo{
+    align-self: center;
+    margin-left: 25px;
+    text-align: left;
+    flex-grow: 1;
+}
+
+
+.profileContainer{
+    width: 90%;
+    max-width: 1000px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+
+.profileCard{
+    border-radius: 20px;
+    display: flex;
+    height: 180px;
+    width: 100%;
+    justify-content: space-between;
+    padding: 0 30px;
+}
+
+.pbadgeCard{
+    display: flex;
+    flex-direction: column;
+    border-radius: 20px;
+}
+
+.pbadgeCard h2{
+    align-self: flex-start;
+    margin-left: 30px
+}
+
+.pbadgeCard a{
+    align-self: flex-end;
+    margin: 20px;
+    font-size: 1.1rem;
+}
+
+.pbadgeContainer{
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.pbadge{
+    border-radius: 20px;
+    height: 200px;
+    width: 200px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.pbadge p{
+    font-weight: bold;
+}
+
+.pbadgeCard img{
+    width: 250px;
+}
+
+.logoutBtn{
+    margin: 20px;
+    width: 250px;
+    height: 60px;
+    font-weight: 900;
+    border-radius: 20px;
+    background-color: var(--clr-primary-a10);
+}
+
+.logoutBtn:hover{
+    background-color: var(--clr-primary-a40);
+}
+
+/* Bagde page */
+/* 2. The Grid Container */
+.badgeContainer {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 25px;
+    max-width: 1200px;
+    margin: 0 auto 50px auto;
+    padding: 0 20px;
+}
+
+/* 3. The Badge Card */
+.badgeCard {
+    transition: all 0.5s;
+    border-radius: 20px;
+    padding: 25px 20px;
+    text-align: center;
+    /* Flex layout to push the status box to the bottom */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100%; 
+}
+
+.badgeCard h3 {
+    margin: 10px 0 5px 0;
+    font-size: 1.1rem;
+    color: var(--text-main);
+}
+
+.badgeCard img{
+    width: 250px;
+}
+
+.badgeCard .desc {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin-bottom: 20px;
+    flex-grow: 1; /* Pushes the status box down */
+}
+
+.statusBox {
+    width: 100%;
+    height: 140px;
+    padding: 10px;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+
+/* Unlocked Style */
+.statusBox.earned {
+    background-color: rgba(46, 204, 113, 0.1); /* Light Green */
+    color: #2ecc71;
+    border: 1px solid #2ecc71;
+}
+
+/* Locked Style */
+.statusBox.lockedInfo {
+    background-color: rgba(0, 0, 0, 0.05); /* Light Gray */
+    color: #7f8c8d; /* Gray Text */
+    border: 1px solid #bdc3c7;
+}
+
+.badgeCard.locked img {
+    filter: grayscale(100%) opacity(0.5);
+}
+
+/* IF LOCKED: Make the card look "inactive" */
+.badgeCard.locked {
+    background-color: var(--clr-surface-a20); /* Slightly darker bg */
+    border: none;
+}
+
+/* IF UNLOCKED: Make it pop on hover */
+.badgeCard.unlocked:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(46, 204, 113, 0.15);
+    border-color: var(--clr-primary-a10);
+}
+
+
+/* Mobile Responsive */
+@media (max-width: 800px){
+    /* Task Page */
+    /* Force Charts to stack Top-Down */
+    .chartContainer {
+        flex-direction: column; 
+    }
+
+    /* Reset width constraints */
+    .chartCard, 
+    .quickAccessCard {
+        width: 100%; 
+        min-width: 0;
+    }
+
+    /* Transaction Page */
+    .transactionCard{
+        flex-direction: column;
+    }
+
+    .transactionInfo{
+        align-items: center;
+    }
+
+
+    /* Friend Page */
+    .friendCard{
+        flex-direction: column;
+        align-items: center;
+        height: fit-content;
+    }
+
+    .friendCard form{
+        align-self: center;
+    }
+
+    .historyCard {
+        flex-direction: column; /* Stack vertically on phones */
+        height: auto;
+        padding: 0 0 15px 0;
+        text-align: center;
+    }
+
+    .historyCard img {
+        width: 100%;
+        height: 150px;
+        border-right: none;
+        border-bottom: 1px solid #eee;
+    }
+
+    .historyContent {
+        padding: 15px;
+    }
+
+    .historyStatus {
+        align-items: center; /* Center align on mobile */
+        text-align: center;
+        width: 100%;
+    }
+
+    /* Profile Page */
+
+    .profileBox{
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .userinfo{
+        margin: 0;
+        text-align: center;
+    }
+
+    .profileCard{
+        flex-direction: column;
+    }
+
+    #editProfileBtn{
+        align-self: center;
+    }
 }

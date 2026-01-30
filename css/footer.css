@@ -1,18 +1,28 @@
 footer{
     background-color: var(--clr-surface-a10);
-    padding: 32px 16px;
     display: flex;
+    margin-top: 50px;
     flex-direction: column;
     align-items: center;
-    gap: 8px;
+    justify-content: center;
     text-align: center;
+    height: 170px;
 }
 
 footer h2{
+    margin-top: 10px;
+    font-size: 1.3rem;
     margin: 0;
-    font-size: 30px;
     color: var(--clr-primary-a50);
 }
+
+footer p{
+    font-size: 0.9rem;
+}
+
+#shortText{
+    text-align: justify;
+    hyphens: auto;}
 
 .tagline{
     font-size: 20px;
@@ -28,8 +38,3 @@ footer h2{
     margin-top: 6px;
 }
 
-.copyright{
-    margin-top: 16px;
-    font-size: 12px;
-    opacity: 0.6;
-}

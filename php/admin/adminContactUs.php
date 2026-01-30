@@ -3,7 +3,7 @@
     include "../include/session.php";
 
     $user_id = $_SESSION['user_id'];
-    $sql = "SELECT * FROM contact_us WHERE read = 0 ORDER BY contact_id ASC";
+    $sql = "SELECT * FROM contact_us WHERE mark_as_read = 0 ORDER BY contact_id ASC";
     $result = mysqli_query($dbConn, $sql);
 
     if($_SERVER["REQUEST_METHOD"] == "POST"){
@@ -11,7 +11,7 @@
             if($_POST['action'] == "markAsRead"){
                 $contact_id = $_POST['contact_id'];
 
-                $sql = "UPDATE contact_us SET read = 1 WHERE contact_id = $contact_id";
+                $sql = "UPDATE contact_us SET mark_as_read = 1 WHERE contact_id = $contact_id";
 
                 if(mysqli_query($dbConn, $sql)){
                     $_SESSION['popupMessage']=[
@@ -66,7 +66,7 @@
                             <th>Email</th>
                             <th>Phone Number</th>
                             <th>Message</th>
-                            <th></th> <!-- mark as read -->
+                            <th></th> <!-- mark as mark_as_read -->
                         </tr>
                     </thead>
                     <tbody>
@@ -76,7 +76,7 @@
                                 <td data-label="First Name"><?php echo $contact_info['firstName'];?></td>
                                 <td data-label="Last Name"><?php echo $contact_info['lastName'];?></td>
                                 <td data-label="Email"><?php echo $contact_info['email'];?></td>
-                                <td data-label="Phone Number"><?php echo $contact_info['poneNumber'];?></td>
+                                <td data-label="Phone Number"><?php echo $contact_info['phoneNumber'];?></td>
                                 <td data-label="Message"><?php echo $contact_info['message'];?></td>
                                 <td data-label="Mark As Read">
                                     <form method="POST">

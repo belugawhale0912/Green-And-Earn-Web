@@ -201,26 +201,7 @@ body#pointPage {
     gap: 15px;
 }
 
-.form-inputs label {
-    font-weight: 600;
-    color: var(--text-main);
-    font-size: 0.9rem;
-    margin-left: 5px;
-}
 
-.form-inputs input {
-    padding: 14px;
-    border: 2px solid var(--clr-surface-a20);
-    border-radius: 12px;
-    font-size: 1rem;
-    background: var(--clr-surface-a10);
-    transition: 0.3s;
-}
-
-.form-inputs input:focus {
-    border-color: var(--clr-primary-a10);
-    outline: none;
-}
 
 .submitBtn {
     margin-top: 25px;

@@ -86,8 +86,7 @@
             if($success){
                 mysqli_commit($dbConn);
                 include "../include/badge_system.php";
-                // TODO add checkPointBadges
-                // checkTaskBadges($dbConn, $submission_info['user_id']);
+                checkPointBadges($dbConn, $submission_info['user_id']);
                 $_SESSION['popupMessage']=[
                     'title' => 'Success',
                     'text' => 'Points Awarded Successfully',
@@ -190,6 +189,11 @@
 
 <div id="partnerPopup" class="modal">
     <div class="modalContent" id="partnerModal">
+        <button class="closeModalBtn" id="closeModalBtn">
+            <svg width="30px" height="30px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M19 5L4.99998 19M5.00001 5L19 19" stroke="#1a5021" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </button>
         <h1>Review Partner Points</h1>
         <div id=partnerInfo>
             <p>Member: <span id="partnerUsername"></span></p>

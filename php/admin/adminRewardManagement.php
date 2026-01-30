@@ -4,7 +4,7 @@
 
     $user_id = $_SESSION['user_id'];
     $filter = isset($_GET['status']) ? $_GET['status'] : 'All';
-    $view = isset($_GET['view']) ? $_GET['view'] : 'pendingPage';
+    $view = isset($_GET['view']) ? $_GET['view'] : 'approvedPage';
     
     // $sqlComplete = "SELECT * FROM reward WHERE status IN ('Approved', 'Available', 'Deactivated') ORDER BY reward_id ASC";
     $sqlPending = "SELECT * FROM reward WHERE status='Pending' ORDER BY reward_ID ASC";
@@ -138,8 +138,8 @@
     <h2 class="pageTitle">Reward Management</h2>
 
     <div class="viewToggle">
-        <a href="?view=pendingPage" class="<?php echo ($view == 'pendingPage')? 'active':'' ?>">Pending Rewards</a>
         <a href="?view=approvedPage" class="<?php echo ($view == 'approvedPage')? 'active':'' ?>">Approved Rewards</a>
+        <a href="?view=pendingPage" class="<?php echo ($view == 'pendingPage')? 'active':'' ?>">Pending Rewards</a>
     </div>
 
     <?php if($view=='pendingPage'):?>
@@ -240,17 +240,6 @@
                 <?php endif; ?>
             </div>
         <?php endif?>
-
-    <?php if (isset($_SESSION['popupMessage'])): ?>
-        <script>
-            Swal.fire({
-                title: <?= json_encode($_SESSION['popupMessage']['title']) ?>,
-                text: <?= json_encode($_SESSION['popupMessage']['text']) ?>,
-                icon: <?= json_encode($_SESSION['popupMessage']['icon']) ?>,
-                confirmButtonColor: '#3085d6'
-            });
-        </script>
-    <?php unset($_SESSION['popupMessage']); endif; ?>
 
     <?php include "../include/showSWAL.php"?>
     <script src="../../js/admin.js"> </script>
