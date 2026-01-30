@@ -18,7 +18,12 @@
         $amt_spent = $_POST['amt_spent'];
 
         if($amt_spent <= 0){
-            echo "<script>alert('Amount spent must be more than 0'); window.location.href = 'partnerPointAward.php';</script>";
+            $_SESSION['popupMessage']=[
+                'title' => 'Failed',
+                'text' => 'Amount spent must be more than 0!',
+                'icon' => 'error'
+            ];
+            header("Location: partnerPointAward.php");
             exit();
         }
 
@@ -32,7 +37,12 @@
         if($member_info = mysqli_fetch_assoc($result)){
             $member_id = $member_info['user_id']; 
         }else{
-            echo "<script>alert('User not found!'); window.location.href = 'partnerPointAward.php';</script>";
+            $_SESSION['popupMessage']=[
+                'title' => 'Error',
+                'text' => 'User Not Found!',
+                'icon' => 'error'
+            ];
+            header("Location: partnerPointAward.php");
             exit();
         }
         mysqli_stmt_close($stmt);
@@ -64,10 +74,13 @@
 
                     if(mysqli_stmt_execute($stmtInsert)){
                         mysqli_stmt_close($stmtInsert);
-                        echo "<script>
-                                alert('Success! Request sent to Moderator for approval.');
-                                window.location.href = 'partnerPointAward.php';
-                              </script>";
+                        $_SESSION['popupMessage']=[
+                            'title' => 'Success',
+                            'text' => 'Request Sent Successfully!',
+                            'icon' => 'success'
+                        ];
+                        header("Location: partnerPointAward.php");
+                        exit();
                     } 
                 } 
                 // Error while moving file
@@ -86,36 +99,38 @@
     <link rel="stylesheet" href="../../css/header.css">
     <link rel="stylesheet" href="../../css/style.css">
     <link rel="stylesheet" href="../../css/partner.css">
+    <?php include "../include/libraries.php";?>
     <title>Point Award</title>
 </head>
-<body id="pointPage">
+<body>
+    <script src="../../js/customSwal.js"></script>
     <?php
         include "../include/header.php";
     ?>
-    <div class="backgroundWrapper">
-        <img src="../../assets/partnerplaceholder2.jpg" alt="Background">
-        <div class="overlay"></div> </div>
+    <div class="background">
+        <div class="centeredContainer">
+            <div class="formCard">
+                <h2>Award Points</h2>
+                <p class="subtitle">Enter customer details below</p>
+                
+                <form action="" method="POST" enctype="multipart/form-data">
+                    <div class="form-inputs">
+                        <label for="username">Username</label>
+                        <input type="text" name="username" placeholder="Customer Username" required>
 
-    <div class="centeredContainer">
-        <div class="formCard floating">
-            <h2>Award Points</h2>
-            <p class="subtitle">Enter customer details below</p>
-            
-            <form action="" method="POST" enctype="multipart/form-data">
-                <div class="form-inputs">
-                    <label for="username">Username</label>
-                    <input type="text" name="username" placeholder="Customer Username" required>
+                        <label for="amt_spent">Amount Spent (RM)</label>
+                        <input type="number" name="amt_spent" step="0.01" placeholder="0.00" required>
 
-                    <label for="amt_spent">Amount Spent (RM)</label>
-                    <input type="number" name="amt_spent" step="0.01" placeholder="0.00" required>
+                        <label>Upload Receipt</label>
+                        <input type="file" name="receipt_img" required accept="image/*">
+                    </div>
 
-                    <label>Upload Receipt</label>
-                    <input type="file" name="receipt_img" required accept="image/*">
-                </div>
-
-                <button type="submit" class="submitBtn">Confirm Transaction</button>
-            </form> 
+                    <button type="submit" class="submitBtn">Confirm Transaction</button>
+                </form> 
+            </div>
         </div>
     </div>
+
+    <?php include "../include/showSWAL.php"?>
 </body>
 </html>

@@ -2,13 +2,31 @@
     include "../include/conn.php";
     include "../include/session.php";
 
+    $user_id = $_SESSION['user_id'];
+
+    $filter = isset($_GET['status']) ? $_GET['status'] : 'all';
+    if($filter == "Available"){
+        $sql = "SELECT * FROM reward WHERE partner_id = ? AND status = 'Available'";
+    }else if($filter == "Rejected"){
+        $sql = "SELECT * FROM reward WHERE partner_id = ? AND status = 'Rejected'";
+    }else if($filter == "Pending"){
+        $sql = "SELECT * FROM reward WHERE partner_id = ? AND status = 'Pending'";
+    }else if($filter == "Deactivated"){
+        $sql = "SELECT * FROM reward WHERE partner_id = ? AND status = 'Deactivated'";
+    }else{
+        $sql = "SELECT * FROM reward WHERE partner_id = ? AND status != 'Deleted' ORDER BY reward_id ASC";
+    }
+
+    $stmt_fetch = mysqli_prepare($dbConn, $sql);
+    mysqli_stmt_bind_param($stmt_fetch, "i", $user_id);
+    mysqli_stmt_execute($stmt_fetch);
+    $result = mysqli_stmt_get_result($stmt_fetch);
+
     // 1. ACCESS CONTROL
     if(!isset($_SESSION['role_id']) || $_SESSION['role_id'] != 4){ // Assuming Partner ID is 2
        header("Location: ../pages/Landingpage.php");
        exit();
     }
-
-    $user_id = $_SESSION['user_id'];
     
     if($_SERVER["REQUEST_METHOD"] == "POST"){
 
@@ -40,15 +58,21 @@
                             mysqli_stmt_bind_param($stmt, "issiis", $user_id, $title, $description, $required_points, $stock, $saveDir);
 
                             if(mysqli_stmt_execute($stmt)){
-                                echo("<script>
-                                        alert('Successfully Added Reward');
-                                        window.location.href = '../partner/partnerRewardList.php';
-                                    </script>");
+                                $_SESSION['popupMessage']=[
+                                    'title' => 'Success',
+                                    'text' => 'Successfully Added Reward!',
+                                    'icon' => 'success'
+                                ];
+                                header("Location: partnerRewardList.php");
+                                exit();
                             }else{
-                                echo("<script>
-                                        alert('Failed to Add Reward!');
-                                        window.location.href = '../partner/partnerRewardList.php';
-                                    </script>");
+                                $_SESSION['popupMessage']=[
+                                    'title' => 'Failed',
+                                    'text' => 'Failed to Add Reward!',
+                                    'icon' => 'error'
+                                ];
+                                header("Location: partnerRewardList.php");
+                                exit();
                             }
                         }
                     }
@@ -91,15 +115,21 @@
 
                 
                 if(mysqli_stmt_execute($stmt)){
-                    echo("<script>
-                            alert('Successfully Updated Reward');
-                            window.location.href = '../partner/partnerRewardList.php';
-                        </script>");
+                    $_SESSION['popupMessage']=[
+                        'title' => 'Success',
+                        'text' => 'Successfully Updated Reward!',
+                        'icon' => 'success'
+                    ];
+                    header("Location: partnerRewardList.php");
+                    exit();
                 }else{
-                    echo("<script>
-                            alert('Update Failed!');
-                            window.location.href = '../partner/partnerRewardList.php';
-                        </script>");
+                    $_SESSION['popupMessage']=[
+                        'title' => 'Failed',
+                        'text' => 'Failed to Update Reward!',
+                        'icon' => 'error'
+                    ];
+                    header("Location: partnerRewardList.php");
+                    exit();
                 }
                 mysqli_stmt_close($stmt);
             }
@@ -107,15 +137,18 @@
         if(isset($_POST['delete_btn'])){
             $reward_id = $_POST['reward_id'];
 
-            $sql = "UPDATE reward SET status = 'deleted' WHERE reward_id = ? AND partner_id = ?";
+            $sql = "UPDATE reward SET status = 'Deleted' WHERE reward_id = ? AND partner_id = ?";
             $stmt = mysqli_prepare($dbConn, $sql);
             mysqli_stmt_bind_param($stmt, "ii", $reward_id, $user_id);
 
             if(mysqli_stmt_execute($stmt)){
-                echo "<script> 
-                        alert('Successfully Removed Reward')
-                        window.location.href = '../partner/partnerRewardList.php'
-                    </script>";
+                    $_SESSION['popupMessage']=[
+                        'title' => 'Success',
+                        'text' => 'Successfully Removed Reward!',
+                        'icon' => 'success'
+                    ];
+                    header("Location: partnerRewardList.php");
+                    exit();
             }else{
                 echo"Error";
             }
@@ -123,11 +156,7 @@
         }
     }
 
-    $sql_fetch = "SELECT * FROM reward WHERE partner_id = ? AND status != 'deleted'";
-    $stmt_fetch = mysqli_prepare($dbConn, $sql_fetch);
-    mysqli_stmt_bind_param($stmt_fetch, "i", $user_id);
-    mysqli_stmt_execute($stmt_fetch);
-    $result = mysqli_stmt_get_result($stmt_fetch);
+
 
 ?>
 
@@ -138,15 +167,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../../css/header.css">
     <link rel="stylesheet" href="../../css/style.css">
-    <link rel="stylesheet" href="../../css/layout.css">
-    <title>Document</title>
+    <link rel="stylesheet" href="../../css/partner.css">
+    <?php include "../include/libraries.php";?>
+    <title>Partner Reward List</title>
 </head>
 <body>
+    <script src="../../js/customSwal.js"></script>
     <?php
         include "../include/header.php";
     ?>
     <h2>List of Rewards</h2>
-    <button class="addRewardButton">Add Reward</button>
+    <div class="topSection">
+        <form method="GET" class="filterForm">
+                <label for="statusFilter"></label>
+                <select name="status" id="statusFilter" class="dropdown" onchange="this.form.submit()">
+                    <option value="All" <?php if ($filter == "All") echo 'selected'; ?>>All</option>
+                    <option value="Available" <?php if ($filter == "Available") echo 'selected'; ?>>Available</option>
+                    <option value="Rejected" <?php if ($filter == "Rejected") echo 'selected'; ?>>Rejected</option>
+                    <option value="Pending" <?php if ($filter == "Pending") echo 'selected'; ?>>Pending</option>
+                    <option value="Deactivated" <?php if ($filter == "Deactivated") echo 'selected'; ?>>Deactivated</option>
+                </select>
+            </form>
+        <button class="addRewardButton">Add Reward</button>
+    </div>
     <?php if(mysqli_num_rows($result)>0):?>
         <table>
             <thead>
@@ -154,7 +197,7 @@
                     <th>Reward Title</th>
                     <th>Description</th>
                     <th>Admin ID</th>
-                    <th>Required_Points</th>
+                    <th>Required Points</th>
                     <th>Status</th>
                     <th>Stock</th>
                     <th></th>
@@ -164,13 +207,13 @@
             <tbody>
                 <?php while($reward_info = mysqli_fetch_assoc($result)):?>
                     <tr>
-                        <td><?php echo $reward_info['title']?></td>
-                        <td><?php echo $reward_info['description']?></td>
-                        <td><?php echo $reward_info['admin_id']?></td>
-                        <td><?php echo $reward_info['required_points']?></td>
-                        <td><?php echo $reward_info['status']?></td>
-                        <td><?php echo $reward_info['stock']?></td>
-                        <td>
+                        <td data-label="Reward Title"><?php echo $reward_info['title']?></td>
+                        <td data-label="Description"><?php echo $reward_info['description']?></td>
+                        <td data-label="Admin ID"><?php echo $reward_info['admin_id']?></td>
+                        <td data-label="Required Points"><?php echo $reward_info['required_points']?></td>
+                        <td data-label="Status"><p class="rewardStatus <?php echo $reward_info['status']?>"><?php echo $reward_info['status']?></p></td>
+                        <td data-label="Stock"><?php echo $reward_info['stock']?></td>
+                        <td data-label="Update Reward">
                             <button class="editRewardBtn" 
                                 data-id="<?php echo $reward_info['reward_id']; ?>"
                                 data-title="<?php echo htmlspecialchars($reward_info['title'], ENT_QUOTES); ?>"
@@ -181,10 +224,10 @@
                                 Update
                             </button>
                         </td>
-                        <td>
+                        <td data-label="Delete Reward">
                             <form action="" method="POST">
                                 <input type="hidden" name="reward_id" value="<?php echo $reward_info['reward_id'];?>">
-                                <button name="delete_btn"type="submit">Delete</button>
+                                <button name="delete_btn"type="submit" class="deleteRewardBtn">Delete</button>
                             </form>
                         </td>
                     </tr>
@@ -214,13 +257,13 @@
                     <label for="reward_img">Reward Image</label>
                     <input id="rewardImg" type="file" name="reward_img" class="modal-input" accept="image/*">
                     
-                    <button type="submit" class="saveBtn">Confirm</button>
+                    <button type="submit" class="confirmBtn">Confirm</button>
                     <button type="button" id="cancelBtn">Cancel</button>
                 </form>
             </div>
         </div>
     <?php endif;?>
     <script src="../../js/partner.js"></script>
-
+    <?php include "../include/showSWAL.php"?>
 </body>
 </html>
