@@ -1,36 +1,227 @@
+document.addEventListener("DOMContentLoaded", function() {
+    
+    const btnCloseModal = document.getElementById("closeModalBtn");
 
-// Modal controls
+    if(btnCloseModal){
+        const modals = document.querySelectorAll(".modal");
 
-document.addEventListener('DOMContentLoaded', function() {
-    // 1. Select ALL buttons with the class 'openModalBtn'
-    const buttons = document.querySelectorAll('.openModalBtn');
-
-    // 2. Loop through them and add the click event
-    buttons.forEach(button => {
-        button.addEventListener('click', function() {
-            
-            // 'this' refers to the button that was clicked
-            const id = this.getAttribute("data-id");
-            const title = this.getAttribute("data-title");
-            const desc = this.getAttribute("data-desc");
-            const points = this.getAttribute("data-points");
-
-            // Populate the Modal
-            document.getElementById("activityTitle").innerText = title;
-            document.getElementById("activityDescription").innerText = desc;
-            document.getElementById("activityPoints").innerText = "Points awarded: " + points;
-            document.getElementById("activity_id").value = id;
-
-            // Show the Modal
-            document.querySelector('.modal').style.display = "block";
+        btnCloseModal.addEventListener("click", function(){
+            modals.forEach(function(modal){
+                modal.style.display = "none";
+            });
         });
-    });
+    }
+
+
+    //Task List Page Functions
+    // Submission Modal
+    const btnOpenSubmission = document.querySelectorAll('.openSubmissionModalBtn');
+
+    if(btnOpenSubmission.length>0){
+        // for each buttons we apply function(each of the button)
+        btnOpenSubmission.forEach(function(button) {
+            // for each button from buttons, we run the below code
+            // 1. add click listener to button, if a click is detected run the function
+            button.addEventListener('click', function() { 
+                // these will run when button is clicked
+                const id = this.getAttribute("data-id");
+                const title = this.getAttribute("data-title");
+                const desc = this.getAttribute("data-desc");
+                const points = this.getAttribute("data-points");
+
+                // set modal with recorded values
+                document.getElementById("activityTitle").innerText = title;
+                document.getElementById("activityDescription").innerText = desc;
+                document.getElementById("activityPoints").innerText = "Points awarded: " + points;
+                document.getElementById("activity_id").value = id;
+
+                // Show the Modal
+                document.getElementById('submitTask').style.display = "block";
+            });
+        });
+    }
+
+    const btnViewSubmission = document.querySelectorAll('.viewSubmissionBtn');
+
+    if(btnViewSubmission.length>0){
+        btnViewSubmission.forEach(function(button){
+            button.addEventListener('click', function(){
+                const proofImg = button.getAttribute("data-img");
+
+                document.getElementById("proofImg").src = proofImg;
+                document.getElementById("viewProof").style.display = "block";
+            })
+        })
+    }
+
+
+    // Submission Filter
+    const submissionFilter = document.getElementById("submissionFilter");
+    const submissionCard = document.querySelectorAll(".taskCard");
+
+    if(submissionFilter){
+        submissionFilter.addEventListener("change",function(){
+            const filter = submissionFilter.value;
+
+            submissionCard.forEach(function(card){
+                const submissionType = card.getAttribute("data-status");
+
+                if(filter == "All"){ 
+                    card.style.display = "";
+                }
+
+                else if(submissionType == filter){
+                    card.style.display = "";
+                }
+                else{
+                    card.style.display = "none";
+                }
+            });
+        });
+    }
+
+
+
+
+
+    // Reward Page Functions
+    const confirmForm = document.querySelectorAll('.redemptionForm');
+
+    if(confirmForm){
+        confirmForm.forEach(function(form){
+            form.addEventListener('submit', function(event) {
+                
+                // Stop the form from sending data to PHP immediately
+                event.preventDefault(); 
+            
+                // 4. THE POPUP
+                CustomSwal.fire({
+                    title: 'Are you sure?',
+                    text: "Do you want to redeem this reward?",
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes, redeem it!'
+                }).then((result) => {
+                    // 5. THE DECISION
+                    if (result.isConfirmed) {
+                        form.submit(); 
+                    }
+                    // If User said NO: Do nothing. The form remains stopped.
+                });
+            });
+        });
+    }
+
+    // Transaction Page functions
+    const transactionFilter = document.getElementById("transactionFilter");
+    const transactionCard = document.querySelectorAll(".transactionCard");
+
+    if(transactionFilter){
+        transactionFilter.addEventListener("change",function(){
+            const filter = transactionFilter.value;
+            transactionCard.forEach(function(card){
+                const transactionType = card.getAttribute("data-transactionType");
+                if(filter=="All"){
+                    card.style.display="";
+                }
+                else if(filter==transactionType){
+                    card.style.display="";
+                }
+                else{
+                    card.style.display="none";
+                }
+            });
+        });
+    }
+
+    //  Friend Page functions
+    const btnViewFriendProfile = document.querySelectorAll(".viewFriendProfileBtn");
+
+    if(btnViewFriendProfile.length>0){
+        btnViewFriendProfile.forEach(function(button){
+            button.addEventListener("click",function(){
+                const friendName = button.getAttribute("data-friendName");
+                const friendEmail = button.getAttribute("data-friendEmail");
+                const friendBio = button.getAttribute("data-friendBio");
+                const friendImg = button.getAttribute("data-img");
+                const friendSince = button.getAttribute("data-friendSince");
+                const totalPoints = button.getAttribute("data-totalPoints");
+
+                document.getElementById("friendImg").src = friendImg;
+                document.getElementById("friendName").innerHTML=friendName;
+                document.getElementById("profileTitle").innerHTML=friendName;
+                document.getElementById("friendEmail").innerHTML=friendEmail;
+                document.getElementById("bio").innerHTML=friendBio;
+                document.getElementById("totalPoint").innerHTML=totalPoints;
+                document.getElementById("friendSince").innerHTML=friendSince;
+
+                document.getElementById("friendProfile").style.display="block";
+            });
+        });
+    }
+
+    const deleteFriendForm = document.querySelectorAll('.deleteFriendForm');
+
+    if(deleteFriendForm){
+        // Apply function for each from from comfirmForm
+        deleteFriendForm.forEach(function(form){
+            // add event listener for form, when a form is trying to be submitted run the code in the function(event){}
+            form.addEventListener('submit', function(event) {
+                
+                // Stop the form from sending data to PHP immediately
+                event.preventDefault(); 
+                
+                // 4. THE POPUP
+                CustomSwal.fire({
+                    title: 'Are you sure?',
+                    text: "Do you want to delete this friend?",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes'
+                }).then((result) => {
+                    // 5. THE DECISION
+                    if (result.isConfirmed) {
+                        // User said YES: Manually trigger the submission
+                        // Note: We use 'form.submit()' instead of 'this.submit()' to be safe inside arrow functions, 
+                        // though 'this' works in standard functions.
+                        form.submit(); 
+                    }
+                });
+            });
+            
+        });
+    }
+
+    const friendSearchBar = document.getElementById("friendSearch");
+    const friendCard = document.querySelectorAll(".friendCard");
+
+    if(friendSearchBar){
+        friendSearchBar.addEventListener("input",function(event){
+            const searchText = event.target.value.toLowerCase().trim();
+
+            friendCard.forEach(function(card){
+                const username = card.getAttribute("data-username");
+
+                if(username.includes(searchText)){
+                    card.style.display="";
+                }
+                else{
+                    card.style.display="none";
+                }
+            });
+        });
+    }
+    
+    // Profile Page
+    const btnEditProfile = document.getElementById("editProfileBtn");
+    const editProfileModal = document.getElementById("editProfileModal"); 
+
+    if(btnEditProfile){
+        btnEditProfile.addEventListener("click",function(){
+            editProfileModal.style.display="block"
+        });
+    }
 
 });
 
-window.onclick = function(event) {
-        const modal = document.querySelector('.modal');
-        if (modal && event.target == modal) {
-            modal.style.display = "none";
-        }
-    }
+

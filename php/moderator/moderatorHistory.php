@@ -56,11 +56,11 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=2, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../../css/header.css">
     <link rel="stylesheet" href="../../css/style.css">
     <link rel="stylesheet" href="../../css/moderator.css">
-    <title>Document</title>
+    <title>History Viewing</title>
 </head>
 <body>
 <?php
@@ -77,8 +77,8 @@
     <section id="History">
         <form method="GET" id="filterForm">
             <input type="hidden" name="view" value="submissions">
-            <label for="statusFilter">Filter:</label>
-            <select name="status" id="statusFilter">
+            <label for="statusFilter"></label>
+            <select class="filter" name="status" id="statusFilter">
                 <option value="all" <?php if ($filter == "all") echo 'selected'; ?>>All</option>
                 <option value="Approved" <?php if ($filter == "Approved") echo 'selected'; ?>>Approved</option>
                 <option value="Rejected" <?php if ($filter == "Rejected") echo 'selected'; ?>>Rejected</option>
@@ -102,9 +102,10 @@
                         <td data-label="Submission ID"><?php echo $row['submission_id']; ?></td>
                         <td data-label="User"><?php echo htmlspecialchars($row['username']); ?></td>
                         <td data-label="Activity"><?php echo htmlspecialchars($row['activity_title']); ?></td>
-                        <td data-label="Status"><?php echo $row['status']; ?></td>
+                        <td data-label="Status"><p class="taskStatus <?php echo $row['status']; ?>">
+                            <?php echo $row['status']; ?></p></td>
                         <td data-label="Submission Time"><?php echo $row['submission_time']; ?></td>
-                        <td>
+                        <td data-label="View Attachment">
                             <button type="button" class="viewSubmissionBtn"
                                 data-id="<?php echo $row['submission_id']; ?>"
                                 data-username="<?php echo htmlspecialchars($row['username'], ENT_QUOTES); ?>"
@@ -121,12 +122,19 @@
         </table>
     </section>
     <div id="submissionPopup" class="modal">
-        <div class="modalContent">
+        <div class="modalContent" id="submissionModal">
+            <button class="closeModalBtn" id="closeModalBtn">
+                <svg width="30px" height="30px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M19 5L4.99998 19M5.00001 5L19 19" stroke="#1a5021" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </button>
             <h1>Submission Details</h1>
-            <p>Username: <span id="popupUsername"></span></p>
-            <p>Activity: <span id="popupActivity"></span></p>
-            <p>Submission Time: <span id="popupSubmissionTime"></span></p>
-            <p>Proof:</p>
+            <div id="submissionInfo">
+                <p>Username: <span id="popupUsername"></span></p>
+                <p>Activity: <span id="popupActivity"></span></p>
+                <p>Submission Time: <span id="popupSubmissionTime"></span></p>
+                <p>Proof:</p>
+            </div>
             <img id="popupProof" src="" alt="Proof Image">
             <input type="hidden" id="submission_id" name="submission_id">
         </div>
@@ -138,8 +146,8 @@
     <section id="PartnerPointsHistory">
         <form method="GET" id="filterFormPartner">
             <input type="hidden" name="view" value="partnerPoints">
-            <label for="statusFilterPartner">Filter:</label>
-            <select name="status" id="statusFilterPartner">
+            <label for="statusFilterPartner"></label>
+            <select class="filter" name="status" id="statusFilterPartner">
                 <option value="all" <?php if($partnerFilter == 'all') echo 'selected'; ?>>All</option>
                 <option value="Approved" <?php if($partnerFilter == 'Approved') echo 'selected'; ?>>Approved</option>
                 <option value="Rejected" <?php if($partnerFilter == 'Rejected') echo 'selected'; ?>>Rejected</option>
@@ -165,8 +173,9 @@
                     <td data-label="Partner"><?php echo $row['partner_id']; ?></td>
                     <td data-label="Amount Spent"><?php echo $row['amount_spent']; ?></td>
                     <td data-label="Points Awarded"><?php echo $row['points_awarded']; ?></td>
-                    <td data-label="Status"><?php echo $row['status']; ?></td>
-                    <td>
+                    <td data-label="Status"><p class="taskStatus <?php echo $row['status']; ?>">
+                        <?php echo $row['status']; ?></p></td>
+                    <td data-label="View Attachment">
                         <button type="button" class="viewPartnerBtn"
                             data-id="<?php echo $row['partner_transaction_id']; ?>"
                             data-username="<?php echo htmlspecialchars($row['username'], ENT_QUOTES); ?>"
@@ -182,14 +191,21 @@
             </tbody>
         </table>
     </section>
-    <div id="partnerPopup" class="modal" style="display:none;">
-        <div class="modalContent">
+    <div id="partnerPopup" class="modal">
+        <div class="modalContent" id="partnerModal">
+            <button class="closeModalBtn" id="closeModalBtn">
+                <svg width="30px" height="30px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M19 5L4.99998 19M5.00001 5L19 19" stroke="#1a5021" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </button>
             <h1>Partner Points Details</h1>
-            <p>Username: <span id="partnerUsername"></span></p>
-            <p>Amount Spent: <span id="partnerAmount"></span></p>
-            <p>Points Awarded: <span id="partnerPoints"></span></p>
-            <p>Receipt:</p>
-            <img id="partnerReceipt" src="" alt="Receipt Image" style="max-width:100%; display:block;">
+            <div id="partnerInfo">
+                <p>Username: <span id="partnerUsername"></span></p>
+                <p>Amount Spent: <span id="partnerAmount"></span></p>
+                <p>Points Awarded: <span id="partnerPoints"></span></p>
+                <p>Receipt:</p>
+            </div>
+            <img id="partnerReceipt" src="" alt="Receipt Image">
             <input type="hidden" id="partnerTransactionID" name="partnerTransactionID">
         </div>
     </div>

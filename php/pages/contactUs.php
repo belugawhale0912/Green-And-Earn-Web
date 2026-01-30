@@ -49,7 +49,7 @@
     <?php include "../include/header.php"; ?>
 
     <h2>Contact Our Team</h2>
-    <p>Got any questions or inquiries about our platform? We're here to help. Chat with us now!</p>
+    <p class="description">Got any questions or inquiries about our platform? We're here to help. Chat with us now!</p>
     
     <div class="big_container">
         <div class="form_container">
