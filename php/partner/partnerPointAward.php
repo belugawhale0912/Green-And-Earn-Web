@@ -102,36 +102,35 @@
     <?php include "../include/libraries.php";?>
     <title>Point Award</title>
 </head>
-<body id="pointPage">
+<body>
     <script src="../../js/customSwal.js"></script>
     <?php
         include "../include/header.php";
     ?>
-    <div class="backgroundWrapper">
-        <img src="../../assets/partnerplaceholder2.jpg" alt="Background">
-        <div class="overlay"></div> </div>
+    <div class="background">
+        <div class="centeredContainer">
+            <div class="formCard">
+                <h2>Award Points</h2>
+                <p class="subtitle">Enter customer details below</p>
+                
+                <form action="" method="POST" enctype="multipart/form-data">
+                    <div class="form-inputs">
+                        <label for="username">Username</label>
+                        <input type="text" name="username" placeholder="Customer Username" required>
 
-    <div class="centeredContainer">
-        <div class="formCard floating">
-            <h2>Award Points</h2>
-            <p class="subtitle">Enter customer details below</p>
-            
-            <form action="" method="POST" enctype="multipart/form-data">
-                <div class="form-inputs">
-                    <label for="username">Username</label>
-                    <input type="text" name="username" placeholder="Customer Username" required>
+                        <label for="amt_spent">Amount Spent (RM)</label>
+                        <input type="number" name="amt_spent" step="0.01" placeholder="0.00" required>
 
-                    <label for="amt_spent">Amount Spent (RM)</label>
-                    <input type="number" name="amt_spent" step="0.01" placeholder="0.00" required>
+                        <label>Upload Receipt</label>
+                        <input type="file" name="receipt_img" required accept="image/*">
+                    </div>
 
-                    <label>Upload Receipt</label>
-                    <input type="file" name="receipt_img" required accept="image/*">
-                </div>
-
-                <button type="submit" class="submitBtn">Confirm Transaction</button>
-            </form> 
+                    <button type="submit" class="submitBtn">Confirm Transaction</button>
+                </form> 
+            </div>
         </div>
     </div>
+
     <?php include "../include/showSWAL.php"?>
 </body>
 </html>

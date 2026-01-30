@@ -361,62 +361,36 @@ button:hover{
 
 /* Points Award Page */
 
-body#pointPage{
-    margin: 0;
-    overflow: hidden; 
-}
-
-/* 1. Background Layer */
-.backgroundWrapper{
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: -1; /* Send to back */
-}
-
-.backgroundWrapper img{
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
 /* Dark overlay to make the form pop */
-.backgroundWrapper .overlay{
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: var(--clr-backdrop); 
-    backdrop-filter: blur(5px); /* Soft blur effect on background */
+.background{
+    box-shadow: inset 0 0 0 1000px rgba(37, 39, 37, 0.7);
+    height: 100vh;
+    background-image: url(../assets/partnerPointBg.jpg);
+    background-size: cover;
+    background-repeat: no-repeat; 
+    background-attachment: fixed;
 }
 
 /* 2. Centered Container */
 .centeredContainer{
     width: 100%;
-    height: calc(100vh - 80px); /* Fill screen minus header */
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
 /* 3. The Floating Card */
-.formCard.floatin{
+.formCard{
+    margin-top: 5%;
     background: var(--clr-surface-a0); /* Slightly transparent white */
     padding: 40px;
-    width: 100%;
+    width: 90%;
     max-width: 450px; /* Card width */
     border-radius: 20px;
     box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-    animation: floatUp 0.6s ease-out;
 }
 
-@keyframes floatUp{
-    from { opacity: 0; transform: translateY(30px); }
-    to { opacity: 1; transform: translateY(0); }
-}
+
 
 /* 4. Form Styling Enhancements */
 .formCard h2{

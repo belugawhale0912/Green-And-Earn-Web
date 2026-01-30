@@ -214,17 +214,15 @@
                         <td data-label="Status"><p class="rewardStatus <?php echo $reward_info['status']?>"><?php echo $reward_info['status']?></p></td>
                         <td data-label="Stock"><?php echo $reward_info['stock']?></td>
                         <td data-label="Update Reward">
-                            <form action="">
-                                <button class="editRewardBtn" 
-                                    data-id="<?php echo $reward_info['reward_id']; ?>"
-                                    data-title="<?php echo htmlspecialchars($reward_info['title'], ENT_QUOTES); ?>"
-                                    data-desc="<?php echo htmlspecialchars($reward_info['description'], ENT_QUOTES); ?>"
-                                    data-points="<?php echo $reward_info['required_points']; ?>"
-                                    data-stock="<?php echo $reward_info['stock']; ?>"
-                                >
-                                    Update
-                                </button>
-                            </form>
+                            <button class="editRewardBtn" 
+                                data-id="<?php echo $reward_info['reward_id']; ?>"
+                                data-title="<?php echo htmlspecialchars($reward_info['title'], ENT_QUOTES); ?>"
+                                data-desc="<?php echo htmlspecialchars($reward_info['description'], ENT_QUOTES); ?>"
+                                data-points="<?php echo $reward_info['required_points']; ?>"
+                                data-stock="<?php echo $reward_info['stock']; ?>"
+                            >
+                                Update
+                            </button>
                         </td>
                         <td data-label="Delete Reward">
                             <form action="" method="POST">
