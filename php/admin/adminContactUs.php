@@ -55,7 +55,6 @@
     <h2 class="pageTitle">Contact Us Inbox</h2>
 
     <div id="contactUsTable">
-        <h3 class="tableTitle">List of Inquiries Via Contact Us</h3>
             <?php if(mysqli_num_rows($result)>0):?>
                 <table>
                     <thead>
@@ -91,17 +90,6 @@
                 </table>
             <?php endif; ?>
     </div>
-
-    <?php if (isset($_SESSION['popupMessage'])): ?>
-        <script>
-            Swal.fire({
-                title: <?= json_encode($_SESSION['popupMessage']['title']) ?>,
-                text: <?= json_encode($_SESSION['popupMessage']['text']) ?>,
-                icon: <?= json_encode($_SESSION['popupMessage']['icon']) ?>,
-                confirmButtonColor: '#3085d6'
-            });
-        </script>
-    <?php unset($_SESSION['popupMessage']); endif; ?>
 
     <?php include "../include/showSWAL.php"?>
     <script src="../../js/admin.js"> </script>
