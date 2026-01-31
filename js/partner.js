@@ -16,6 +16,7 @@ document.addEventListener("DOMContentLoaded", function() {
         btnAddReward.forEach(function(btn){
             btn.addEventListener("click", function(){
                 document.getElementById('action').value="add";
+                document.getElementById("modalTitle").innerText = "Add New Reward";
                 rewardModal.style.display="block";
             });
         });
@@ -39,6 +40,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 document.getElementById("requiredPoints").value = points;
                 document.getElementById("stock").value = stock;
 
+                document.getElementById("modalTitle").innerText = "Update Reward";
                 rewardModal.style.display="block";
             });
         });

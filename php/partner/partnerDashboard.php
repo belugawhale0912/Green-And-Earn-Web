@@ -10,7 +10,7 @@
     $sqlTotal = "SELECT COUNT(*) as total
                  FROM reward_redemption rr
                  JOIN reward r ON rr.reward_id = r.reward_id
-                 WHERE r.partner_id = $partner_id";
+                 WHERE r.partner_id = $partner_id AND rr.status = 'Approved'";
     
     $result_total = mysqli_query($dbConn, $sqlTotal);
     $countResult = mysqli_fetch_assoc($result_total);
@@ -100,14 +100,7 @@
     ?>
     <h1>Welcome Back, <?php echo $_SESSION['username']?>!</h1>
     <div class="dashboardContainer">
-        <h2>Statistics</h2>
-        <div class="statContainer">
-            <div class="statCard">
-                <h3>Total Reward Redeemed</h3>
-                <p><?php echo $totalRewardRedeemed;?></p>
-            </div>        
-        </div>
-        <div class="chartContainer">
+        <div class="chartContainer">      
             <div class="chartCard">
                 <h2>Revenue From Members (Last 7 Days)</h2>
                 <div class="chart">
@@ -122,9 +115,9 @@
                 </div>
             </div>
         </div>
-      
+        
         <h2>List of Rewards</h2>
-        <button class="viewAllReward"><a href="../../php/partner/partnerRewardList.php">View All Rewards</a></button>
+        <a href="../../php/partner/partnerRewardList.php" class="viewAllReward">View All Rewards</a>
         <div class="rewardListContainer">
             <?php if(mysqli_num_rows($result)>0):?>
                 <?php while($reward_info = mysqli_fetch_assoc($result)):?>
