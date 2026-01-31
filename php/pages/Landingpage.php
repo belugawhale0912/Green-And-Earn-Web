@@ -54,7 +54,7 @@
                     <p>Waste Recycled</p>
                 </div>
                 <div class="impactCards">
-                    <h3>$15k</h3>
+                    <h3>2k</h3>
                     <p>Rewards Earned</p>
                 </div>
             </div>

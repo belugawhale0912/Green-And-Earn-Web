@@ -69,28 +69,30 @@
 </head>
 <body>
     <script src="../../js/customSwal.js"></script>
-    <?php
-        include("../include/conn.php");
-    ?>
-    <div id="login_container">
-        
-        <div id="left_pane">
-            <a id="backLink" href="Landingpage.php">Back</a>
-            <h1>Login to Green&Earn</h1>
-            <div class="form_container">
-                <form action="" method="post">
-                    <label for="username">Username</label>
-                    <input type="text" name="username" placeholder="Enter Username" required>
-                    <label for="password">Password</label>
-                    <input type="password" name="password" placeholder="Enter Password" required>
-                    <a href="user_register.php">Register</a>
-                    <button type="submit">Login</button>
-                </form>
+    <div class="container">
+        <?php
+            include("../include/conn.php");
+        ?>
+        <div id="login_container">
+            
+            <div id="left_pane">
+                <a id="backLink" href="Landingpage.php">Back</a>
+                <h1>Login to Green&Earn</h1>
+                <div class="form_container">
+                    <form action="" method="post">
+                        <label for="username">Username</label>
+                        <input type="text" name="username" placeholder="Enter Username" required>
+                        <label for="password">Password</label>
+                        <input type="password" name="password" placeholder="Enter Password" required>
+                        <a href="user_register.php">Register</a>
+                        <button type="submit">Login</button>
+                    </form>
+                </div>
             </div>
-        </div>
 
-        <div id="right_pane">
-            <img src="../../assets/login.jpg" alt="">
+            <div id="right_pane">
+                <img src="../../assets/login.jpg" alt="">
+            </div>
         </div>
     </div>
 

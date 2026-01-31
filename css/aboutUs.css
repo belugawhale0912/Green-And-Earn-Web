@@ -1,6 +1,6 @@
 body{
     background-image: linear-gradient(var(--clr-backdrop), var(--clr-backdrop)),
-                      url('../assets/view-spectacular-nature-landscape.jpg');
+                      url('../assets/aboutUsBackgroundImage.jpg');
     background-size: cover;
     background-repeat: no-repeat;
     background-attachment: fixed;

@@ -1,7 +1,3 @@
-body {
-    overflow: hidden;
-}
-
 .big_container{
     display: flex;
     max-width: 80%;
@@ -65,7 +61,14 @@ textarea{
     background-color: var(--bg-body);
     border: 2px solid var(--border-main);
     padding-left: 10px;
+    transition: border 0.3s;
 }
+
+textarea:focus{
+    border-color: var(--clr-primary-a40);
+    outline: none;
+}
+
 
 .form_container input:focus{
     border-color: var(--clr-primary-a40);

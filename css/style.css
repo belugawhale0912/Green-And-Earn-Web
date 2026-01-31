@@ -216,6 +216,7 @@ textarea{
     background-color: var(--clr-surface-a10);
     border-radius: 8px;
     resize: none;
+    color: var(--text-main);
 }
 
 table{

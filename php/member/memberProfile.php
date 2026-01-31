@@ -138,6 +138,12 @@
 
     
     <div class="profileContainer">
+
+        <div class="card profileCard">
+            <h2>Bio</h2>
+            <p><?php echo $user_info['bio']?></p>
+        </div>
+
         <div class="card profileCard">
             <h2>Member Since:</h2>
             <h3><?php echo date("d M Y",strtotime($user_info['register_date']))?></h3>
@@ -169,7 +175,7 @@
     </form>
 
     <div id="editProfileModal" class="modal">
-        <div class="modalContent">
+        <div class="modalContent editProfile">
             <button class="closeModalBtn" id="closeModalBtn">
                 <svg width="30px" height="30px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M19 5L4.99998 19M5.00001 5L19 19" stroke="#1a5021" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
@@ -196,8 +202,8 @@
                 <label for="confirmPassword">Enter New Password Again </label>
                 <input type="text" name="confirmPassword" class="modal-input">
 
-                <button type="submit" class="saveBtn">Save Changes</button>
-                <button type="button">Cancel</button>
+                <button type="submit" class="updFormBtn">Save Changes</button>
+                <button type="button" class="updFormBtn">Cancel</button>
             </form>
         </div>
     </div>
