@@ -14,9 +14,12 @@
         $sql= "SELECT rr.status, rr.redemption_time, r.title, r.description, r.reward_img
                   FROM reward_redemption rr
                   JOIN reward r on rr.reward_id = r.reward_id
-                  WHERE rr.user_id = $user_id
+                  WHERE rr.user_id = ?
                   ORDER BY rr.redemption_time DESC";
-        $result = mysqli_query($dbConn, $sql);
+        $stmtHistory = mysqli_prepare($dbConn, $sql);
+        mysqli_stmt_bind_param($stmtHistory, "i", $user_id);
+        mysqli_stmt_execute($stmtHistory);
+        $result = mysqli_stmt_get_result($stmtHistory);
     }
 
 
@@ -25,8 +28,11 @@
         $reward_id = $_POST['reward_id'];
         
         //validations
-        $sql_reward = "SELECT * FROM reward WHERE reward_id = $reward_id";
-        $result_reward = mysqli_query($dbConn, $sql_reward);
+        $sql_reward = "SELECT * FROM reward WHERE reward_id = ?";
+        $stmtReward = mysqli_prepare($dbConn, $sql_reward);
+        mysqli_stmt_bind_param($stmtReward, "i", $reward_id);
+        mysqli_stmt_execute($stmtReward);
+        $result_reward = mysqli_stmt_get_result($stmtReward);
         $reward_info = mysqli_fetch_assoc($result_reward);
 
         // if reward exists
@@ -41,8 +47,11 @@
 
         // Fetch User info from database
         $user_id = $_SESSION['user_id'];
-        $sql_user = "SELECT * FROM user WHERE user_id = $user_id";
-        $result_user = mysqli_query($dbConn, $sql_user);
+        $sql_user = "SELECT * FROM user WHERE user_id = ?";
+        $stmtUser = mysqli_prepare($dbConn, $sql_user);
+        mysqli_stmt_bind_param($stmtUser, "i", $user_id);
+        mysqli_stmt_execute($stmtUser);
+        $result_user = mysqli_stmt_get_result($stmtUser);
         $user_info = mysqli_fetch_assoc($result_user);
 
         // check if user have sufficient points
@@ -63,23 +72,64 @@
         $new_point_balance = $user_info['point_balance']-$reward_info['required_points'];
 
         //query
-        $sql_update_stock = "UPDATE reward SET stock = $new_stock WHERE reward_id = $reward_id";
+        $sql_update_stock = "UPDATE reward SET stock = ? WHERE reward_id = ?";
+        $stmtUpdateStock = mysqli_prepare($dbConn, $sql_update_stock);
+        mysqli_stmt_bind_param($stmtUpdateStock, "ii", $new_stock, $reward_id);
         
-        $sql_update_pointbal = "UPDATE user SET point_balance = $new_point_balance WHERE user_id = $user_id";
+        $sql_update_pointbal = "UPDATE user SET point_balance = $new_point_balance WHERE user_id = ?";
+        $stmtUpdatePoint = mysqli_prepare($dbConn, $sql_update_pointbal);
+        mysqli_stmt_bind_param($stmtUpdatePoint, "i", $user_id);
 
-        $sql_insert_redemption = "INSERT INTO reward_redemption (reward_id, user_id, points_spent, status) VALUES ($reward_id, $user_id, {$reward_info['required_points']}, 'Pending')";
+        $sql_insert_redemption = "INSERT INTO reward_redemption (reward_id, user_id, points_spent, status) 
+                                  VALUES (?, ?, ?, 'Pending')";
+        $stmtInsertRedemption = mysqli_prepare($dbConn, $sql_insert_redemption);
+        mysqli_stmt_bind_param($stmtInsertRedemption, "iii", $reward_id, $user_id, $reward_info['required_points']);
 
         //turn off autosave to prevent data corruption if query fails
         mysqli_begin_transaction($dbConn);
 
-        try{
-            if (!mysqli_query($dbConn, $sql_update_stock)) { throw new Exception("Reward update failed"); }
-            if (!mysqli_query($dbConn, $sql_update_pointbal)) { throw new Exception("User update failed"); }
-            if (!mysqli_query($dbConn, $sql_insert_redemption)) { throw new Exception("Insert Redemption failed"); }
+        $success = true;
+        $errMsg = "";
+        
+        if(!mysqli_stmt_execute($stmtUpdateStock)){
+            $success = false;
+            $errMsg = "Error While Updating Stock";
+        }
+        mysqli_stmt_close($stmtUpdateStock);
+
+        if($success){
+            if(!mysqli_stmt_execute($stmtUpdatePoint)){
+                $success = false;
+                $errMsg = "Error While Updating Point";
+            }
+            mysqli_stmt_close($stmtUpdatePoint);
+        }
+
+        if($success){
+            if(!mysqli_stmt_execute($stmtInsertRedemption)){
+                $success = false;
+                $errMsg = "Error While Inserting Redemption";
+            }
+            mysqli_stmt_close($stmtInsertRedemption);
+        }
+
+        if($success){
             $redemption_id = mysqli_insert_id($dbConn);
-            $sql_insert_transaction= "INSERT INTO point_transaction (user_id, redemption_id, amount, type) VALUES ($user_id, $redemption_id, {$reward_info['required_points']},'Redemption')";
-            if (!mysqli_query($dbConn, $sql_insert_transaction)) { throw new Exception("Insert Transaction failed"); }        
-            //if all query ran without error, save the changes
+            $sql_insert_transaction= "INSERT INTO point_transaction (user_id, redemption_id, amount, type) 
+                                    VALUES (?, ?, ?,'Redemption')";
+
+            $stmtInsertTransaction = mysqli_prepare($dbConn, $sql_insert_transaction);
+            mysqli_stmt_bind_param($stmtInsertTransaction, "iii", $user_id, $redemption_id, $reward_info['required_points']);
+
+            if(!mysqli_stmt_execute($stmtInsertTransaction)){
+                $success = false;
+                $errMsg = "Error While Inserting Transaction";
+            }
+            mysqli_stmt_close($stmtInsertTransaction);
+        }
+
+
+        if($success){
             mysqli_commit($dbConn);
             //set message flag to true to show success message
             $_SESSION['popupMessage']=[
@@ -87,15 +137,20 @@
                 'text' => 'The reward is redeeemed successfully!',
                 'icon' => 'success'
             ];
-
             header("Location: memberRewardList.php?view=available");
             exit();
         }
-        // TODO check error handling
-        catch(Exception $exception){
-            //if any of the query fail, undo the changes and send error message
+
+        if(!$success){
             mysqli_rollback($dbConn);
-            echo "Error:". $exception;
+
+            $_SESSION['popupMessage']=[
+                'title' => 'Error',
+                'text' => $errMsg,
+                'icon' => 'error'
+            ];
+            header("Location: memberRewardList.php?view=available");
+            exit();
         }
 
     }

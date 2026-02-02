@@ -5,31 +5,31 @@
     include "../include/conn.php";
 
     // TODO check query
-    $sql = "
-        SELECT pt.*, COALESCE(r.title, a.title, u_partner.username, pt.type) AS transaction_name,
+    $sql = "SELECT pt.*, COALESCE(r.title, a.title, u_partner.username, pt.type) AS transaction_name,
+            CASE
+                WHEN pt.type = 'Refund' THEN 'Refund' 
+                WHEN pt.submission_id IS NOT NULL THEN 'Task Completion'
+                WHEN pt.partner_transaction_id IS NOT NULL THEN 'Shop At Partner Store'
+                WHEN pt.redemption_id IS NOT NULL THEN 'Redemption'
+                ELSE pt.type
+            END AS display_category
 
-        CASE
-            WHEN pt.type = 'Refund' THEN 'Refund' 
-            WHEN pt.submission_id IS NOT NULL THEN 'Task Completion'
-            WHEN pt.partner_transaction_id IS NOT NULL THEN 'Shop At Partner Store'
-            WHEN pt.redemption_id IS NOT NULL THEN 'Redemption'
-            ELSE pt.type
-        END AS display_category
+            FROM point_transaction pt
+            LEFT JOIN reward_redemption rr ON pt.redemption_id = rr.redemption_id
+            LEFT JOIN reward r ON rr.reward_id = r.reward_id
 
-        FROM point_transaction pt
-        LEFT JOIN reward_redemption rr ON pt.redemption_id = rr.redemption_id
-        LEFT JOIN reward r ON rr.reward_id = r.reward_id
+            LEFT JOIN activity_submission asub ON pt.submission_id = asub.submission_id
+            LEFT JOIN activity a ON asub.activity_id = a.activity_id
 
-        LEFT JOIN activity_submission asub ON pt.submission_id = asub.submission_id
-        LEFT JOIN activity a ON asub.activity_id = a.activity_id
+            LEFT JOIN partner_point_transaction ptrans ON pt.partner_transaction_id = ptrans.partner_transaction_id
+            LEFT JOIN user u_partner ON ptrans.partner_id = u_partner.user_id
 
-        LEFT JOIN partner_point_transaction ptrans ON pt.partner_transaction_id = ptrans.partner_transaction_id
-        LEFT JOIN user u_partner ON ptrans.partner_id = u_partner.user_id
-
-        WHERE pt.user_id = $user_id 
-        ORDER BY pt.transaction_time DESC
-    ";
-    $result = mysqli_query($dbConn,$sql);
+            WHERE pt.user_id = $user_id 
+            ORDER BY pt.transaction_time DESC";
+    $stmt = mysqli_prepare($dbConn, $sql);
+    mysqli_stmt_bind_param($stmt, "i", $user_id);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
 ?>
 
 <!DOCTYPE html>

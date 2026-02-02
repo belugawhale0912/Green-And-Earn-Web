@@ -5,7 +5,7 @@
     $user_id = $_SESSION['user_id'];
 
     if($_SERVER["REQUEST_METHOD"] == "POST"){
-        $sql = "SELECT * FROM user WHERE user_id = {$_SESSION['user_id']}";
+        $sql = "SELECT * FROM user WHERE user_id = $user_id";
         $result = mysqli_query($dbConn,$sql);
         $user_info = mysqli_fetch_assoc($result);
 

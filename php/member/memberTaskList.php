@@ -19,19 +19,26 @@
                    AND activity_id NOT IN (
                        SELECT activity_id 
                        FROM activity_submission 
-                       WHERE user_id = $user_id 
+                       WHERE user_id = ? 
                        AND (status = 'Pending' OR status = 'Approved')
                    )";
-        $resultGet = mysqli_query($dbConn, $sqlGet);
+        $stmtGet = mysqli_prepare($dbConn, $sqlGet);
+        mysqli_stmt_bind_param($stmtGet, "i", $user_id);
+        mysqli_stmt_execute($stmtGet);
+        $resultGet = mysqli_stmt_get_result($stmtGet);
     }
     
     elseif($view == 'submitted'){
         $sqlGet= "SELECT s.status, s.submission_time, a.title, a.points_awarded, s.proof
                   FROM activity_submission s
                   JOIN activity a on s.activity_id = a.activity_id
-                  WHERE s.user_id = $user_id";
+                  WHERE s.user_id = ?";
 
-        $resultGet = mysqli_query($dbConn, $sqlGet);
+        $stmtGet = mysqli_prepare($dbConn, $sqlGet);
+        mysqli_stmt_bind_param($stmtGet, "i", $user_id);
+        mysqli_stmt_execute($stmtGet);
+        $resultGet = mysqli_stmt_get_result($stmtGet);
+
     }
 
 
@@ -61,10 +68,12 @@
                 // move file from server temporary storage to upload path
                 if (move_uploaded_file($fileServerPath, $saveDir)){
 
-                    $sql = "INSERT INTO activity_submission (user_id, activity_id, proof, status) 
-                            VALUES ('$user_id', '$activity_id', '$saveDir', 'Pending')";
+                    $sqlSubmit = "INSERT INTO activity_submission (user_id, activity_id, proof, status) 
+                            VALUES (?, ?, ?, 'Pending')";
                             
-                    if(mysqli_query($dbConn, $sql)){
+                    $stmtSubmit = mysqli_prepare($dbConn, $sqlSubmit);
+                    mysqli_stmt_bind_param($stmtSubmit, "iis", $user_id, $activity_id, $saveDir);
+                    if(mysqli_stmt_execute($stmtSubmit)){
                         $_SESSION['popupMessage']=[
                             'title' => 'Success!',
                             'text' => 'Successfully Submitted Task!',

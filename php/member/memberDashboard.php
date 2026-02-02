@@ -105,17 +105,21 @@
         $taskData['Rejected']
     ];
 
-    $sqlGet = "SELECT COUNT(*) AS availableTask 
+    $sqlGetTask = "SELECT COUNT(*) AS availableTask 
                FROM activity 
                WHERE status = 'Active' 
                AND '$today' BETWEEN start_date AND end_date
                AND activity_id NOT IN (
                     SELECT activity_id 
                     FROM activity_submission 
-                    WHERE user_id = $user_id 
+                    WHERE user_id = ? 
                     AND (status = 'Pending' OR status = 'Approved')
                 )";
-    $resultGet = mysqli_query($dbConn, $sqlGet);
+
+    $stmtTask = mysqli_prepare($dbConn, $sqlGetTask);
+    mysqli_stmt_bind_param($stmtTask, "i", $user_id);
+    mysqli_stmt_execute($stmtTask);
+    $resultGet = mysqli_stmt_get_result($stmtTask);
 ?>
 <!DOCTYPE html>
 <html lang="en">
