@@ -25,8 +25,11 @@
             $reward_id = $_POST['reward_id'];
             $admin_id = $_SESSION['user_id'];
 
-            $sql = "UPDATE reward SET status = 'Available', admin_id = $admin_id WHERE reward_id = $reward_id";
-            if(mysqli_query($dbConn, $sql)){
+            $sql = "UPDATE reward SET status = 'Available', admin_id = ? WHERE reward_id = ?";
+            $stmt = mysqli_prepare($dbConn, $sql);
+            mysqli_stmt_bind_param($stmt, "ii", $admin_id, $reward_id);
+
+            if(mysqli_stmt_execute($stmt)){
                 $_SESSION['popupMessage']=[
                         'title' => 'Success',
                         'text' => 'Approved Reward Successfully',
