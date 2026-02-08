@@ -10,7 +10,7 @@
 
     $partner_id = $_SESSION['user_id'];
 
-    $sqlRequest = "SELECT u.user_id, rr.redemption_id, u.username, rr.redemption_time 
+    $sqlRequest = "SELECT u.user_id, rr.redemption_id, rr.reward_id, u.username, rr.redemption_time 
                    FROM reward_redemption rr
                    JOIN user u ON rr.user_id = u.user_id
                    JOIN reward r ON rr.reward_id = r.reward_id 
@@ -154,7 +154,7 @@
             while($request = mysqli_fetch_assoc($resultRequest)):?>
                 <div class='requestCard'>
                     <div class="requestDetail">
-                        <h3>Redemption ID : <br><?php echo $request['redemption_id']?></h3>
+                        <h3>Reward ID : <br><?php echo $request['reward_id']?></h3>
                         <h3>Username : <br><?php echo $request['username']?></h3>
                         <h3>Redemption Time : <br><?php echo $request['redemption_time']?></h3>
                     </div>

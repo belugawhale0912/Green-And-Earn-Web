@@ -9,8 +9,8 @@
     display: flex;
     flex-direction: column;
     margin: auto;
-    width: 90%;
-    padding: 10px;
+    width: 95%;
+    padding: 20px;
     gap: 10px;
     flex-wrap: wrap;
 }
@@ -39,19 +39,14 @@
     color: var(--clr-primary-a50);
 }
 
-.chart{
-    border-radius: 20px;
-    position: relative;
-    height: 250px; 
-    width: 100%;
-}
-
 /* Reward List Container */
 .rewardListContainer{
-    display: flex;
-    flex-wrap: wrap;
-    gap: 16px;
-    justify-content: space-between;
+    display: grid;
+    margin: auto;
+    max-width: 1200px;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+    padding: 10px;
 }
 
 .viewAllReward{
@@ -72,7 +67,6 @@
 }
 
 .rewardListCard{
-    min-width: 250px;
     background-color: var(--bg-highlight);
     border-radius: 10px;
     flex-grow: 1;
@@ -382,6 +376,16 @@
     }
 
     .chartCard{
+        width: 100%; 
+        min-width: 0;
+    }
+
+    .rewardListContainer{
+        display: flex;
+        flex-direction: column;
+    }
+
+    .rewardListCard{
         width: 100%; 
         min-width: 0;
     }

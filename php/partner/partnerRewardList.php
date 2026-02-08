@@ -255,7 +255,7 @@
                     <input id="stock" type="number" name="stock" class="modal-input" required>
 
                     <label for="reward_img">Reward Image</label>
-                    <input id="rewardImg" type="file" name="reward_img" class="modal-input" required accept="image/*">
+                    <input id="rewardImg" type="file" name="reward_img" class="modal-input" accept="image/*">
                     
                     <button type="submit" class="confirmBtn">Confirm</button>
                     <button type="button" id="cancelBtn">Cancel</button>

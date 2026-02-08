@@ -17,6 +17,7 @@ document.addEventListener("DOMContentLoaded", function() {
             btn.addEventListener("click", function(){
                 document.getElementById('action').value="add";
                 document.getElementById("modalTitle").innerText = "Add New Reward";
+                document.getElementById("rewardForm").reset();
                 rewardModal.style.display="block";
             });
         });
