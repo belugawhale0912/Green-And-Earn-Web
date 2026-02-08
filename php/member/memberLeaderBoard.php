@@ -4,22 +4,19 @@
 
     $user_id = $_SESSION['user_id'];
 
-    // 1. Fetch all data into an Array first
+    // fetch all user into an Array first
     $sql = "SELECT user_id, username, profile_photo, total_point_accumulated 
             FROM user
             WHERE role_id=2
             ORDER BY total_point_accumulated DESC";
     $result = mysqli_query($dbConn, $sql);
     
-    $ranking = [];
-    $userInfo = null;
-    $userRank = 0;
-
     if(mysqli_num_rows($result) > 0){
         $rankCounter = 1;
         while($row = mysqli_fetch_assoc($result)){
             $ranking[] = $row;
 
+            // fetch the logged in user ranking and info
             if($row['user_id'] == $user_id){
                 $userInfo = $row;
                 $userRank = $rankCounter;
@@ -47,7 +44,6 @@
         <h1>Leaderboard</h1>    
         <?php if (!empty($ranking)): ?>
             <div class="top3Container">
-
                 <?php if(isset($ranking[0])):?>
                 <div class="top3 firstPlace">
                     <img src="<?php echo $ranking[0]['profile_photo'];?>" alt="1st">

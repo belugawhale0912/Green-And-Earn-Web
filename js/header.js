@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded",function(){
     // check for setted theme from local storage
     const savedTheme = localStorage.getItem("theme");
 
-    // if the saved theme is dark, set the data-theme attribute to dark so the css can change the color to darkmode pallete
+    // if the saved theme is dark
     if (savedTheme === "dark") {
         htmlElement.setAttribute("data-theme", "dark");
     }

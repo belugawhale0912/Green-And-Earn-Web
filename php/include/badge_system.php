@@ -1,41 +1,49 @@
 <?php
-// TODO remove checkTask from partner point
-// TODO add checkPoint to partnerpoint and submission
-
 
 function checkTaskBadges($dbConn, $user_id) {
     
-    // 1. COUNT: How many approved tasks does this user have?
+    // count how many approved tasks does the user have
+
     $sql_taskCount = "SELECT COUNT(*) as total FROM activity_submission 
-                  WHERE user_id = '$user_id' AND status = 'Approved'";
-    
-    $result_taskCount = mysqli_query($dbConn, $sql_taskCount);
+                  WHERE user_id = ? AND status = 'Approved'";
+
+    $stmtTaskCount = mysqli_prepare($dbConn, $sql_taskCount);
+    mysqli_stmt_bind_param($stmtTaskCount, "i", $user_id);
+    mysqli_stmt_execute($stmtTaskCount);
+    $result_taskCount = mysqli_stmt_get_result($stmtTaskCount);
     $taskCount_info = mysqli_fetch_assoc($result_taskCount);
     $total_tasks = $taskCount_info['total'];
 
-    // 2. FETCH MATCHES: Find badges that this user qualifies for based on the count
-    //    We check for badges where their total is MORE THAN or EQUAL TO the requirement .
+    // find badges that this user qualifies
     $sql_badges = "SELECT * FROM badge 
                    WHERE criteria_category = 'tasks_completed' 
                    AND $total_tasks >= criteria_value";
-                   
-    $result_badges = mysqli_query($dbConn, $sql_badges);
 
-    // 3. LOOP & AWARD: Check each badge found
+    $stmtBadges = mysqli_prepare($dbConn, $sql_badges);
+    mysqli_stmt_bind_param($stmtBadges, "i", $total_tasks);
+    mysqli_stmt_execute($stmtBadges);
+    $result_badges = mysqli_stmt_get_result($stmtBadges);
+
+
     while ($badge = mysqli_fetch_assoc($result_badges)) {
         
         $badge_id = $badge['badge_id'];
 
-        // 4. IDEMPOTENCY CHECK: Do they already have THIS specific badge?
-        $check_owned = "SELECT * FROM badge_obtain 
-                        WHERE user_id = '$user_id' AND badge_id = '$badge_id'";
-        $result_owned = mysqli_query($dbConn, $check_owned);
+        // check if the user already owned the badge
+        $sql_owned = "SELECT * FROM badge_obtain 
+                        WHERE user_id = ? AND badge_id = '$badge_id'";
+        $stmtOwned = mysqli_prepare($dbConn, $sql_owned);
+        mysqli_stmt_bind_param($stmtOwned, "i", $user_id);
+        mysqli_stmt_execute($stmtOwned);
+        $result_owned = mysqli_stmt_get_result($stmtOwned);
 
-        // If 'num_rows' is 0, they don't have it yet. AWARD IT!
+        // if row = 0 that means the user dont have the badge
         if (mysqli_num_rows($result_owned) == 0) {
             
-            // A. Insert into database
-            $insert = "INSERT INTO badge_obtain (user_id, badge_id) VALUES ('$user_id', '$badge_id')";
+            // insert badge obtain record to award the user
+            $insert = "INSERT INTO badge_obtain (user_id, badge_id) VALUES (?, ?)";
+            $stmtInsert = mysqli_prepare($dbConn, $insert);
+            mysqli_stmt_bind_param($stmtOwned, "ii", $user_id, $badge_id);
             if(mysqli_query($dbConn, $insert)) {
                 
             }
@@ -46,41 +54,119 @@ function checkTaskBadges($dbConn, $user_id) {
 
 function checkPointBadges($dbConn, $user_id) {
     
-    // 1. COUNT: How many approved tasks does this user have?
+    // check user total point
     $sql_pointCount = "SELECT total_point_accumulated
-                       FROM user WHERE user_id = $user_id";
+                       FROM user WHERE user_id = ?";
     
-    $result_pointCount = mysqli_query($dbConn, $sql_pointCount);
+    $stmtPointCount =  mysqli_prepare($dbConn, $sql_pointCount);
+    mysqli_stmt_bind_param($stmtPointCount, "i", $user_id);
+    mysqli_stmt_execute($stmtPointCount);
+    $result_pointCount = mysqli_stmt_get_result($stmtPointCount);
     $pointCount_info = mysqli_fetch_assoc($result_pointCount);
     $total_point = $pointCount_info['total_point_accumulated'];
 
-    // 2. FETCH MATCHES: Find badges that this user qualifies for based on the count
-    //    We check for badges where their total is MORE THAN or EQUAL TO the requirement .
+    //    find the badge that the user is eligible of
     $sql_badges = "SELECT * FROM badge 
                    WHERE criteria_category = 'points_earned' 
-                   AND $total_point >= criteria_value";
-                   
-    $result_badges = mysqli_query($dbConn, $sql_badges);
+                   AND ? >= criteria_value";
 
-    // 3. LOOP & AWARD: Check each badge found
+    $stmtBadges = mysqli_prepare($dbConn, $sql_badges);
+    mysqli_stmt_bind_param($stmtBadges, "i", $total_point);
+    mysqli_stmt_execute($stmtBadges);
+                   
+    $result_badges = mysqli_stmt_get_result($stmtBadges);
+
     while ($badge = mysqli_fetch_assoc($result_badges)) {
         
         $badge_id = $badge['badge_id'];
 
-        // 4. IDEMPOTENCY CHECK: Do they already have THIS specific badge?
-        $check_owned = "SELECT * FROM badge_obtain 
-                        WHERE user_id = '$user_id' AND badge_id = '$badge_id'";
-        $result_owned = mysqli_query($dbConn, $check_owned);
+        // check if the user already owned the badge
+        $sql_owned = "SELECT * FROM badge_obtain 
+                        WHERE user_id = ? AND badge_id = '$badge_id'";
+        $stmtOwned = mysqli_prepare($dbConn, $sql_owned);
+        mysqli_stmt_bind_param($stmtOwned, "i", $user_id);
+        mysqli_stmt_execute($stmtOwned);
+        $result_owned = mysqli_stmt_get_result($stmtOwned);
 
-        // If 'num_rows' is 0, they don't have it yet. AWARD IT!
+        // if row = 0 that means the user dont have the badge
         if (mysqli_num_rows($result_owned) == 0) {
             
-            // A. Insert into database
-            $insert = "INSERT INTO badge_obtain (user_id, badge_id) VALUES ('$user_id', '$badge_id')";
+            // insert badge obtain record to award the user
+            $insert = "INSERT INTO badge_obtain (user_id, badge_id) VALUES (?, ?)";
+            $stmtInsert = mysqli_prepare($dbConn, $insert);
+            mysqli_stmt_bind_param($stmtOwned, "ii", $user_id, $badge_id);
             if(mysqli_query($dbConn, $insert)) {
                 
             }
         }
     }
 }
+
+// v2, havent implement
+function checkBadges($dbConn, $user_id, $type) {
+    
+    if($type=='task'){
+        // count how many approved tasks does the user have
+        $sql_taskCount = "SELECT COUNT(*) as total FROM activity_submission 
+                    WHERE user_id = ? AND status = 'Approved'";
+
+        $stmtTaskCount = mysqli_prepare($dbConn, $sql_taskCount);
+        mysqli_stmt_bind_param($stmtTaskCount, "i", $user_id);
+        mysqli_stmt_execute($stmtTaskCount);
+        $result_taskCount = mysqli_stmt_get_result($stmtTaskCount);
+        $taskCount_info = mysqli_fetch_assoc($result_taskCount);
+
+        $category = "tasks_completed";
+        $value = $taskCount_info['total'];
+
+    }elseif($type=='point'){
+        // check user total point
+        $sql_pointCount = "SELECT total_point_accumulated
+                        FROM user WHERE user_id = ?";
+        
+        $stmtPointCount =  mysqli_prepare($dbConn, $sql_pointCount);
+        mysqli_stmt_bind_param($stmtPointCount, "i", $user_id);
+        mysqli_stmt_execute($stmtPointCount);
+        $result_pointCount = mysqli_stmt_get_result($stmtPointCount);
+        $pointCount_info = mysqli_fetch_assoc($result_pointCount);
+
+        $category = "points_earned";
+        $value = $pointCount_info['total_point_accumulated'];   
+    }
+
+    // find badge that the user qualifies
+    $sql_badges = "SELECT * FROM badge 
+                WHERE criteria_category = ? 
+                AND ? >= criteria_value";
+
+    $stmtBadges = mysqli_prepare($dbConn, $sql_badges);
+    mysqli_stmt_bind_param($stmtBadges, "si", $category, $value);
+    mysqli_stmt_execute($stmtBadges);
+    $result_badges = mysqli_stmt_get_result($stmtBadges);
+
+    // check if the user already owned the badge
+    $sql_owned = "SELECT * FROM badge_obtain 
+                    WHERE user_id = ? AND badge_id = ?";
+    $stmtOwned = mysqli_prepare($dbConn, $sql_owned);
+    
+    // insert badge obtain record to award the user
+    $insert = "INSERT INTO badge_obtain (user_id, badge_id) VALUES (?, ?)";
+    $stmtInsert = mysqli_prepare($dbConn, $insert);
+
+
+    while ($badge = mysqli_fetch_assoc($result_badges)) {
+        
+        $badge_id = $badge['badge_id'];
+        mysqli_stmt_bind_param($stmtOwned, "ii", $user_id, $badge_id);
+        mysqli_stmt_execute($stmtOwned);
+        $result_owned = mysqli_stmt_get_result($stmtOwned);
+
+        // if row = 0 that means the user dont have the badge
+        if (mysqli_num_rows($result_owned) == 0) {
+            mysqli_stmt_bind_param($stmtInsert, "ii", $user_id, $badge_id);
+            mysqli_stmt_execute($stmtInsert);
+        }
+    }
+}
+
 ?>

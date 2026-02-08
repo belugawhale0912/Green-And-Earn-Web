@@ -30,7 +30,6 @@ header{
     color: var(--text-main);
     text-decoration: none;
     padding-bottom: 5px; 
-    /* TODO try use other way so the link is not that towards the top */
 }
 
 #header_links a::after {

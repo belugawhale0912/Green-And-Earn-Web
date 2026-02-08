@@ -2,14 +2,17 @@
     include "../include/conn.php";
     include "../include/session.php";
 
+    // send user back to login page if page is not accessed through login
     if(!isset($_SESSION['user_id'])){
         header("Location: Landingpage.php");
         exit();
     }
+
     $user_id = $_SESSION['user_id'];
     $view = isset($_GET['view'])? $_GET['view']:'list';
 
     if($view=='list'){
+        // fetch all friends
         $sql = "SELECT * 
                 FROM friendship f
                 JOIN user u ON u.user_id = (CASE WHEN f.user_id = ? THEN f.friend_id ELSE f.user_id END)
@@ -19,6 +22,7 @@
         mysqli_stmt_bind_param($stmt, "iii", $user_id, $user_id, $user_id);
     }
     elseif($view=='requests'){
+        // fetch pending requests
         $sql = "SELECT u.user_id, u.username, u.profile_photo, f.friendship_id
                 FROM friendship f
                 JOIN user u ON f.user_id = u.user_id
@@ -28,11 +32,13 @@
         mysqli_stmt_bind_param($stmt, "i", $user_id);
     }
     elseif($view=='search'){
-        // Understand this query
+        // fetch available members to add as friends
         $sql = "SELECT user_id, username, profile_photo 
             FROM user 
-            WHERE role_id = 2 
+            WHERE role_id = 2
+            -- exclude the user self 
             AND user_id != ? 
+            -- exclude members that are already friend with the user
             AND user_id NOT IN (
                 SELECT friend_id FROM friendship WHERE user_id = ?
                 UNION
@@ -46,44 +52,47 @@
     mysqli_stmt_execute($stmt);
     $result = mysqli_stmt_get_result($stmt);
 
+    // Check if a form is submitted
     if($_SERVER["REQUEST_METHOD"] == "POST"){
+        // check action
         if(isset($_POST["action"])){
+
             if($_POST["action"]=="delete"){
 
-                if(isset($_POST['friendship_id'])){
-                    $friendship_id = $_POST['friendship_id'];
-                    $sql = "DELETE FROM friendship WHERE friendship_id = ?";
-                    $stmt = mysqli_prepare($dbConn, $sql);
-                    mysqli_stmt_bind_param($stmt, "i", $friendship_id);
+                $friendship_id = $_POST['friendship_id'];
+                // Delete friendship record
+                $sql = "DELETE FROM friendship WHERE friendship_id = ?";
+                $stmt = mysqli_prepare($dbConn, $sql);
+                mysqli_stmt_bind_param($stmt, "i", $friendship_id);
 
-                    if(mysqli_stmt_execute($stmt)){
-                        $_SESSION['popupMessage']=[
-                            'title' => 'Success!',
-                            'text' => 'Successfully Deleted Friend',
-                            'icon' => 'success'
-                        ];
+                if(mysqli_stmt_execute($stmt)){
+                    $_SESSION['popupMessage']=[
+                        'title' => 'Success!',
+                        'text' => 'Successfully Deleted Friend',
+                        'icon' => 'success'
+                    ];
 
-                        header("Location: memberFriends.php?view=list");
-                        exit();
-                    }else{
-                        echo "Error";
-                    }
-                }else{
                     header("Location: memberFriends.php?view=list");
+                    exit();
+                }else{
+                    echo "Error While Deleting Friend!";
                 }
             }
+
             if($_POST["action"]=="approve"){
 
                 $friendship_id = $_POST['friendship_id'];
                 $decision = $_POST['decision'];
 
                 if($decision=="Accept"){
+                    // Update status as accepted
                     $sql = "UPDATE friendship SET status = 'Accepted' WHERE friendship_id = ?";
                     $stmt = mysqli_prepare($dbConn, $sql);
                     mysqli_stmt_bind_param($stmt, "i", $friendship_id);
                     $msg = "Approved";
                 }
                 else{
+                    // Remove friend Request
                     $sql = "DELETE FROM friendship WHERE friendship_id = ?";
                     $stmt = mysqli_prepare($dbConn, $sql);
                     mysqli_stmt_bind_param($stmt, "i", $friendship_id);
@@ -107,22 +116,7 @@
                 $user_id = $_SESSION['user_id'];
                 $friend_id = $_POST['friend_id'];
 
-                // TODO check if keep or remove this check since the display dont show friend with pending request
-                // $checkSql = "SELECT * FROM friendship
-                //             WHERE (user_id = $user_id AND friend_id = $friend_id) OR (user_id = $friend_id AND friend_id = $user_id)";
-                
-                // $checkResult = mysqli_query($dbConn,$checkSql);
-
-                // if(mysqli_num_rows($checkResult)>0){
-                //     $_SESSION['popupMessage']=[
-                //         'title' => 'Action Failed!',
-                //         'text' => 'You already have a request sent',
-                //         'icon' => 'error'
-                //     ];
-                //     header("Location: memberFriends.php?view=search");
-                //     exit();
-                // }
-                // else{
+                // insert new friend request into db
                 $insertSql = "INSERT INTO friendship (user_id, friend_id, status)
                         VALUES ($user_id,$friend_id,'Pending')";
 
@@ -135,7 +129,6 @@
                     header("Location: memberFriends.php?view=search");
                     exit();
                 }
-
                 else{
                     echo "Error";
                 }
@@ -169,7 +162,8 @@
 
         <a href="memberFriends.php?view=search" class="<?php echo ($view == 'search')? 'active' : ''; ?>">Find Friends</a>
     </div>
-    <?php if(isset($_SESSION['role_id']) && $view=='list'): ?>
+
+    <?php if($view=='list'): ?>
         <?php if(mysqli_num_rows($result)>0):?>
             <div class="friendContainer">
                 <?php while($friend_info = mysqli_fetch_assoc($result)):?>
@@ -238,7 +232,7 @@
         </div>
     <?php endif;?>
 
-    <?php if(isset($_SESSION['role_id']) && $view=='requests'): ?>
+    <?php if($view=='requests'): ?>
         <?php if(mysqli_num_rows($result)>0):?>
             <div class="friendContainer">
                 <?php while($friend_info = mysqli_fetch_assoc($result)):?>
@@ -261,7 +255,7 @@
         <?php endif?>
     <?php endif;?>
 
-    <?php if(isset($_SESSION['role_id']) && $view=='search'): ?>
+    <?php if($view=='search'): ?>
         <?php if(mysqli_num_rows($result)>0):?>
             <div class="friendContainer">
                 <input type="text" id="friendSearch" placeholder="enter friend username!">
