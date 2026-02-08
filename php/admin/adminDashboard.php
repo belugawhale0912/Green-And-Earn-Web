@@ -30,10 +30,6 @@
     $result_rewardPendingCount = mysqli_query($dbConn, $sql_countRewardPending);
     $rewardPendingCount = mysqli_fetch_assoc($result_rewardPendingCount)['totalRewardPending'];
 
-    $sql_countRewardApproved = "SELECT COUNT(*) AS totalRewardApproved FROM reward WHERE status = 'approved' ";
-    $result_rewardApprovedCount = mysqli_query($dbConn, $sql_countRewardApproved);
-    $rewardApprovedCount = mysqli_fetch_assoc($result_rewardApprovedCount)['totalRewardApproved'];
-
     $sql_countRewardAvailable = "SELECT COUNT(*) AS totalRewardAvailable FROM reward WHERE status = 'available' ";
     $result_rewardAvailableCount = mysqli_query($dbConn, $sql_countRewardAvailable);
     $rewardAvailableCount = mysqli_fetch_assoc($result_rewardAvailableCount)['totalRewardAvailable'];
@@ -44,8 +40,8 @@
 
     $sql_countPoints = "SELECT 
                                 DATE(transaction_time) AS day,
-                                SUM(CASE WHEN type = 'Issued' THEN amount ELSE 0 END) AS issued,
-                                SUM(CASE WHEN type = 'Redemption' THEN amount ELSE 0 END) AS redeemed
+                                SUM(CASE WHEN type = 'Earned' THEN amount ELSE 0 END) AS Earned,
+                                SUM(CASE WHEN type = 'Spent' THEN amount ELSE 0 END) AS Spent
                                 FROM point_transaction
                                 WHERE transaction_time >= CURDATE() - INTERVAL 6 DAY
                                 GROUP BY day
@@ -61,10 +57,10 @@
     $pointsRedeemedData = [];
 
     while ($row = mysqli_fetch_assoc($result_countPoints)) {
-    $pointLabels[] = $row['day'];
-    $pointsIssuedData[] = (int)$row['issued'];
-    $pointsRedeemedData[] = (int)$row['redeemed'];
-}
+        $pointLabels[] = $row['day'];
+        $pointsIssuedData[] = (int)$row['Earned'];
+        $pointsRedeemedData[] = (int)$row['Spent'];
+    }
 ?>
 
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
@@ -98,8 +94,8 @@
                     </div>
 
                     <div class="cards">
-                        <h3><span class="statistics"><?php echo $rewardApprovedCount?></span>
-                            <span class="statLabel">Total Approved Rewards</span>
+                        <h3><span class="statistics"><?php echo $userCount?></span>
+                            <span class="statLabel">Total Users</span>
                         </h3>
                     </div>
 
