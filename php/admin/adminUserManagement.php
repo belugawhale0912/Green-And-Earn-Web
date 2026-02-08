@@ -3,22 +3,36 @@
     include "../include/session.php";
    
     $user_id = $_SESSION['user_id'];
+
+    //all users, display role name instead of role id
     $sql = "SELECT * FROM user INNER JOIN role ON role.role_id = user.role_id ORDER BY user_id ASC";
+
+    //all admins
     $sqlAdmin = "SELECT * FROM user WHERE role_id = '1' ORDER BY user_id ASC";
+
+    //all members
     $sqlMember = "SELECT * FROM user WHERE role_id = '2' ORDER BY user_id ASC";
+
+    //all moderators
     $sqlModerator = "SELECT * FROM user WHERE role_id = '3' ORDER BY user_id ASC";
+
+    //all partners
     $sqlPartner = "SELECT * FROM user WHERE role_id = '4' ORDER BY user_id ASC";
+
     $result = mysqli_query($dbConn, $sql);
     $resultAdmin = mysqli_query($dbConn, $sqlAdmin);
     $resultMember = mysqli_query($dbConn, $sqlMember);
     $resultModerator = mysqli_query($dbConn, $sqlModerator);
     $resultPartner = mysqli_query($dbConn, $sqlPartner);
+
+    //tab viewer, defaulting with member page
     $view = isset($_GET['view']) ? $_GET['view'] : 'memberPage';
 
-    
-
+    //ensure form is submitted
     if($_SERVER["REQUEST_METHOD"] == "POST"){
+        //set action
         if(isset($_POST['action'])){
+            //add new user
             if($_POST['action'] == "add"){    
                 $username = $_POST['username'];
                 //password is hashed username
@@ -27,10 +41,13 @@
                 $email = $_POST['email'];
                 $profilePhoto = '../../assets/placeHolders/placeholder.png';
 
-                $sql = "INSERT INTO user (role_id, username, password_hash, email, profile_photo)
-                        VALUES ('$role','$username', '$password_hash', '$email', '$profilePhoto')";
+                $sql = "INSERT INTO user (role_id, username, password_hash, email, profile_photo) VALUES (?, ?, ?, ?, ?)";
+                //prevent sql injection
+                $stmt = mysqli_prepare($dbConn, $sql);
+                mysqli_stmt_bind_param($stmt, "issss", $role, $username, $password_hash, $email, $profilePhoto);
                 
-                if(mysqli_query($dbConn, $sql)){
+                //sweet alerts
+                if(mysqli_stmt_execute($stmt)){
                     $_SESSION['popupMessage']=[
                         'title' => 'Success',
                         'text' => 'User Added Successfully',
@@ -48,12 +65,16 @@
                     exit();
                 }
             }
+            //suspend user
             if($_POST['action'] == "suspend"){
                 $user_id = $_POST['user_id'];
-
-                $sql = "UPDATE user SET active_status = 0 WHERE user_id = $user_id";
-
-                if(mysqli_query($dbConn, $sql)){
+                //active status is boolean, set 0 to suspend
+                $sql = "UPDATE user SET active_status = 0 WHERE user_id = ?";
+                //prevent sql injection
+                $stmt = mysqli_prepare($dbConn, $sql);
+                mysqli_stmt_bind_param($stmt, "i", $user_id);
+                //sweet alert
+                if(mysqli_stmt_execute($stmt)){
                     $_SESSION['popupMessage']=[
                         'title' => 'Success',
                         'text' => 'User Suspended Successfully',
@@ -71,12 +92,16 @@
                     exit();
                 }
             }
+            //activate user
             if($_POST['action'] == "activate"){
                 $user_id = $_POST['user_id'];
-
-                $sql = "UPDATE user SET active_status = 1 WHERE user_id = $user_id";
-
-                if(mysqli_query($dbConn, $sql)){
+                //set boolean to 1
+                $sql = "UPDATE user SET active_status = 1 WHERE user_id = ?";
+                //prevent sql injection
+                $stmt = mysqli_prepare($dbConn, $sql);
+                mysqli_stmt_bind_param($stmt, "i", $user_id);
+                //sweet alert
+                if(mysqli_stmt_execute($stmt)){
                     $_SESSION['popupMessage']=[
                         'title' => 'Success',
                         'text' => 'User Activated Successfully',
@@ -115,7 +140,7 @@
         include "../include/header.php"; 
     ?>
     <h2 class="pageTitle">User Management</h2>
-    
+    <!-- page toggle -->
     <div class="viewToggle">
         <a href="?view=memberPage" class="<?php echo ($view == 'memberPage')? 'active':'' ?>">Members</a>
         <a href="?view=moderatorPage" class="<?php echo ($view == 'moderatorPage')? 'active':'' ?>">Moderators</a>
@@ -123,7 +148,7 @@
         <a href="?view=adminPage" class="<?php echo ($view == 'adminPage')? 'active':'' ?>">Admins</a>
         <button id="addUserBtn">Add New User</button>
     </div>
-
+    <!-- member page -->
     <?php if($view=='memberPage'):?>
     <div id="memberTable">
         <h3 class="tableTitle">List of Members</h3>
@@ -178,7 +203,7 @@
                 </table>
             <?php endif; ?>
     </div>    
-
+    <!-- moderator page -->
     <?php elseif($view =='moderatorPage'):?>
     <div id="moderatorTable">
         <h3 class="tableTitle">List of Moderators</h3>
@@ -233,6 +258,7 @@
         <?php endif; ?>                   
     </div>
 
+    <!-- partner page -->
     <?php elseif($view =='partnerPage'):?>
     <div id="partnerTable">
         <h3 class="tableTitle">List of Partners and Sponsors</h3>
@@ -285,64 +311,65 @@
                     <?php endwhile; ?>  
                 </tbody>
             </table>
-    <?php endif; ?>                                
+    <?php endif; ?>                 
+    <!-- admin page -->
     <?php elseif($view =='adminPage'):?>
-    <div id="adminTable">
-        <h3 class="tableTitle">List of Admins</h3>
-        <?php if(mysqli_num_rows($resultAdmin)>0):?>
-            <table>
-                <thead>
-                    <tr id="header">
-                        <th>User ID</th>
-                        <th>Username</th>
-                        <th>Email</th>
-                        <th>Point Balance</th>
-                        <th>Status</th>
-                        <th>Register Date</th>
-                        <th></th> <!-- Suspend & Activate -->
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php while($user_info = mysqli_fetch_assoc($resultAdmin)):?> 
-                        <tr>
-                            <td data-label="User ID"><?php echo $user_info['user_id'];?></td>
-                            <td data-label="Username"><?php echo $user_info['username'];?></td>
-                            <td data-label="Email"><?php echo $user_info['email'];?></td>
-                            <td data-label="Point Balance"><?php echo $user_info['point_balance'];?></td>
-                            <?php if($user_info['active_status']==1){
-                                $memberStatus = "Active";
-                            }else{
-                                $memberStatus = "Inactive";
-                            }
-                            ?>
-                            <td data-label="Status"><p class="userStatus <?php echo $memberStatus?>"><?php echo $memberStatus?></p></td>
-                            <td data-label="Register Date"><?php echo $user_info['register_date'];?></td>
-                            <td data-label="Suspend/Activate Button"> 
-                            <!--Suspend Button -->
-                                <?php if($user_info['active_status'] == 1): ?>
-                                    <form  method="POST">
-                                        <input type="hidden" name="action" value="suspend">
-                                        <input type="hidden" name="user_id" value="<?php echo $user_info['user_id'];?>">
-                                        <button type="submit" class="suspendBtn">Suspend</button>
-                                    </form> 
-                                <?php else: ?>
-                            <!--Activate Button -->
-                                    <form method="POST">
-                                        <input type="hidden" name="action" value="activate">
-                                        <input type="hidden" name="user_id" value="<?php echo $user_info['user_id'];?>">
-                                        <button type="submit" class="activateBtn">Activate</button>
-                                    </form>
-                                <?php endif;?>    
-                            </td>
-                        </tr>   
-                    <?php endwhile; ?>  
-                </tbody>
-            </table>
-
-        <?php endif; ?>
-        <?php endif; ?>
-    </div>
+        <div id="adminTable">
+            <h3 class="tableTitle">List of Admins</h3>
+                <?php if(mysqli_num_rows($resultAdmin)>0):?>
+                    <table>
+                        <thead>
+                            <tr id="header">
+                                <th>User ID</th>
+                                <th>Username</th>
+                                <th>Email</th>
+                                <th>Point Balance</th>
+                                <th>Status</th>
+                                <th>Register Date</th>
+                                <th></th> <!-- Suspend & Activate -->
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php while($user_info = mysqli_fetch_assoc($resultAdmin)):?> 
+                                <tr>
+                                    <td data-label="User ID"><?php echo $user_info['user_id'];?></td>
+                                    <td data-label="Username"><?php echo $user_info['username'];?></td>
+                                    <td data-label="Email"><?php echo $user_info['email'];?></td>
+                                    <td data-label="Point Balance"><?php echo $user_info['point_balance'];?></td>
+                                    <?php if($user_info['active_status']==1){
+                                        $memberStatus = "Active";
+                                    }else{
+                                        $memberStatus = "Inactive";
+                                    }
+                                    ?>
+                                    <td data-label="Status"><p class="userStatus <?php echo $memberStatus?>"><?php echo $memberStatus?></p></td>
+                                    <td data-label="Register Date"><?php echo $user_info['register_date'];?></td>
+                                    <td data-label="Suspend/Activate Button"> 
+                                    <!--Suspend Button -->
+                                        <?php if($user_info['active_status'] == 1): ?>
+                                            <form  method="POST">
+                                                <input type="hidden" name="action" value="suspend">
+                                                <input type="hidden" name="user_id" value="<?php echo $user_info['user_id'];?>">
+                                                <button type="submit" class="suspendBtn">Suspend</button>
+                                            </form> 
+                                        <?php else: ?>
+                                    <!--Activate Button -->
+                                            <form method="POST">
+                                                <input type="hidden" name="action" value="activate">
+                                                <input type="hidden" name="user_id" value="<?php echo $user_info['user_id'];?>">
+                                                <button type="submit" class="activateBtn">Activate</button>
+                                            </form>
+                                        <?php endif;?>    
+                                    </td>
+                                </tr>   
+                            <?php endwhile; ?>  
+                        </tbody>
+                    </table>
+                <?php endif; ?>
+            <?php endif; ?>
+        </div>
     
+    <!-- user management modal pop up -->
     <div id="userModal" class="modal">
         <div class="modalContent" id="userAdditionModal">
             <h2>Add New User</h2>

@@ -3,6 +3,8 @@
     include "../include/session.php";
 
     $user_id = $_SESSION['user_id'];
+
+    //filter status php, all as default
     $filter = isset($_GET['status']) ? $_GET['status'] : 'all';
 
     if($filter == "Active"){
@@ -15,20 +17,27 @@
     
     $result = mysqli_query($dbConn, $sql);
 
+    //ensure form is submitted
     if($_SERVER["REQUEST_METHOD"] == "POST"){
+        //set action
         if(isset($_POST['action'])){
-            $adminID = $_SESSION['user_id'];
+            //set variables
+            $admin_id = $_SESSION['user_id'];
             $title = $_POST['title'];
             $description = $_POST['description'];
             $pointAward = $_POST['point'];
             $start = $_POST['startDate'];
             $end = $_POST['endDate'];
 
+            //add activity
             if($_POST['action']=="add"){
-                $sql = "INSERT INTO activity (admin_id, title, description, points_awarded, status, start_date, end_date)
-                        VALUES ($adminID, '$title', '$description', $pointAward, 'Active', '$start', '$end')";
+                $sql = "INSERT INTO activity (admin_id, title, description, points_awarded, status, start_date, end_date) VALUES (?, ?, ?, ?, 'Active', ?, ?)";
+                //prevent sql injection
+                $stmt =  mysqli_prepare($dbConn, $sql);
+                mysqli_stmt_bind_param($stmt, "ississ", $admin_id, $title, $description, $pointAward, $start, $end);
 
-                if(mysqli_query($dbConn,$sql)){
+                //sweet alert
+                if(mysqli_stmt_execute($stmt)){
                     $_SESSION['popupMessage']=[
                         'title' => 'Success',
                         'text' => 'Activity Added Successfully',
@@ -46,19 +55,15 @@
                     exit();
                 }
             }
+            //add update
             if($_POST['action']=="update"){
                 $activity_id = $_POST['activity_id'];
-
-                $sql = "UPDATE activity SET
-                        admin_id = $adminID, 
-                        title = '$title', 
-                        description = '$description', 
-                        points_awarded = $pointAward, 
-                        start_date = '$start', 
-                        end_date = '$end'
-                        WHERE activity_id = $activity_id";
-
-                if(mysqli_query($dbConn,$sql)){
+                $sql = "UPDATE activity SET admin_id = ?, title = ?, description = ?, points_awarded = ?, start_date = ?, end_date = ? WHERE activity_id = ?";
+                //prevent sql injection
+                $stmt = mysqli_prepare($dbConn, $sql);
+                mysqli_stmt_bind_param($stmt, "ississi", $admin_id, $title, $description, $pointAward, $start, $end, $activity_id);
+                //sweet alert
+                if(mysqli_stmt_execute($stmt)){
                     $_SESSION['popupMessage']=[
                         'title' => 'Success',
                         'text' => 'Activity Updated Successfully',
@@ -77,14 +82,15 @@
                 }
             }
         }
+        //delete button in table
         if(isset($_POST['deleteBtn'])){
             $activity_id = $_POST['activity_id'];
-
-            $sql = "UPDATE activity SET 
-                    status = 'Deleted' 
-                    WHERE activity_id = $activity_id";
-
-            if(mysqli_query($dbConn,$sql)){
+            $sql = "UPDATE activity SET status = 'Deleted' WHERE activity_id = ?";
+            //prevent sql injection
+            $stmt = mysqli_prepare($dbConn, $sql);
+            mysqli_stmt_bind_param($stmt, "i", $activity_id);
+            //sweet alert
+            if(mysqli_stmt_execute($stmt)){
                 $_SESSION['popupMessage']=[
                         'title' => 'Success',
                         'text' => 'Activity Deleted Successfully',
@@ -102,15 +108,15 @@
                     exit();
             }
         }
-
+        //restore button in table
         if(isset($_POST['restoreBtn'])){
             $activity_id = $_POST['activity_id'];
-
-            $sql = "UPDATE activity SET 
-                    status = 'Active' 
-                    WHERE activity_id = $activity_id";
-
-            if(mysqli_query($dbConn,$sql)){
+            //prevent sql injection
+            $sql = "UPDATE activity SET status = 'Active' WHERE activity_id = ?";
+            $stmt = mysqli_prepare($dbConn, $sql);
+            mysqli_stmt_bind_param($stmt, "i", $activity_id);
+            //sweet alert
+            if(mysqli_stmt_execute($stmt)){
                 $_SESSION['popupMessage']=[
                         'title' => 'Success',
                         'text' => 'Activity Restored Successfully',
@@ -152,6 +158,7 @@
     
     <h3 class="tableTitle">Activities Table</h3>
     <div class="activityBar">
+        <!-- filter dropdown menu -->
         <form method="GET" class="filterForm">
             <label for="statusFilter"></label>
             <select name="status" id="statusFilter" class="dropdown" onchange="this.form.submit()">
@@ -230,13 +237,13 @@
                     <textarea id="activityDescription" name="description" rows="3"></textarea>
                     
                     <label for="pointAward">Points Awarded</label>
-                    <input type="number" id="activityPoint" name="point"></input>
+                    <input type="number" id="activityPoint" name="point" required></input>
 
                     <label for="startDate">Start Date</label>
-                    <input type="date" id="startDate" name="startDate">
+                    <input type="date" id="startDate" name="startDate" required>
 
                     <label for="startDate">End Date</label>
-                    <input type="date" id="endDate" name="endDate">
+                    <input type="date" id="endDate" name="endDate" required>
 
                 <div class="buttonWrapper">
                     <button type="submit" id="confirmBtn">Confirm</button>

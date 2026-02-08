@@ -109,6 +109,17 @@ document.addEventListener("DOMContentLoaded", function() {
             });
         });
     }
-
+    //date input validation
+    const startDate = document.getElementById('startDate');
+    const endDate = document.getElementById('endDate');
+    
+    if(startDate && endDate){
+        const currentDate = new Date().toISOString().split('T')[0];
+        startDate.min = currentDate;
+    
+        startDate.addEventListener('change', function(){
+            endDate.min = startDate.value;
+        })
+    }
 });
 
