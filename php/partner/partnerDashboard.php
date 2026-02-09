@@ -16,17 +16,18 @@
     $countResult = mysqli_fetch_assoc($result_total);
     $totalRewardRedeemed = $countResult['total'];
 
-    // 1. GENERATE LAST 7 DAYS (Empty Skeleton)
-    $last7Days = [];
-    for ($i = 6; $i >= 0; $i--) {
-        $date = date('Y-m-d', strtotime("-$i days"));
+    //Generate last 7 days (Empty Skeleton)
+    $last7Days = []; //Create empty array
+    //Loops 7 times (6 = six days ago, 0 is today)
+    for ($i = 6; $i >= 0; $i--) { //Initialise; condition; decrement
+        $date = date('Y-m-d', strtotime("-$i days")); //Strtotime convert text to time
         $last7Days[$date] = [
-            'label' => date('D d', strtotime($date)), 
+            'label' => date('D d', strtotime($date)), //Day of week, day of month
             'sales' => 0 
         ];
     }
 
-    // 2. QUERY DATABASE (Summing amount_spent now)
+    //Query database (Summing amount_spent now)
     $sql_partner_chart1 = "SELECT DATE(award_time) as trans_date, SUM(amount_spent) as total_sales
                           FROM partner_point_transaction 
                           WHERE partner_id = ?
@@ -39,7 +40,7 @@
     mysqli_stmt_execute($stmt);
     $res_partner_chart = mysqli_stmt_get_result($stmt);
 
-    // 3. FILL DATA
+    //Fill data
     while($row = mysqli_fetch_assoc($res_partner_chart)){
         $dbDate = $row['trans_date'];
         if(isset($last7Days[$dbDate])){
@@ -47,7 +48,7 @@
         }
     }
 
-    // 4. PREPARE FOR JS
+    //Prepare for js
     $pChartLabels = [];
     $pChartData = [];
     $totalSalesCheck = 0;
@@ -68,7 +69,7 @@
     mysqli_stmt_execute($stmt);
     $res_partner_chart2 = mysqli_stmt_get_result($stmt);
 
-    // Fetch all 5 results into an array
+    //Fetch all 5 results into an array
     $topRewards = [];
     while ($row = mysqli_fetch_assoc($res_partner_chart2)) {
         $topRewards[] = [
@@ -77,7 +78,7 @@
         ];
     }
 
-    // Prepare data for js
+    //Prepare data for js
     $topRewardLabels = array_column($topRewards, 'title');
     $topRewardCount = array_column($topRewards, 'redemption_count');
 ?>
@@ -131,14 +132,14 @@
         </div>
     </div>
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const ctxPartner = document.getElementById('partnerSalesChart');
+        document.addEventListener("DOMContentLoaded", function() { //Wait page to be fully loaded
+            const ctxPartner = document.getElementById('partnerSalesChart'); //Get ID store in constant
 
-            if (ctxPartner && ctxPartner.style.display !== 'none') {
-                new Chart(ctxPartner, {
+            if (ctxPartner && ctxPartner.style.display !== 'none') { //Safety check (canva exists+not hidden)
+                new Chart(ctxPartner, { //Create new chart
                     type: 'bar',
                     data: {
-                        labels: <?php echo json_encode($pChartLabels); ?>,
+                        labels: <?php echo json_encode($pChartLabels); ?>, //X-axis labels
                         datasets: [{
                             label: 'Sales Revenue (RM)',
                             data: <?php echo json_encode($pChartData); ?>,
@@ -151,14 +152,14 @@
                             maxBarThickness: 50
                         }]
                     },
-                    options: {
+                    options: { //Controls layout, behavior, plugins, scales
                         responsive: true,
-                        maintainAspectRatio: false,
+                        maintainAspectRatio: false, //Allow stretch
                         plugins: {
-                            legend: { display: false },
-                            tooltip: {
+                            legend: { display: false }, //Dont need legend
+                            tooltip: { //When hover
                                 callbacks: {
-                                    label: function(context) {
+                                    label: function(context) { //Make hover show actual data value
                                         // Format tooltip as Currency (e.g. RM 50.00)
                                         return 'RM ' + Number(context.raw).toFixed(2);
                                     }
@@ -171,7 +172,7 @@
                                 title: { display: true, text: 'Amount (RM)' },
                                 grid: { color: '#f0f0f0' },
                                 ticks: {
-                                    callback: function(value) {
+                                    callback: function(value) { //Adds RM in front of each Y-axis value.    
                                         return 'RM ' + value;
                                     }
                                 }
@@ -186,7 +187,7 @@
         });
     </script>
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
+        document.addEventListener("DOMContentLoaded", function() { 
             const ctxPartner2 = document.getElementById('topRewardChart');
 
             if (ctxPartner2 && ctxPartner2.style.display !== 'none') {

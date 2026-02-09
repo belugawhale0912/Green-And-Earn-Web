@@ -1,56 +1,57 @@
 <?php
-    include "../include/conn.php";
-    include "../include/session.php";
+    include "../include/conn.php"; //Includes the database connection file
+    include "../include/session.php"; //Includes the session handling file (starts session, manages login info)
 
-    $user_id = $_SESSION['user_id'];
+    $user_id = $_SESSION['user_id']; //Get current logged-in user’s ID from session (partner_ID)
 
-    $filter = isset($_GET['status']) ? $_GET['status'] : 'all';
+    $filter = isset($_GET['status']) ? $_GET['status'] : 'all'; //Checks if a status filter is passed. "All" as default if no filter is selected
     if($filter == "Available"){
-        $sql = "SELECT * FROM reward WHERE partner_id = ? AND status = 'Available'";
+        $sql = "SELECT * FROM reward WHERE partner_id = ? AND status = 'Available'"; //Fetch only available rewards
     }else if($filter == "Rejected"){
-        $sql = "SELECT * FROM reward WHERE partner_id = ? AND status = 'Rejected'";
+        $sql = "SELECT * FROM reward WHERE partner_id = ? AND status = 'Rejected'"; //Fetch only rejected rewards
     }else if($filter == "Pending"){
-        $sql = "SELECT * FROM reward WHERE partner_id = ? AND status = 'Pending'";
+        $sql = "SELECT * FROM reward WHERE partner_id = ? AND status = 'Pending'"; //Fetch only pending rewards
     }else if($filter == "Deactivated"){
-        $sql = "SELECT * FROM reward WHERE partner_id = ? AND status = 'Deactivated'";
+        $sql = "SELECT * FROM reward WHERE partner_id = ? AND status = 'Deactivated'"; //Fetch only deactivated rewards
     }else{
-        $sql = "SELECT * FROM reward WHERE partner_id = ? AND status != 'Deleted' ORDER BY reward_id ASC";
+        $sql = "SELECT * FROM reward WHERE partner_id = ? AND status != 'Deleted' ORDER BY reward_id ASC"; //Fetch all rewards except deleted ones as default
     }
 
-    $stmt_fetch = mysqli_prepare($dbConn, $sql);
-    mysqli_stmt_bind_param($stmt_fetch, "i", $user_id);
-    mysqli_stmt_execute($stmt_fetch);
-    $result = mysqli_stmt_get_result($stmt_fetch);
+    $stmt_fetch = mysqli_prepare($dbConn, $sql); //SQL statement to prevent SQL injection
+    mysqli_stmt_bind_param($stmt_fetch, "i", $user_id); //Binds user id as integer "i" to the query
+    mysqli_stmt_execute($stmt_fetch); //Execute
+    $result = mysqli_stmt_get_result($stmt_fetch); //Stores query result for later use
 
-    // 1. ACCESS CONTROL
-    if(!isset($_SESSION['role_id']) || $_SESSION['role_id'] != 4){ // Assuming Partner ID is 2
+    //Access Control
+    if(!isset($_SESSION['role_id']) || $_SESSION['role_id'] != 4){ //Check if user is logged in and only role_id 4 (partner) can login
        header("Location: ../pages/Landingpage.php");
        exit();
     }
     
-    if($_SERVER["REQUEST_METHOD"] == "POST"){
+    if($_SERVER["REQUEST_METHOD"] == "POST"){ //Ensures this block runs only for POST requests
 
-        if(isset($_POST['action'])){
+        if(isset($_POST['action'])){ //Checks for action
             
-            if($_POST['action']=="add"){
+            if($_POST['action']=="add"){ //Runs when add
+                //Retrieves form input values
                 $title = $_POST['title'];
                 $description = $_POST['description'];
                 $required_points = $_POST['required_points'];
                 $stock = $_POST['stock'];
 
-                // if file ok execute the action
+                //Ensure file upload is successful
                 if(isset($_FILES['reward_img'])&&$_FILES['reward_img']['error'] === UPLOAD_ERR_OK){
 
                     $fileName = $_FILES['reward_img']['name'];
-                    $fileTempPath = $_FILES['reward_img']['tmp_name'];
-                    $fileExt = pathinfo($fileName,PATHINFO_EXTENSION);
+                    $fileTempPath = $_FILES['reward_img']['tmp_name']; //Get original filename and temporary file path
+                    $fileExt = pathinfo($fileName,PATHINFO_EXTENSION); //Get file extension
                     $supportedExt = ['jpg','jpeg','png','gif'];
                 
                     if(in_array($fileExt,$supportedExt)){
-                        $formattedFileName = $title.".".$fileExt;
-                        $saveDir = "../../uploads/rewardImages/".$formattedFileName;
+                        $formattedFileName = $title.".".$fileExt; //Rename
+                        $saveDir = "../../uploads/rewardImages/".$formattedFileName; //Where it should be saved
 
-                        if(move_uploaded_file($fileTempPath, $saveDir)){
+                        if(move_uploaded_file($fileTempPath, $saveDir)){ //Move from temp file to our folder
                             $sql = "INSERT INTO reward (partner_id, status, title, description, required_points, stock, reward_img)
                                     VALUES (?, 'Pending', ?, ?, ?, ?, ?)";
 
@@ -86,7 +87,18 @@
                 $required_points = $_POST['required_points'];
                 $stock = $_POST['stock'];
 
-                // if file ok execute the action
+                //Get existing image path so it can be reused if no new image is uploaded
+                $sql_img = "SELECT reward_img FROM reward WHERE reward_id = ? AND partner_id = ?";
+                $stmt_img = mysqli_prepare($dbConn, $sql_img);
+                mysqli_stmt_bind_param($stmt_img, "ii", $reward_id, $user_id);
+                mysqli_stmt_execute($stmt_img);
+                $result_img = mysqli_stmt_get_result($stmt_img);
+                $existingImg = mysqli_fetch_assoc($result_img);
+
+                //Default to existing image
+                $saveDir = $existingImg['reward_img'];
+
+                //Replace image only if a new one is uploaded
                 if(isset($_FILES['reward_img']) && $_FILES['reward_img']['error'] === UPLOAD_ERR_OK){
 
                     $fileName = $_FILES['reward_img']['name'];
@@ -99,12 +111,8 @@
                         $formattedFileName = $title.".".$fileExt;
                         $saveDir = "../../uploads/rewardImages/".$formattedFileName;
                         
-                        if(move_uploaded_file($fileTempPath, $saveDir)){
-
-                        }
+                        move_uploaded_file($fileTempPath, $saveDir);
                     }
-                }else{
-                    $saveDir = $reward_img;
                 }
 
                 $sql = "UPDATE reward SET title = ?, description = ?, required_points = ?,

@@ -2,7 +2,7 @@
     include "../include/conn.php";
     include "../include/session.php";
 
-    // 1. ACCESS CONTROL (Only Partners)
+    //Access Control
     if(!isset($_SESSION['role_id']) || $_SESSION['role_id'] != 4){
         header("Location: ../pages/Landingpage.php");
         exit();
@@ -59,15 +59,15 @@
             $data = mysqli_fetch_assoc($resultData);
             mysqli_stmt_close($stmt);
             
-            if($data){
+            if($data){ //Ensures the redemption record exists
                 $userId = $data['user_id'];
                 $amount = $data['points_spent'];
 
-                mysqli_begin_transaction($dbConn);
-                $success = true;
-                $err = "";
+                mysqli_begin_transaction($dbConn); //Begin transaction
+                $success = true; //Assumes operation success
+                $err = ""; //Error message variable
 
-                // Refund Points to User
+                //Refund Points to User
                 $sql_refundPoints = "UPDATE user 
                                      SET point_balance = point_balance + ? 
                                      WHERE user_id = ?";
@@ -79,7 +79,7 @@
                 } 
                 mysqli_stmt_close($stmtRefund);
 
-                // Mark Redemption as Refunded
+                //Mark Redemption as Refunded
                 if($success){
                     $sql_rewardRejected = "UPDATE reward_redemption 
                                            SET status = 'Refunded' 
@@ -94,7 +94,7 @@
                     mysqli_stmt_close($stmtUpdate);
                 }
 
-                // Add Transaction Record
+                //Add Transaction Record
                 if($success){
                     $sql_Transaction = "INSERT INTO point_transaction (user_id, redemption_id, amount, type) 
                                 VALUES (?, ?, ?, 'Refund')";
