@@ -10,7 +10,7 @@
 
     $partner_id = $_SESSION['user_id'];
 
-    $sqlRequest = "SELECT u.user_id, rr.redemption_id, u.username, rr.redemption_time 
+    $sqlRequest = "SELECT u.user_id, rr.redemption_id, rr.reward_id, u.username, rr.redemption_time 
                    FROM reward_redemption rr
                    JOIN user u ON rr.user_id = u.user_id
                    JOIN reward r ON rr.reward_id = r.reward_id 
@@ -110,7 +110,7 @@
                     mysqli_commit($dbConn);
                     $_SESSION['popupMessage']=[
                         'title' => 'Success',
-                        'text' => 'Reward Rejected!<br>Points Refunded.',
+                        'text' => 'Reward Rejected! Points Refunded.',
                         'icon' => 'success'
                     ];
                     header("Location: partnerGiveReward.php");
@@ -154,18 +154,18 @@
             while($request = mysqli_fetch_assoc($resultRequest)):?>
                 <div class='requestCard'>
                     <div class="requestDetail">
-                        <h3>Redemption ID <br><p><?php echo $request['redemption_id']?></p></h3>
-                        <h3>Username <br><p><?php echo $request['username']?></p></h3>
-                        <h3>Redemption Time <br><p><?php echo $request['redemption_time']?></p></h3>
+                        <h3>Reward ID : <br><?php echo $request['reward_id']?></h3>
+                        <h3>Username : <br><?php echo $request['username']?></h3>
+                        <h3>Redemption Time : <br><?php echo $request['redemption_time']?></h3>
                     </div>
-                    <div >
+                    <div class="requestDetail">
                         <form action="" method="POST">
                                 <input type="hidden" name="redemption_id" value="<?php echo $request['redemption_id'];?>">
-                                <button name="btnApprove" type="submit">Approve</button>
+                                <button name="btnApprove" type="submit" class="approveBtn">Approve</button>
                         </form>
                         <form action="" method="POST">
                                 <input type="hidden" name="redemption_id" value="<?php echo $request['redemption_id'];?>">
-                                <button name="btnReject" type="submit">Reject</button>
+                                <button name="btnReject" type="submit" class="rejectBtn">Reject</button>
                         </form>
                     </div>
                 </div>

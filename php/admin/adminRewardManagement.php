@@ -3,10 +3,11 @@
     include "../include/session.php";
 
     $user_id = $_SESSION['user_id'];
+    //filter php
     $filter = isset($_GET['status']) ? $_GET['status'] : 'All';
+    //toggle page php
     $view = isset($_GET['view']) ? $_GET['view'] : 'approvedPage';
     
-    // $sqlComplete = "SELECT * FROM reward WHERE status IN ('Approved', 'Available', 'Deactivated') ORDER BY reward_id ASC";
     $sqlPending = "SELECT * FROM reward WHERE status='Pending' ORDER BY reward_ID ASC";
     $resultPending = mysqli_query($dbConn, $sqlPending);
     
@@ -19,14 +20,20 @@
         }
     $resultComplete = mysqli_query($dbConn, $sql);
                  
-
+    //ensure form is submitted
     if($_SERVER["REQUEST_METHOD"] == "POST") {
+        //approve button in table
         if(isset($_POST['approveBtn'])){
             $reward_id = $_POST['reward_id'];
             $admin_id = $_SESSION['user_id'];
 
-            $sql = "UPDATE reward SET status = 'Available', admin_id = $admin_id WHERE reward_id = $reward_id";
-            if(mysqli_query($dbConn, $sql)){
+            $sql = "UPDATE reward SET status = 'Available', admin_id = ? WHERE reward_id = ?";
+            //prevent sql injection
+            $stmt = mysqli_prepare($dbConn, $sql);
+            mysqli_stmt_bind_param($stmt, "ii", $admin_id, $reward_id);
+
+            //sweet alert
+            if(mysqli_stmt_execute($stmt)){
                 $_SESSION['popupMessage']=[
                         'title' => 'Success',
                         'text' => 'Approved Reward Successfully',
@@ -44,13 +51,17 @@
                     exit();
             }
         }
+        //reject button in table
         if(isset($_POST['rejectBtn'])){
             $reward_id = $_POST['reward_id'];
             $admin_id = $_SESSION['user_id'];
 
-            $sql = "UPDATE reward SET status = 'Rejected', admin_id = $admin_id WHERE reward_id = $reward_id";
-
-            if(mysqli_query($dbConn, $sql)){
+            $sql = "UPDATE reward SET status = 'Rejected', admin_id = ? WHERE reward_id = ?";
+            //prevent sql injection
+            $stmt = mysqli_prepare($dbConn, $sql);
+            mysqli_stmt_bind_param($stmt, "ii", $admin_id, $reward_id);
+            //sweet alert
+            if(mysqli_stmt_execute($stmt)){
                 $_SESSION['popupMessage']=[
                         'title' => 'Success',
                         'text' => 'Rejected Reward Successfully',
@@ -68,14 +79,17 @@
                     exit();
             }
         }
-
+        //activate buttonin table
         if(isset($_POST['activateBtn'])){
             $reward_id = $_POST['reward_id'];
             $admin_id = $_SESSION['user_id'];
 
-            $sql = "UPDATE reward SET status = 'Available', admin_id = $admin_id WHERE reward_id = $reward_id";
-
-            if(mysqli_query($dbConn, $sql)){
+            $sql = "UPDATE reward SET status = 'Available', admin_id = ? WHERE reward_id = ?";
+            //prevent sql injection
+            $stmt = mysqli_prepare($dbConn, $sql);
+            mysqli_stmt_bind_param($stmt, "ii", $admin_id, $reward_id);
+            //sweet alert
+            if(mysqli_stmt_execute($stmt)){
                 $_SESSION['popupMessage']=[
                         'title' => 'Success',
                         'text' => 'Activated Reward Successfully',
@@ -93,14 +107,17 @@
                     exit();
             }
         }
-    
+        //deactivate button in table
         if(isset($_POST['deactivateBtn'])){
             $reward_id = $_POST['reward_id'];
             $admin_id = $_SESSION['user_id'];
 
-            $sql = "UPDATE reward SET status = 'Deactivated', admin_id = $admin_id WHERE reward_id = $reward_id";
-
-            if(mysqli_query($dbConn, $sql)){
+            $sql = "UPDATE reward SET status = 'Deactivated', admin_id = ? WHERE reward_id = ?";
+            //prevent sql injection
+            $stmt = mysqli_prepare($dbConn, $sql);
+            mysqli_stmt_bind_param($stmt, "ii", $admin_id, $reward_id);
+            //sweet alert
+            if(mysqli_stmt_execute($stmt)){
                 $_SESSION['popupMessage']=[
                         'title' => 'Success',
                         'text' => 'Deactivated Reward Successfully',
@@ -137,12 +154,13 @@
     <?php include "../include/header.php"; ?>
 
     <h2 class="pageTitle">Reward Management</h2>
-
+    <!-- view page toggle -->
     <div class="viewToggle">
         <a href="?view=approvedPage" class="<?php echo ($view == 'approvedPage')? 'active':'' ?>">Approved Rewards</a>
         <a href="?view=pendingPage" class="<?php echo ($view == 'pendingPage')? 'active':'' ?>">Pending Rewards</a>
     </div>
 
+    <!-- pending page -->
     <?php if($view=='pendingPage'):?>
         <div id="pendingTable">
             <h3 class="tableTitle">Pending Rewards Table</h3>
@@ -187,6 +205,8 @@
                 </table>
             <?php endif; ?>
         </div>
+
+    <!-- approved page -->
     <?php elseif($view=='approvedPage'):?>
         <div id="approvedTable">
             <h3 class="tableTitle">Approved Rewards Table</h3> 

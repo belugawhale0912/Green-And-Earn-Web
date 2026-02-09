@@ -308,7 +308,7 @@
     background-color: var(--bg-highlight);
     border: 1px solid var(--clr-surface-a30);
     border-radius: 15px;
-    height: 200px; /* Fixed height for consistency */
+    height: 250px; /* Fixed height for consistency */
     padding: 20px; /* Space for the right-side status */
 }
 
@@ -394,11 +394,11 @@
 
 .transactionInfo{
     display: flex;
-    flex-direction: column; 
+    flex-direction: column;
+    align-items: flex-start; 
 }
 
 .transactionName{
-    text-align: left;
     font-size: 1.2rem;
 }
 
@@ -868,6 +868,14 @@
     background-color: var(--clr-primary-a40);
 }
 
+.updFormBtn{
+    width: 200px;
+    height: 30px;
+    margin: 0 auto;
+    border-radius: 25px;
+    background-color: var(--clr-primary-a10);
+}
+
 /* Bagde page */
 /* 2. The Grid Container */
 .badgeContainer {
@@ -1030,5 +1038,9 @@
 
     #editProfileBtn{
         align-self: center;
+    }
+
+    .pbadgeContainer{
+        flex-direction: column;
     }
 }

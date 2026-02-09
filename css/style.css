@@ -9,35 +9,26 @@
 }
 
 :root {
-/* H1: 28px -> 40px (Was 64px) */
-    /* Good for Page Titles */
+
     --fs-h1: clamp(1.75rem, 3vw + 1rem, 2.5rem);
     
-    /* H2: 24px -> 32px (Was 40px) */
-    /* Good for Section Headers */
     --fs-h2: clamp(1.5rem, 2.5vw + 1rem, 2rem);
     
-    /* H3: 20px -> 28px (Was 32px) */
-    /* Good for Card Titles */
     --fs-h3: clamp(1.25rem, 2vw + 1rem, 1.75rem);
     
-    /* Body: 15px -> 16px */
-    /* Standard readable text */
     --fs-body: clamp(0.9375rem, 0.5vw + 0.8rem, 1rem);
     
-    /* Small: 13px -> 14px */
-    /* Hints and footnotes */
     --fs-small: clamp(0.8125rem, 0.5vw + 0.7rem, 0.875rem);
 
     --font-heading: 'poppins',sans-serif;
     --font-body: 'montserrat',sans-serif;
 
     /* Colors inspired from colorffy.com */
-    /* --- BASE --- */
+    /* base */
     --clr-dark-a0: #000000;
     --clr-light-a0: #ffffff;
 
-    /* --- PRIMARY (Green) --- */
+    /* primary */
     --clr-primary-a0: #89cf84;
     --clr-primary-a10: #79b675;
     --clr-primary-a20: #699d65;
@@ -45,32 +36,32 @@
     --clr-primary-a40: #4b6e48;
     --clr-primary-a50: #3d573a;
 
-    /* --- SURFACES (Light Mode) --- */
-    --clr-surface-a0: #ffffff;   /* The Floor (Body BG) */
-    --clr-surface-a10: #f0f0f0;  /* The Furniture (Card BG) */
-    --clr-surface-a20: #e1e1e1;  /* Borders */
+    /* surface */
+    --clr-surface-a0: #ffffff;   
+    --clr-surface-a10: #f0f0f0;  
+    --clr-surface-a20: #e1e1e1;  
     --clr-surface-a30: #d3d3d3;
     --clr-surface-a40: #c5c5c5;
-    --clr-surface-a50: #b6b6b6;  /* Muted Text Color */
+    --clr-surface-a50: #b6b6b6;  
 
-    /* --- TONAL (Minty Tint) --- */
-    --clr-surface-tonal-a0: #f4faf2; /* Highlight BG */
+    /* tonal */
+    --clr-surface-tonal-a0: #f4faf2; 
     --clr-surface-tonal-a10: #e6ece5;
     --clr-surface-tonal-a20: #d9ded8;
     --clr-surface-tonal-a30: #ccd0cb;
     --clr-surface-tonal-a40: #bfc2be;
     --clr-surface-tonal-a50: #b2b4b1;
 
-    /* clr - backdrop */
+    /* backdrop */
     --clr-backdrop: rgba(0, 0, 0, 0.3);
 
-    /* --- STATUS --- */
+    /* status */
     --clr-success-a0: #1b7f5c;
     --clr-warning-a0: #b8871f;
     --clr-danger-a0: #b13535;
     --clr-info-a0: #1e56a3;
 
-    /* --- LOGIC VARIABLES (Use these in your CSS) --- */
+    /* variables to use */
     --bg-body: var(--clr-surface-a0);
     --bg-card: var(--clr-surface-a10);
     --bg-highlight: var(--clr-surface-tonal-a0);
@@ -85,9 +76,9 @@
 
 }
 
-/* --- DARK MODE OVERRIDES --- */
+/* darkmode colors */
 [data-theme="dark"] {
-    /* Primary (Adjusted for Dark) */
+    /* primary */
     --clr-primary-a0: #89cf84;
     --clr-primary-a10: #97d591;
     --clr-primary-a20: #a4da9f;
@@ -95,7 +86,7 @@
     --clr-primary-a40: #bfe5ba;
     --clr-primary-a50: #cceac8;
 
-    /* Surfaces (Dark Mode) */
+    /* surfaces */
     --clr-surface-a0: #121212;   
     --clr-surface-a10: #282828;  
     --clr-surface-a20: #3f3f3f;  
@@ -103,7 +94,7 @@
     --clr-surface-a40: #717171;
     --clr-surface-a50: #8b8b8b;
 
-    /* Tonal (Dark Mint) */
+    /* tonal */
     --clr-surface-tonal-a0: #1d221d;
     --clr-surface-tonal-a10: #323732;
     --clr-surface-tonal-a20: #484c48;
@@ -111,25 +102,25 @@
     --clr-surface-tonal-a40: #787b78;
     --clr-surface-tonal-a50: #929491;
 
-    /* clr - backdrop */
+    /* backdrop */
     --clr-backdrop: rgba(0, 0, 0, 0.7);
 
-    /* Status (Brightened for dark mode) */
+    /* status */
     --clr-success-a0: #47d5a6;
     --clr-warning-a0: #d7ac61;
     --clr-danger-a0: #d94a4a;
     --clr-info-a0: #4077d1;
 
-    /* Logic Swaps */
+    /* reasign variable in darkmode*/
     --bg-body: var(--clr-surface-a0);
     --bg-card: var(--clr-surface-a10);
     --bg-highlight: var(--clr-surface-tonal-a0);
     --border-main: var(--clr-surface-a20);
 
-    --text-main: var(--clr-light-a0);       /* White Text */
+    --text-main: var(--clr-light-a0);
     --text-main-invert: var(--clr-dark-a0);
-    --text-muted: var(--clr-surface-a40);   /* Light Grey Text */
-    --text-on-primary: var(--clr-dark-a0);  /* Still Black on Green */
+    --text-muted: var(--clr-surface-a40);
+    --text-on-primary: var(--clr-dark-a0);  
 }
 
 
@@ -141,7 +132,6 @@ body{
     font-family: var(--font-body);
     background-color: var(--clr-surface-a0);
     color: var(--text-main);
-    /* transition: background-color 0.5s; */
 }
 
 h1 {
@@ -184,6 +174,7 @@ label{
 }
 
 input{
+    color: var(--text-main);
     padding: 14px;
     border: 3px solid var(--clr-surface-a40);
     border-radius: 12px;
@@ -209,19 +200,27 @@ input[type="file"] {
     transition: background-color 0.2s;
 }
 
+textarea{
+    font-family: var(--font-body);
+    border: 3px solid var(--clr-surface-a40);
+    background-color: var(--clr-surface-a10);
+    border-radius: 8px;
+    resize: none;
+    color: var(--text-main);
+}
+
 table{
     width: 100%;
-    border-collapse: collapse; /* Removes the double border lines */
+    /* remove double line */
+    border-collapse: collapse; 
     font-size: 0.9em;
     font-family: var(--font-body);
-    /* min-width: 400px; */
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15); /* Nice subtle shadow */
     background-color: var(--bg-card);
     color: var(--text-main);
 }
 
 thead tr{
-    background-color: var(--clr-primary-a30); /* Green theme color */
+    background-color: var(--clr-primary-a30); 
     color: var(--text-on-primary);
 }
 
@@ -231,31 +230,31 @@ th, td{
     text-align: left;
 }
 
-/* Zebra Striping (Alternating row colors) */
+
 tbody tr:nth-of-type(even){
     background-color: var(--bg-highlight);
 }
 
-/* Hover Effect (Highlights row on mouseover) */
+
 tbody tr:hover{
     background-color: var(--clr-surface-a40);
 }
 
-/* Make the last row have a green line at the bottom */
+
 tbody tr:last-of-type{
     border-bottom: 2px solid var(--clr-surface-tonal-a50);
 }
 
-/* Overlay */
+/* modal */
 .modal{
-    display: none; /* Hidden by default */
+    display: none;
     position: fixed; 
     z-index: 1000; 
     left: 0;
     top: 0;
     width: 100%; 
     height: 100%; 
-    background-color: rgba(0,0,0,0.5); /* Black w/ opacity */
+    background-color: rgba(0,0,0,0.5); 
     }
 
 .modalContent{
@@ -270,7 +269,6 @@ tbody tr:last-of-type{
     max-width: 1200px; 
     border-radius: 10px;
     text-align: center;
-    /* Scroll, set max height to 80% of view and overflow enable scrollbar */
     height: 70vh;
     overflow-y: auto;
     border-radius: 10px;
@@ -285,32 +283,25 @@ tbody tr:last-of-type{
 }
 
 
-/* --- SWEETALERT CUSTOM THEME --- */
+/* sweetalert custom style */
 .popup{
     background-color: var(--clr-surface-a10);
     border: 1px solid var(--border-main);
     color: var(--text-main);
-    border-radius: 16px; /* You can even match your site's rounding */
+    border-radius: 16px;
     padding: 30px;
 }
 
-/* TODO review code here */
-
 /* fix the success icon display error on dark background*/
 
-/* force the animation to follow background color */
-/* use !important to ensure the property is overwritten */
-.popup .swal2-success{
-    background-color: var(--bg-card) !important;
-}
-/* change the color for the remaining bar */
-.popup .swal2-success-fix{
+/* change the color of the animation block */
+.popup .swal2-success-circular-line-left,
+.popup .swal2-success-circular-line-right {
     background-color: var(--bg-card) !important;
 }
 
-/* 2. Fix the "Rotating Masks" (The spinning parts) */
-.popup .swal2-success-circular-line-left,
-.popup .swal2-success-circular-line-right {
+/* change the color for the remaining bar */
+.popup .swal2-success-fix{
     background-color: var(--bg-card) !important;
 }
 
@@ -328,7 +319,6 @@ tbody tr:last-of-type{
     border: none;
     font-weight: bold;
     cursor: pointer;
-    transition: opacity 0.3s ease;
     margin: 0 10px;
 }
 
@@ -347,7 +337,6 @@ tbody tr:last-of-type{
 
 .editBtn, .logoutBtn {
     background-color: var(--clr-primary-a40);
-    ;
     border-color: var(--clr-primary-a50);
     color: var(--text-main-invert);
     padding: 12px 16px;

@@ -9,8 +9,11 @@
 
     $user_id = $_SESSION['user_id'];
 
-    $sql = "SELECT * FROM user JOIN role ON role.role_id = user.role_id WHERE user.user_id = $user_id ";
-    $result = mysqli_query($dbConn,$sql);
+    $sql = "SELECT * FROM user JOIN role ON role.role_id = user.role_id WHERE user.user_id = ?";
+    $stmt = mysqli_prepare($dbConn, $sql);
+    mysqli_stmt_bind_param($stmt, "i", $user_id);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
     if(mysqli_num_rows($result)>0){
         $user_info = mysqli_fetch_assoc($result);
     }

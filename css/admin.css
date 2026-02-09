@@ -261,6 +261,17 @@ button:hover{
     border-color: var(--clr-primary-a0);
 }
 
+#role_id {
+    padding: 12px;
+    margin-bottom: 20px;
+    border: 2px solid var(--border-main);
+    background-color: var(--bg-body);   
+    color: var(--text-main);
+    border-radius: 5px;
+    font-size: 1rem;
+    transition: border 0.3s;
+}
+
 /* activity management styling */
 .editActivityBtn{
     display: block;
@@ -280,6 +291,21 @@ button:hover{
     margin-bottom: 10px;
     background-color: var(--clr-primary-a10);
     border-color: var(--clr-primary-a0);
+}
+
+#activityDescription{
+    max-width: 700px;
+    min-height: 120px;
+    font-size: 1rem;
+    font-family: var(--font-body);
+    border: 3px solid var(--clr-surface-a40);
+    background: var(--clr-surface-a10);
+    /* background-color: var(--bg-body); */
+    border-radius: 12px;
+    resize: none;
+    padding-top: 10px;
+    padding-left: 10px;
+    color: var(--text-main);
 }
 
 /* reward management styling */
@@ -373,7 +399,10 @@ button:hover{
         display: block;
         width: 30%;
         margin: 0;   }
-
+    
+    #statusFilter{
+        margin: 0 auto;
+    }
     /* reward management */
     
 }

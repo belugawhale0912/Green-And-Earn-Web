@@ -1,8 +1,7 @@
 <?php
+    include "../include/session.php";
     include "../include/conn.php";
-
     if($_SERVER["REQUEST_METHOD"] == "POST"){
-        echo "<script>alert('Register Service Connected')</script>";
         $username = $_POST["username"];
         $password = $_POST["password"];
         $password_confirm = $_POST["confirm_password"];
@@ -14,25 +13,19 @@
         }else{
             die("<script>alert('Password Does Not Match!')</script>");
         }
-        include "../include/conn.php";
 
-        $sql = "INSERT INTO user(username,role_id,password_hash,email)
-                VALUES('$username','$role_id','$password_hash','$email')";
+        $sql = "INSERT INTO user(username,role_id,password_hash,email,profile_photo)
+                VALUES('$username','$role_id','$password_hash','$email','../../assets/image.png')";
 
-        mysqli_query($dbConn, $sql);
-
-        if (mysqli_affected_rows($dbConn) == 0) {
-            die("<script>alert('Error While Adding User!')</script>");
+        if(mysqli_query($dbConn, $sql)){
+            $_SESSION['popupMessage']=[
+                'title' =>'Success',
+                'text' => 'Account Created Successfully',
+                'icon' => 'success'
+            ];
+            header("Location: user_register.php");
+            exit();
         }
-
-        $_SESSION['popupMessage']=[
-            'title' => 'Error!',
-            'text' => 'Invalid Password',
-            'icon' => 'error'
-        ];
-
-        header("Location: login.php");
-        exit();
     }
 ?>
 
@@ -70,5 +63,6 @@
         </form>
     </div>
     <?php include "../include/showSWAL.php";?>
+    <script src="../../js/header.js"></script>
 </body>
 </html>

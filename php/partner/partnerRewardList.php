@@ -52,7 +52,7 @@
 
                         if(move_uploaded_file($fileTempPath, $saveDir)){
                             $sql = "INSERT INTO reward (partner_id, status, title, description, required_points, stock, reward_img)
-                                    VALUES (?, 'pending', ?, ?, ?, ?, ?)";
+                                    VALUES (?, 'Pending', ?, ?, ?, ?, ?)";
 
                             $stmt = mysqli_prepare($dbConn, $sql);
                             mysqli_stmt_bind_param($stmt, "issiis", $user_id, $title, $description, $required_points, $stock, $saveDir);
@@ -179,15 +179,15 @@
     <h2>List of Rewards</h2>
     <div class="topSection">
         <form method="GET" class="filterForm">
-                <label for="statusFilter"></label>
-                <select name="status" id="statusFilter" class="dropdown" onchange="this.form.submit()">
-                    <option value="All" <?php if ($filter == "All") echo 'selected'; ?>>All</option>
-                    <option value="Available" <?php if ($filter == "Available") echo 'selected'; ?>>Available</option>
-                    <option value="Rejected" <?php if ($filter == "Rejected") echo 'selected'; ?>>Rejected</option>
-                    <option value="Pending" <?php if ($filter == "Pending") echo 'selected'; ?>>Pending</option>
-                    <option value="Deactivated" <?php if ($filter == "Deactivated") echo 'selected'; ?>>Deactivated</option>
-                </select>
-            </form>
+            <label for="statusFilter"></label>
+            <select name="status" id="statusFilter" class="dropdown" onchange="this.form.submit()">
+                <option value="All" <?php if ($filter == "All") echo 'selected'; ?>>All</option>
+                <option value="Available" <?php if ($filter == "Available") echo 'selected'; ?>>Available</option>
+                <option value="Rejected" <?php if ($filter == "Rejected") echo 'selected'; ?>>Rejected</option>
+                <option value="Pending" <?php if ($filter == "Pending") echo 'selected'; ?>>Pending</option>
+                <option value="Deactivated" <?php if ($filter == "Deactivated") echo 'selected'; ?>>Deactivated</option>
+            </select>
+        </form>
         <button class="addRewardButton">Add Reward</button>
     </div>
     <?php if(mysqli_num_rows($result)>0):?>
@@ -262,6 +262,8 @@
                 </form>
             </div>
         </div>
+    <?php else:
+        echo("<p>No Reward Found!</p>");?>
     <?php endif;?>
     <script src="../../js/partner.js"></script>
     <?php include "../include/showSWAL.php"?>

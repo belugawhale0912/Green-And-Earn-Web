@@ -76,7 +76,7 @@
                         mysqli_stmt_close($stmtInsert);
                         $_SESSION['popupMessage']=[
                             'title' => 'Success',
-                            'text' => 'Request Sent Successfully!',
+                            'text' => 'Request Sent for Approval!',
                             'icon' => 'success'
                         ];
                         header("Location: partnerPointAward.php");

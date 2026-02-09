@@ -13,24 +13,20 @@
         $user_info = mysqli_fetch_assoc($result);
     }
 
-
-    // 5. FETCH DAILY ACTIVITY (Last 7 Days)
-    // We create an array of the last 7 dates first
+    
+    //Bar Chart Points Activity 
     $last7Days = [];
-    $earnedData = [];
-    $spentData = [];
-
-    // Initialize 0 values for the last 7 days
+    // Initialize 0 values for the last 7 days to ensure that no day is skipped
     for ($i = 6; $i >= 0; $i--) {
         $date = date('Y-m-d', strtotime("-$i days"));
         $last7Days[$date] = [
-            'label' => date('d-m-D', strtotime($date)), // "Mon", "Tue"
+            'label' => date('d-m-D', strtotime($date)), 
             'earned' => 0,
             'spent' => 0
         ];
     }
 
-    // Query DB
+    // sum the amount and group by date and type
     $sql_chart = "SELECT DATE(transaction_time) as trans_date, type, SUM(amount) as total 
                   FROM point_transaction 
                   WHERE user_id = ? 
@@ -48,35 +44,32 @@
         
         if(isset($last7Days[$dbDate])){
             if($row['type'] == 'Earned'){
+                // update earned value 
                 $last7Days[$dbDate]['earned'] = $row['total'];
             } 
-            // Check your DB: is it 'Redeemed', 'Spent', or 'Refund'? 
-            // Assuming 'Redeemed' or similar for spending points
-            else if($row['type'] == 'Redemption' || $row['type'] == 'Spent'){ 
+
+            else if($row['type'] == 'Redemption'){
+                // update spent value 
                 $last7Days[$dbDate]['spent'] = $row['total'];
             }
         }
     }
 
-    // Separate into simple arrays for Chart.js
-    $chartLabels = [];
-    $chartEarned = [];
-    $chartSpent = [];
+    // Separate into simple arrays for Chart
+    $chartLabels = array_column($last7Days, 'label');
+    $chartEarned = array_column($last7Days,'earned');
+    $chartSpent = array_column($last7Days,'spent');
 
-    foreach ($last7Days as $dayData) {
-        $chartLabels[] = $dayData['label'];
-        $chartEarned[] = $dayData['earned'];
-        $chartSpent[]  = $dayData['spent'];
-    }
 
-    // 6. FETCH TASK STATUS COUNTS (For Pie Chart)
-    // Initialize default values to ensure chart works even with 0 tasks
+    // Pie Chart (My Task Status)
+    // initialize default values to ensure chart works even with 0 tasks
     $taskData = [
         'Pending' => 0,
         'Approved' => 0,
         'Rejected' => 0
     ];
 
+    // count and group by status
     $sql_pie = "SELECT status, COUNT(*) as total 
                 FROM activity_submission 
                 WHERE user_id = ? 
@@ -87,13 +80,10 @@
     mysqli_stmt_execute($stmt_pie);
     $res_pie = mysqli_stmt_get_result($stmt_pie);
 
+
     while($row = mysqli_fetch_assoc($res_pie)){
-        // Ensure the status from DB matches our array keys (Case sensitive)
-        // If your DB uses lowercase, use ucfirst($row['status'])
         $status = $row['status']; 
-        if(isset($taskData[$status])){
-            $taskData[$status] = $row['total'];
-        }
+        $taskData[$status] = $row['total'];
     }
 
     // Prepare simple arrays for Chart.js
@@ -105,17 +95,21 @@
         $taskData['Rejected']
     ];
 
-    $sqlGet = "SELECT COUNT(*) AS availableTask 
+    $sqlGetTask = "SELECT COUNT(*) AS availableTask 
                FROM activity 
                WHERE status = 'Active' 
                AND '$today' BETWEEN start_date AND end_date
                AND activity_id NOT IN (
                     SELECT activity_id 
                     FROM activity_submission 
-                    WHERE user_id = $user_id 
+                    WHERE user_id = ? 
                     AND (status = 'Pending' OR status = 'Approved')
                 )";
-    $resultGet = mysqli_query($dbConn, $sqlGet);
+
+    $stmtTask = mysqli_prepare($dbConn, $sqlGetTask);
+    mysqli_stmt_bind_param($stmtTask, "i", $user_id);
+    mysqli_stmt_execute($stmtTask);
+    $resultGet = mysqli_stmt_get_result($stmtTask);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -164,7 +158,6 @@
                 <h2>Fun Fact</h2>
                 <p>
                     <?php 
-                        // 1. Define your list of facts
                         $facts = [
                             "Recycling one aluminum can saves enough energy to run a TV for 3 hours.",
                             "A single tree can absorb 48 pounds of carbon dioxide per year.",
@@ -175,10 +168,7 @@
                             "The average person generates over 4 pounds of trash every day."
                         ];
 
-                        // 2. Pick a random index
                         $randomIndex = array_rand($facts);
-
-                        // 3. Display the result
                         echo $facts[$randomIndex];
                     ?>
                 </p>
@@ -197,7 +187,8 @@
 
 
     <script>
-
+    
+    // Bar chart
     document.addEventListener("DOMContentLoaded", function() {
         const ctx = document.getElementById('weeklyActivityChart');
 
@@ -205,19 +196,20 @@
             new Chart(ctx, {
                 type: 'bar',
                 data: {
-                    labels: <?php echo json_encode($chartLabels); ?>, // ["Mon", "Tue", ...]
+                    // use json_encode to turn php var into json format so javascript can read the value
+                    labels: <?php echo json_encode($chartLabels); ?>, 
                     datasets: [
                         {
                             label: 'Points Earned',
                             data: <?php echo json_encode($chartEarned); ?>,
-                            backgroundColor: '#4CAF50', // Green
+                            backgroundColor: '#4CAF50', 
                             borderRadius: 4,
                             barPercentage: 0.6,
                         },
                         {
                             label: 'Points Spent',
                             data: <?php echo json_encode($chartSpent); ?>,
-                            backgroundColor: '#FF5252', // Red
+                            backgroundColor: '#FF5252', 
                             borderRadius: 4,
                             barPercentage: 0.6,
                         }
@@ -227,7 +219,7 @@
                     responsive: true,
                     maintainAspectRatio: false,
                     interaction: {
-                        mode: 'index', // Hovering shows both bars for that day
+                        mode: 'index', 
                         intersect: false,
                     },
                     plugins: {
@@ -254,23 +246,22 @@
                 }
             });
         }
-    // ... (Your existing Weekly Activity Chart code) ...
 
-    // NEW: Task Status Pie Chart
+    // Pie chart
     const ctxPie = document.getElementById('taskStatusChart');
 
     if (ctxPie) {
         new Chart(ctxPie, {
-            type: 'pie', // You can also change this to 'doughnut' for a ring style
+            type: 'pie',  
             data: {
-                labels: <?php echo json_encode($pieLabels); ?>, // ['Approved', 'Pending', 'Rejected']
+                labels: <?php echo json_encode($pieLabels); ?>, 
                 datasets: [{
                     label: 'Tasks',
-                    data: <?php echo json_encode($pieValues); ?>, // [5, 2, 1]
+                    data: <?php echo json_encode($pieValues); ?>, 
                     backgroundColor: [
-                        '#4CAF50', // Green for Approved
-                        '#FFC107', // Amber/Yellow for Pending
-                        '#F44336'  // Red for Rejected
+                        '#4CAF50', 
+                        '#FFC107', 
+                        '#F44336'  
                     ],
                     hoverOffset: 4
                 }]
@@ -280,7 +271,7 @@
                 maintainAspectRatio: false,
                 plugins: {
                     legend: {
-                        position: 'bottom', // Legend looks better at the bottom for Pie charts
+                        position: 'bottom', 
                     }
                 }
             }

@@ -11,6 +11,7 @@ footer{
 
 footer h2{
     margin-top: 10px;
+    padding-top: 20px;
     font-size: 1.3rem;
     margin: 0;
     color: var(--clr-primary-a50);

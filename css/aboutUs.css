@@ -1,11 +1,16 @@
 body{
-    overflow: hidden;
-    background-image: url('../assets/view-spectacular-nature-landscape.jpg');
+    background-image: linear-gradient(var(--clr-backdrop), var(--clr-backdrop)),
+                      url('../assets/aboutUsBackgroundImage.jpg');
     background-size: cover;
-    box-shadow: inset 0 0 0 1000px var(--clr-backdrop);
     background-repeat: no-repeat;
     background-attachment: fixed;
     background-position: center;
+}
+
+#backContainer{
+    display: flex;
+    justify-content: left;
+    padding: 30px;
 }
 
 .bigContainer{
@@ -14,7 +19,7 @@ body{
     margin-right: auto;
     width: 100%;
     height: 85vh;
-    overflow-y: scroll;
+    /* overflow-y: scroll; */
 }
 
 .bigContainer h3{

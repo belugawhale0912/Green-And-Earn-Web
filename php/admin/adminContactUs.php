@@ -6,14 +6,20 @@
     $sql = "SELECT * FROM contact_us WHERE mark_as_read = 0 ORDER BY contact_id ASC";
     $result = mysqli_query($dbConn, $sql);
 
+    //ensure form is submitted
     if($_SERVER["REQUEST_METHOD"] == "POST"){
         if(isset($_POST['action'])){
+            //mark as read button in table
             if($_POST['action'] == "markAsRead"){
+                
                 $contact_id = $_POST['contact_id'];
 
-                $sql = "UPDATE contact_us SET mark_as_read = 1 WHERE contact_id = $contact_id";
-
-                if(mysqli_query($dbConn, $sql)){
+                $sql = "UPDATE contact_us SET mark_as_read = 1 WHERE contact_id = ?";
+                //prevent sql injection
+                $stmt = mysqli_prepare($dbConn, $sql);
+                mysqli_stmt_bind_param($stmt, "i", $contact_id);
+                //sweet alert
+                if(mysqli_stmt_execute($stmt)){
                     $_SESSION['popupMessage']=[
                         'title' => 'Success',
                         'text' => 'Message Read',
@@ -88,6 +94,9 @@
                         <?php endwhile; ?> 
                     </tbody>
                 </table>
+
+            <?php else: ?>
+                    No messages at the current moment.
             <?php endif; ?>
     </div>
 

@@ -5,7 +5,7 @@
     $user_id = $_SESSION['user_id'];
 
     if($_SERVER["REQUEST_METHOD"] == "POST"){
-        $sql = "SELECT * FROM user WHERE user_id = {$_SESSION['user_id']}";
+        $sql = "SELECT * FROM user WHERE user_id = $user_id";
         $result = mysqli_query($dbConn,$sql);
         $user_info = mysqli_fetch_assoc($result);
 
@@ -20,6 +20,7 @@
 
         if(!empty($new_password)){
             if($new_password == $password_confirm){
+                // hash the password
                 $new_password_hash = password_hash($new_password, PASSWORD_DEFAULT);
             }
             else{
@@ -36,23 +37,36 @@
             $new_password_hash = $user_info['password_hash'];
         }
 
+        // check that file exists, file received with no error
         if(isset($_FILES['profilePhoto']) && $_FILES['profilePhoto']['error'] === UPLOAD_ERR_OK){
             
-            // get file temporary path on server
+            // retrive uploaded file name
             $fileName = $_FILES['profilePhoto']['name'];
+
+            // retrive temp path on server
             $fileServerPath = $_FILES['profilePhoto']['tmp_name'];
             
+            // retrive extention of the uploaded file
             $fileExtension = pathinfo($fileName,PATHINFO_EXTENSION);
+
 
             $supportedExt = ['jpg','jpeg','png','gif'];
 
+            // if the uploaded file is supported
             if(in_array($fileExtension,$supportedExt)){
 
-                $newFileName = "profile_" . $user_id . "_" . time() . "." . $fileExtension;
+                $newFileName = "profile_" . $user_id . "_" . date("dmY_His") . "." . $fileExtension;
                 
                 $saveDir = "../../uploads/profileImg/" . $newFileName;
 
-                if(move_uploaded_file($fileServerPath, $saveDir)){
+                if(!move_uploaded_file($fileServerPath, $saveDir)){
+                    $_SESSION['popupMessage']=[
+                        'title' => 'Error',
+                        'text' => 'Error while processing file, please try again!',
+                        'icon' => 'warning'
+                    ];
+                    header("Location: memberProfile.php");
+                    exit();
                 }
             }else{
                 $_SESSION['popupMessage']=[
@@ -67,16 +81,20 @@
         }else{
             $saveDir = $user_info['profile_photo'];
         }
-        $updateSql = "UPDATE user SET
-                username = '$new_username',
-                email = '$new_email',
-                bio = '$newBio',
-                password_hash = '$new_password_hash',
-                profile_photo = '$saveDir'
-                WHERE user_id = $user_id
-                ";
 
-        if(mysqli_query($dbConn,$updateSql)){
+        $updateSql = "UPDATE user SET
+                      username = ?,
+                      email = ?,
+                      bio = ?,
+                      password_hash = ?,
+                      profile_photo = ?
+                      WHERE user_id = ?
+                      ";
+
+        $stmt = mysqli_prepare($dbConn, $updateSql);
+        mysqli_stmt_bind_param($stmt, "sssssi", $new_username, $new_email, $newBio, $new_password_hash, $saveDir, $user_id);
+
+        if(mysqli_stmt_execute($stmt)){
             $_SESSION['popupMessage']=[
                 'title' => 'Success',
                 'text' => 'Profile Updated Successfully',
@@ -86,27 +104,35 @@
             exit();
 
         }else{
-            echo "Error updating record".mysqli_error($dbConn);
+            $_SESSION['popupMessage']=[
+                'title' => 'Error',
+                'text' => 'Error while updating profile, please try again!',
+                'icon' => 'error'
+            ];
+            header("Location: memberProfile.php");
+            exit();
         }
     }
 
-    $sqlUser = "SELECT * FROM user WHERE user_id = $user_id";
-    $resultUser = mysqli_query($dbConn,$sqlUser);
-    if(mysqli_num_rows($resultUser)>0){
-        $user_info = mysqli_fetch_assoc($resultUser);
-    }
+    // fetch user information
+    $sqlUser = "SELECT * FROM user WHERE user_id = ?";
+    $stmtUser = mysqli_prepare($dbConn, $sqlUser);
+    mysqli_stmt_bind_param($stmtUser, "i", $user_id);
+    mysqli_stmt_execute($stmtUser);
+    $resultUser = mysqli_stmt_get_result($stmtUser);
+    $user_info = mysqli_fetch_assoc($resultUser);
 
 
-    
-
-    // 2. Get the 3 most RECENT badges (to display icons)
+    // fetch the 3 most recent owned badges 
     $sql_recent = "SELECT b.title, b.badge_img 
                    FROM badge_obtain bo 
                    JOIN badge b ON bo.badge_id = b.badge_id 
-                   WHERE bo.user_id = '$user_id' 
+                   WHERE bo.user_id = ? 
                    ORDER BY bo.obtain_date DESC LIMIT 3";
-    $result_recent = mysqli_query($dbConn, $sql_recent);
-
+    $stmtRecent = mysqli_prepare($dbConn, $sql_recent);
+    mysqli_stmt_bind_param($stmtRecent, "i", $user_id);
+    mysqli_stmt_execute($stmtRecent);
+    $result_recent = mysqli_stmt_get_result($stmtRecent);
 
 ?>
 
@@ -138,6 +164,12 @@
 
     
     <div class="profileContainer">
+
+        <div class="card profileCard">
+            <h2>Bio</h2>
+            <p><?php echo $user_info['bio']?></p>
+        </div>
+
         <div class="card profileCard">
             <h2>Member Since:</h2>
             <h3><?php echo date("d M Y",strtotime($user_info['register_date']))?></h3>
@@ -158,7 +190,6 @@
                     <?php endwhile?>
                 <?php else:?>
                     <h3>No badges Unlocked</h3>
-                        <!-- TODO add Placeholder when user dont have any badge -->
                 <?php endif?>
             </div>
             <a href="memberBadge.php">view all badges</a>
@@ -169,7 +200,7 @@
     </form>
 
     <div id="editProfileModal" class="modal">
-        <div class="modalContent">
+        <div class="modalContent editProfile">
             <button class="closeModalBtn" id="closeModalBtn">
                 <svg width="30px" height="30px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M19 5L4.99998 19M5.00001 5L19 19" stroke="#1a5021" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
@@ -196,8 +227,8 @@
                 <label for="confirmPassword">Enter New Password Again </label>
                 <input type="text" name="confirmPassword" class="modal-input">
 
-                <button type="submit" class="saveBtn">Save Changes</button>
-                <button type="button">Cancel</button>
+                <button type="submit" class="updFormBtn">Save Changes</button>
+                <button type="button" class="updFormBtn">Cancel</button>
             </form>
         </div>
     </div>

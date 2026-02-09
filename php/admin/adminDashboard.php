@@ -7,64 +7,64 @@
         header("Location: ../pages/Landingpage.php");
         exit();
     }
-
+    // current user as session
     $user_id = $_SESSION['user_id'];
 
+    // count total users
     $sql_countUsers = "SELECT COUNT(*) AS totalUser FROM user";
     $result_userCount = mysqli_query($dbConn, $sql_countUsers);
     $userCount = mysqli_fetch_assoc($result_userCount)['totalUser'];
 
-    $sql_countMembers = "SELECT COUNT(*) AS totalMember FROM user WHERE role_id =2";
+    // count total members
+    $sql_countMembers = "SELECT COUNT(*) AS totalMember FROM user WHERE role_id = 2";
     $result_memberCount = mysqli_query($dbConn, $sql_countMembers);
     $memberCount = mysqli_fetch_assoc($result_memberCount)['totalMember'];
 
-    $sql_countModerators = "SELECT COUNT(*) AS totalModerator FROM user WHERE role_id =3";
+    // count total moderators
+    $sql_countModerators = "SELECT COUNT(*) AS totalModerator FROM user WHERE role_id = 3";
     $result_moderatorCount = mysqli_query($dbConn, $sql_countModerators);
     $moderatorCount = mysqli_fetch_assoc($result_moderatorCount)['totalModerator'];
 
-    $sql_countPartners = "SELECT COUNT(*) AS totalPartner FROM user WHERE role_id =4";
+    // count total partners
+    $sql_countPartners = "SELECT COUNT(*) AS totalPartner FROM user WHERE role_id = 4";
     $result_partnerCount = mysqli_query($dbConn, $sql_countPartners);
     $partnerCount = mysqli_fetch_assoc($result_partnerCount)['totalPartner'];
 
+    // count pending rewards
     $sql_countRewardPending = "SELECT COUNT(*) AS totalRewardPending FROM reward WHERE status = 'pending' ";
     $result_rewardPendingCount = mysqli_query($dbConn, $sql_countRewardPending);
     $rewardPendingCount = mysqli_fetch_assoc($result_rewardPendingCount)['totalRewardPending'];
 
-    $sql_countRewardApproved = "SELECT COUNT(*) AS totalRewardApproved FROM reward WHERE status = 'approved' ";
-    $result_rewardApprovedCount = mysqli_query($dbConn, $sql_countRewardApproved);
-    $rewardApprovedCount = mysqli_fetch_assoc($result_rewardApprovedCount)['totalRewardApproved'];
-
+    // count available rewards
     $sql_countRewardAvailable = "SELECT COUNT(*) AS totalRewardAvailable FROM reward WHERE status = 'available' ";
     $result_rewardAvailableCount = mysqli_query($dbConn, $sql_countRewardAvailable);
     $rewardAvailableCount = mysqli_fetch_assoc($result_rewardAvailableCount)['totalRewardAvailable'];
 
+    // count total activities
     $sql_countActivity = "SELECT COUNT(*) AS totalActivity FROM activity WHERE start_date <= CURDATE() AND end_date >= CURDATE()";
     $result_activityCount = mysqli_query($dbConn, $sql_countActivity);
     $activityCount = mysqli_fetch_assoc($result_activityCount)['totalActivity'];
 
-    $sql_countPoints = "SELECT 
-                                DATE(transaction_time) AS day,
-                                SUM(CASE WHEN type = 'Issued' THEN amount ELSE 0 END) AS issued,
-                                SUM(CASE WHEN type = 'Redemption' THEN amount ELSE 0 END) AS redeemed
-                                FROM point_transaction
-                                WHERE transaction_time >= CURDATE() - INTERVAL 6 DAY
-                                GROUP BY day
-                                ORDER BY day
-                            ";
+    // count total points transaction within a week
+    $sql_countPoints = "SELECT DATE(transaction_time) AS day,
+                                SUM(CASE WHEN type = 'Earned' THEN amount ELSE 0 END) AS Earned, SUM(CASE WHEN type = 'Spent' THEN amount ELSE 0 END) AS Spent 
+                                FROM point_transaction WHERE transaction_time >= CURDATE() - INTERVAL 6 DAY GROUP BY day ORDER BY day";
     $result_countPoints = mysqli_query($dbConn, $sql_countPoints);
 
+    //data for pie chart in lists
     $memberLabels = ['Members', 'Moderators', 'Partners'];
     $memberData = [$memberCount, $moderatorCount, $partnerCount];
 
+    //data for line chart in lists
     $pointLabels = [];
     $pointsIssuedData = [];
     $pointsRedeemedData = [];
 
     while ($row = mysqli_fetch_assoc($result_countPoints)) {
-    $pointLabels[] = $row['day'];
-    $pointsIssuedData[] = (int)$row['issued'];
-    $pointsRedeemedData[] = (int)$row['redeemed'];
-}
+        $pointLabels[] = $row['day'];
+        $pointsIssuedData[] = (int)$row['Earned'];
+        $pointsRedeemedData[] = (int)$row['Spent'];
+    }
 ?>
 
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
@@ -91,15 +91,15 @@
         <div class="statsContainer">
             <h3 class="statsTitle">Statistics</h3>
                 <div class="cardContainer">
-                    <div class="cards">
+                    <div class="cards"> 
                         <h3><span class="statistics"><?php echo $rewardPendingCount?></span>
                             <span class="statLabel">Total Pending Rewards</span>
                         </h3>
                     </div>
 
                     <div class="cards">
-                        <h3><span class="statistics"><?php echo $rewardApprovedCount?></span>
-                            <span class="statLabel">Total Approved Rewards</span>
+                        <h3><span class="statistics"><?php echo $userCount?></span>
+                            <span class="statLabel">Total Users</span>
                         </h3>
                     </div>
 

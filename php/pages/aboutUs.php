@@ -13,6 +13,10 @@
 <body>
     <?php include "../include/header.php"; ?>
     
+    <div id="backContainer">
+        <a id="backLink" href="Landingpage.php">Back</a>
+    </div>
+    
     <div class="bigContainer">
         <div class="wordContainer">
             <div class="aboutUsContainer">

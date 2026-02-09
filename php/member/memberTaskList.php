@@ -8,30 +8,33 @@
     // get activities that is not deleted and is started and not passed
     $view = isset($_GET['view'])? $_GET['view']:'available';
     if($view=='available'){
-        // Logic:
-        // 1. Must be Active
-        // 2. Must be within Date Range
-        // 3. Must NOT be in the list of tasks the user has already done/submitted
+        // fetch activity that is active, in within date range and the user havent complete/ submitted the activity
         
         $sqlGet = "SELECT * FROM activity 
                    WHERE status = 'Active' 
                    AND '$today' BETWEEN start_date AND end_date
-                   AND activity_id NOT IN (
+                   AND activity_id NOT IN (    
                        SELECT activity_id 
                        FROM activity_submission 
-                       WHERE user_id = $user_id 
+                       WHERE user_id = ? 
                        AND (status = 'Pending' OR status = 'Approved')
                    )";
-        $resultGet = mysqli_query($dbConn, $sqlGet);
+        $stmtGet = mysqli_prepare($dbConn, $sqlGet);
+        mysqli_stmt_bind_param($stmtGet, "i", $user_id);
+        mysqli_stmt_execute($stmtGet);
+        $resultGet = mysqli_stmt_get_result($stmtGet);
     }
     
     elseif($view == 'submitted'){
         $sqlGet= "SELECT s.status, s.submission_time, a.title, a.points_awarded, s.proof
                   FROM activity_submission s
                   JOIN activity a on s.activity_id = a.activity_id
-                  WHERE s.user_id = $user_id";
+                  WHERE s.user_id = ?";
 
-        $resultGet = mysqli_query($dbConn, $sqlGet);
+        $stmtGet = mysqli_prepare($dbConn, $sqlGet);
+        mysqli_stmt_bind_param($stmtGet, "i", $user_id);
+        mysqli_stmt_execute($stmtGet);
+        $resultGet = mysqli_stmt_get_result($stmtGet);
     }
 
 
@@ -39,32 +42,36 @@
         $user_id = $_SESSION['user_id'];
         $activity_id = $_POST['activity_id'];
 
-        //File processing
         //check file exists and no error
         if(isset($_FILES['proof_img']) && $_FILES['proof_img']['error'] === UPLOAD_ERR_OK){
             
-            // get file temporary path on server
+            // retrive uploaded file name
             $fileName = $_FILES['proof_img']['name'];
+
+            // retrive temp path on server
             $fileServerPath = $_FILES['proof_img']['tmp_name'];
             
+            // retrive extention of the uploaded file
             $fileExtension = pathinfo($fileName,PATHINFO_EXTENSION);
 
             $supportedExt = ['jpg','jpeg','png','gif'];
-            
-            if(in_array($fileExtension,$supportedExt)){
-                //format filename according and set file to .png
-                // TODO change unix time to general time
-                $formattedFileName = "proof_userID{$user_id}_activityID{$activity_id}_" . time() .".". $fileExtension;
 
-                $saveDir = "../../uploads/proofs/".$formattedFileName;
+            // if the uploaded file is supported
+            if(in_array($fileExtension,$supportedExt)){
+
+                $formattedFileName = "proof_userID{$user_id}_activityID{$activity_id}_" . date("dmY_His") .".". $fileExtension;
+
+                $saveDir = "../../uploads/proofs/" . $formattedFileName;
 
                 // move file from server temporary storage to upload path
-                if (move_uploaded_file($fileServerPath, $saveDir)){
+                if(move_uploaded_file($fileServerPath, $saveDir)){
 
-                    $sql = "INSERT INTO activity_submission (user_id, activity_id, proof, status) 
-                            VALUES ('$user_id', '$activity_id', '$saveDir', 'Pending')";
+                    $sqlSubmit = "INSERT INTO activity_submission (user_id, activity_id, proof, status) 
+                                  VALUES (?, ?, ?, 'Pending')";
                             
-                    if(mysqli_query($dbConn, $sql)){
+                    $stmtSubmit = mysqli_prepare($dbConn, $sqlSubmit);
+                    mysqli_stmt_bind_param($stmtSubmit, "iis", $user_id, $activity_id, $saveDir);
+                    if(mysqli_stmt_execute($stmtSubmit)){
                         $_SESSION['popupMessage']=[
                             'title' => 'Success!',
                             'text' => 'Successfully Submitted Task!',
@@ -76,8 +83,13 @@
                         echo "Error While Saving";
                     }
                 }else{
-                    //debug
-                    echo "Failed To Move File";
+                    $_SESSION['popupMessage']=[
+                        'title' => 'Error!',
+                        'text' => "Error While Trying To Save File, Try Again!",
+                        'icon' => 'error'
+                    ];
+                    header("Location: memberTaskList.php?view=available");
+                    exit();
                 }
             }else{
                 $_SESSION['popupMessage']=[
@@ -89,8 +101,13 @@
                 exit();
             }
         }else{
-            //debug
-            echo "No file received!";
+            $_SESSION['popupMessage']=[
+                'title' => 'Error!',
+                'text' => "No files received, Try Again!",
+                'icon' => 'error'
+            ];
+            header("Location: memberTaskList.php?view=available");
+            exit();
         }
     }
 ?>
@@ -155,7 +172,6 @@
                     <h1 id="activityTitle"></h1>
                     <p id="activityDescription"></p>
                     <h2 id="activityPoints"></h2>
-                    <!-- TODO read about enctype -->
                     <form action="" method="POST" enctype="multipart/form-data">
                         
                         <input type="hidden" name="activity_id" id="activity_id" value="">
@@ -181,7 +197,6 @@
                     <option value="Approved">Approved</option>
                     <option value="Rejected">Reject</option>
                 </select>
-                <!-- TODO add show reason of reject logic -->
                 <?php while($submission_info = mysqli_fetch_assoc($resultGet)):?>
                     <div class="card taskCard" data-status="<?php echo $submission_info['status'];?>">
                         <h2><?php echo $submission_info['title']?></h2>
