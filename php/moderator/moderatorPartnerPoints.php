@@ -1,48 +1,54 @@
 <?php
-    include "../include/conn.php";
-    include "../include/session.php";
+    include "../include/conn.php"; // include database connectin file
+    include "../include/session.php"; // include session handling
 
+    // to check the user's role
     if(!isset($_SESSION['role_id']) || $_SESSION['role_id'] != 3){
         header("Location: ../pages/Landingpage.php"); // Redirect non-moderators
         exit();
     }
 
-    $moderator_id = $_SESSION['user_id'];
+    $moderator_id = $_SESSION['user_id']; // store the logged-in moderator's id
 
+    // sql query to fetch all pending partner point transactions
     $sql_pending = "SELECT p.*, u.username
                     FROM partner_point_transaction p
                     JOIN user u ON p.user_id = u.user_id
                     WHERE p.status = 'Pending'
                     ORDER BY p.award_time DESC";
 
-    $result_pending = mysqli_query($dbConn, $sql_pending);
+    $result_pending = mysqli_query($dbConn, $sql_pending); // execute the query
 
-    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    if ($_SERVER["REQUEST_METHOD"] == "POST") { // if moderator clicks a button
 
-        $transaction_id = $_POST['partner_transaction_id'];
-        $decision = $_POST['decision'];
+        $transaction_id = $_POST['partner_transaction_id']; 
+        $decision = $_POST['decision']; // Will be either 'approve' or 'reject'
 
         if ($decision == 'approve') {
 
+            // fetch user id and pionts for the selected transaction
             $sql_fetch = "SELECT user_id, points_awarded FROM partner_point_transaction WHERE partner_transaction_id = ?";
 
-            $stmt = mysqli_prepare($dbConn, $sql_fetch);
-            mysqli_stmt_bind_param($stmt, "i", $transaction_id);
-            mysqli_stmt_execute($stmt);
+            $stmt = mysqli_prepare($dbConn, $sql_fetch); // prepare sql for execution
+            mysqli_stmt_bind_param($stmt, "i", $transaction_id); // to make sure the placeholder has value
+            mysqli_stmt_execute($stmt); // executes the query
 
-            $resultFetch = mysqli_stmt_get_result($stmt);
-            $data = mysqli_fetch_assoc($resultFetch);
-            mysqli_stmt_close($stmt);
+            $resultFetch = mysqli_stmt_get_result($stmt); // to retrieve result from the executed query
+            $data = mysqli_fetch_assoc($resultFetch); // convert result as an associative array
+            mysqli_stmt_close($stmt); // close task
 
+            // store user id and points for later updates
             if($data){
                 $userID = $data['user_id'];
                 $points = $data['points_awarded'];
             }
 
+            // transaction to make sure all db changes suceeds together
             mysqli_begin_transaction($dbConn);
-            $success = true;
-            $err = "";
+            $success = true; // to check if all the operations succeeded
+            $err = ""; // stores error message if occurs
 
+            // update submission status to approved
             $sql_update_status = "UPDATE partner_point_transaction 
                                     SET status = 'Approved' 
                                     WHERE partner_transaction_id = ?";
@@ -50,26 +56,28 @@
             $stmt_update = mysqli_prepare($dbConn, $sql_update_status);
             mysqli_stmt_bind_param($stmt_update, "i", $transaction_id);
             if(!mysqli_stmt_execute($stmt_update)){
-                $success = false;
-                $err = "Error while updating status";
+                $success = false; // marks as failed
+                $err = "Error while updating status"; // display message
             }
             mysqli_stmt_close($stmt_update);
 
+            // update user's points if succeeded
             if($success){
                 $sql_give_points = "UPDATE user 
                                     SET point_balance = point_balance + ?, 
                                         total_point_accumulated = total_point_accumulated + ? 
                                     WHERE user_id = ?";
 
-                $stmt_points = mysqli_prepare($dbConn, $sql_give_points);
-                mysqli_stmt_bind_param($stmt_points, "iii", $points, $points, $userID);
+                $stmt_points = mysqli_prepare($dbConn, $sql_give_points); // prepare sql for execution
+                mysqli_stmt_bind_param($stmt_points, "iii", $points, $points, $userID); // make sure plceholders have values
                 if(!mysqli_stmt_execute($stmt_points)){
-                    $success = false;
-                    $err = "Error while updating points";
+                    $success = false; // mark as failed
+                    $err = "Error while updating points"; // display message
                 }
-                mysqli_stmt_close($stmt_points);
+                mysqli_stmt_close($stmt_points); // close task
             }
             
+            // insert the transaction in the point_transaction table
             if($success){
                 $sql_transactionRecord = "INSERT INTO point_transaction (user_id, partner_transaction_id, amount, type) 
                                             VALUES (?, ?, ?, 'Earned')";
@@ -83,10 +91,11 @@
                 mysqli_stmt_close($stmt_transaction);
             }
 
+            // commit or rollback the transaction if seceeded
             if($success){
-                mysqli_commit($dbConn);
+                mysqli_commit($dbConn); // to save the changes
                 include "../include/badge_system.php";
-                checkPointBadges($dbConn, $data['user_id']);
+                checkPointBadges($dbConn, $data['user_id']); // check if user earned new badges
                 $_SESSION['popupMessage']=[
                     'title' => 'Success',
                     'text' => 'Points Awarded Successfully',
@@ -107,6 +116,7 @@
                 
         }
         elseif ($decision == 'reject') {
+            // mark as rejected and no points are awarded
             $sql_update = "UPDATE partner_point_transaction
                             SET status = 'Rejected'
                             WHERE partner_transaction_id = ?";
@@ -141,7 +151,7 @@
 </html>
 </head>
 <body>
-    <script src="../../js/customSwal.js"></script>
+    <script src="../../js/customSwal.js"></script> <!-- to include sweet alerts -->
     <?php include "../include/header.php"; ?>
 
     <h1>Pending Partner Point Transactions</h1>
@@ -160,7 +170,7 @@
             </tr>
         </thead>
     <tbody>
-    <?php while ($partnerRequest_info = mysqli_fetch_assoc($result_pending)): ?>
+    <?php while ($partnerRequest_info = mysqli_fetch_assoc($result_pending)): ?> <!-- loops through all pending submissions -->
         <tr>
             <td data-label="Transaction ID"><?php echo $partnerRequest_info['partner_transaction_id']; ?></td>
             <td data-label="User"><?php echo $partnerRequest_info['username']; ?></td>
@@ -171,6 +181,7 @@
             <td data-label="Status"><p class="taskStatus <?php echo $partnerRequest_info['status']; ?>">
                 <?php echo $partnerRequest_info['status']; ?></p></td>
             <td data-label="View Button">
+                <!-- to open modal popup -->
                 <button class="viewPartnerBtn"
                     data-id="<?php echo $partnerRequest_info['partner_transaction_id']; ?>"
                     data-username="<?php echo htmlspecialchars($partnerRequest_info['username'], ENT_QUOTES); ?>"
@@ -187,11 +198,12 @@
     </tbody>
 </table>
 
+    <!-- Popup window -->
 <div id="partnerPopup" class="modal">
     <div class="modalContent" id="partnerModal">
-        <button class="closeModalBtn" id="closeModalBtn">
+        <button class="closeModalBtn" id="closeModalBtn"> <!-- to close the modal -->
             <svg width="30px" height="30px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M19 5L4.99998 19M5.00001 5L19 19" stroke="#1a5021" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M19 5L4.99998 19M5.00001 5L19 19" stroke="#1a5021" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/> <!-- for a close (X) icon -->
             </svg>
         </button>
         <h1>Review Partner Points</h1>
@@ -200,10 +212,11 @@
             <p>Amount Spent: <span id="partnerAmount"></span></p>
             <p>Points Awarded: <span id="partnerPoints"></span></p>
             <p>Receipt:</p>
-        <img id="partnerReceipt" src="" width="Receipt Image">
+        <img id="partnerReceipt" src="" width="Receipt Image"> <!-- container for the image -->
 
-        <form method="POST">
-            <input type="hidden" name="partner_transaction_id" id="partnerTransactionID">
+        <form method="POST"> <!-- to submit the moderator's decision -->
+            <input type="hidden" name="partner_transaction_id" id="partnerTransactionID"> <!-- to store the id of the partner transaction -->
+            <!-- for the approve and reject buttons for the moderator's decision -->
             <div class="buttonGroup">
                 <button type="submit" name="decision" value="approve">Approve</button>
                 <button type="submit" name="decision" value="reject">Reject</button>
