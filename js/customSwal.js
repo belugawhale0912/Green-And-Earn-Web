@@ -1,7 +1,7 @@
 // SWAL custom config
 const CustomSwal = Swal.mixin({
     customClass: {
-        // Custom name for styling
+        // add classes to style with css
         popup: 'popup',       
         title: 'title',       
         confirmButton: 'confirm_btn'

@@ -1,10 +1,12 @@
 <?php
-    include "../include/conn.php";
-    include "../include/session.php";
+    include "../include/conn.php"; // include database connection
+    include "../include/session.php"; // include session management 
 
+    // check which view is active, and if default set to submissions
     $view = isset($_GET['view']) ? $_GET['view'] : 'submissions';
-    $filter = isset($_GET['status']) ? $_GET['status'] : 'all';
+    $filter = isset($_GET['status']) ? $_GET['status'] : 'all'; // determine filter for status approved, rejected, or all
 
+    // User Join to show username and activity name, along with all the submissions.)
     if ($filter == "Approved"){
         $sql = "SELECT s.*, u.username, a.title AS activity_title
         FROM activity_submission s
@@ -25,10 +27,11 @@
         WHERE s.status IN ('Approved', 'Rejected')";
     }
 
-    $result = mysqli_query($dbConn, $sql);
+    $result = mysqli_query($dbConn, $sql); // execute query
 
-    $partnerFilter = isset($_GET['status']) ? $_GET['status'] : 'all';
+    $partnerFilter = isset($_GET['status']) ? $_GET['status'] : 'all'; // default status set to all
 
+    // User Join to show username with all the partner transactions
     if($partnerFilter == "Approved"){
         $sql_partner = "SELECT p.*, u.username
         FROM partner_point_transaction p
@@ -49,7 +52,7 @@
         ORDER BY p.award_time DESC";
     }
 
-    $result_partner = mysqli_query($dbConn, $sql_partner);
+    $result_partner = mysqli_query($dbConn, $sql_partner); // execute query
 ?>
 
 <!DOCTYPE html>
@@ -66,19 +69,19 @@
 <?php
     include "../include/header.php";
 ?>
-<div id="historyViewControl">
+<div id="historyViewControl"> <!-- container that holds the view toggle buttons -->
     <a href="moderatorHistory.php?view=submissions"
-        class="<?php echo ($view ?? 'submissions')=='submissions' ? 'active' : ''; ?>">Submission</a>
+        class="<?php echo ($view ?? 'submissions')=='submissions' ? 'active' : ''; ?>">Submission</a> <!-- link to show submission history and add active class if viewing-->
     <a href="moderatorHistory.php?view=partnerPoints"
-        class="<?php echo ($view ?? '')=='partnerPoints' ? 'active' : ''; ?>">Partner Points</a>
+        class="<?php echo ($view ?? '')=='partnerPoints' ? 'active' : ''; ?>">Partner Points</a> <!-- link to show partner points history and add active class if viewing-->
 </div>
 <h1>Approval History</h1>
 <?php if($view == 'submissions'): ?>
     <section id="History">
-        <form method="GET" id="filterForm">
-            <input type="hidden" name="view" value="submissions">
+        <form method="GET" id="filterForm"> <!-- filter form for submission history -->
+            <input type="hidden" name="view" value="submissions"> <!-- keeps current view as submissions when filtering -->
             <label for="statusFilter"></label>
-            <select class="filter" name="status" id="statusFilter">
+            <select class="filter" name="status" id="statusFilter"> <!-- dropdown menu to filter submission -->
                 <option value="all" <?php if ($filter == "all") echo 'selected'; ?>>All</option>
                 <option value="Approved" <?php if ($filter == "Approved") echo 'selected'; ?>>Approved</option>
                 <option value="Rejected" <?php if ($filter == "Rejected") echo 'selected'; ?>>Rejected</option>
@@ -106,7 +109,8 @@
                             <?php echo $row['status']; ?></p></td>
                         <td data-label="Submission Time"><?php echo $row['submission_time']; ?></td>
                         <td data-label="View Attachment">
-                            <button type="button" class="viewSubmissionBtn"
+                            <!-- button to open submission proof image popup -->
+                            <button type="button" class="viewSubmissionBtn" 
                                 data-id="<?php echo $row['submission_id']; ?>"
                                 data-username="<?php echo htmlspecialchars($row['username'], ENT_QUOTES); ?>"
                                 data-activity="<?php echo htmlspecialchars($row['activity_title'], ENT_QUOTES); ?>"
@@ -121,11 +125,11 @@
             </tbody>
         </table>
     </section>
-    <div id="submissionPopup" class="modal">
-        <div class="modalContent" id="submissionModal">
-            <button class="closeModalBtn" id="closeModalBtn">
+    <div id="submissionPopup" class="modal"> <!-- modal popup for viewing submission details-->
+        <div class="modalContent" id="submissionModal"> <!-- modal content box -->
+            <button class="closeModalBtn" id="closeModalBtn"> <!-- close button -->
                 <svg width="30px" height="30px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M19 5L4.99998 19M5.00001 5L19 19" stroke="#1a5021" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M19 5L4.99998 19M5.00001 5L19 19" stroke="#1a5021" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/> <!-- for the (X) icon -->
                 </svg>
             </button>
             <h1>Submission Details</h1>
@@ -135,7 +139,7 @@
                 <p>Submission Time: <span id="popupSubmissionTime"></span></p>
                 <p>Proof:</p>
             </div>
-            <img id="popupProof" src="" alt="Proof Image">
+            <img id="popupProof" src="" alt="Proof Image"> <!-- to view the image -->
             <input type="hidden" id="submission_id" name="submission_id">
         </div>
     </div>
@@ -143,11 +147,11 @@
 
 
 <?php if($view == 'partnerPoints'): ?>
-    <section id="PartnerPointsHistory">
-        <form method="GET" id="filterFormPartner">
-            <input type="hidden" name="view" value="partnerPoints">
+    <section id="PartnerPointsHistory"> <!-- partner points history section -->
+        <form method="GET" id="filterFormPartner"> <!-- filter form for partner point transaction -->
+            <input type="hidden" name="view" value="partnerPoints"> <!-- keeps the current view as partner points when filtering-->
             <label for="statusFilterPartner"></label>
-            <select class="filter" name="status" id="statusFilterPartner">
+            <select class="filter" name="status" id="statusFilterPartner"> <!-- dropdown to filter partner transactions -->
                 <option value="all" <?php if($partnerFilter == 'all') echo 'selected'; ?>>All</option>
                 <option value="Approved" <?php if($partnerFilter == 'Approved') echo 'selected'; ?>>Approved</option>
                 <option value="Rejected" <?php if($partnerFilter == 'Rejected') echo 'selected'; ?>>Rejected</option>
@@ -166,7 +170,7 @@
                 </tr>
             </thead>
             <tbody>
-                <?php while ($row = mysqli_fetch_assoc($result_partner)): ?>
+                <?php while ($row = mysqli_fetch_assoc($result_partner)): ?> <!-- loop through each partner transaction record -->
                 <tr>
                     <td data-label="Transaction ID"><?php echo $row['partner_transaction_id']; ?></td>
                     <td data-label="User"><?php echo htmlspecialchars($row['username']); ?></td>
@@ -176,6 +180,7 @@
                     <td data-label="Status"><p class="taskStatus <?php echo $row['status']; ?>">
                         <?php echo $row['status']; ?></p></td>
                     <td data-label="View Attachment">
+                        <!-- button to open partner receipt popup -->
                         <button type="button" class="viewPartnerBtn"
                             data-id="<?php echo $row['partner_transaction_id']; ?>"
                             data-username="<?php echo htmlspecialchars($row['username'], ENT_QUOTES); ?>"
@@ -191,21 +196,22 @@
             </tbody>
         </table>
     </section>
-    <div id="partnerPopup" class="modal">
-        <div class="modalContent" id="partnerModal">
-            <button class="closeModalBtn" id="closeModalBtn">
+    <div id="partnerPopup" class="modal"> <!-- modal popup for viewing partner transaction details -->
+        <div class="modalContent" id="partnerModal"> <!-- modal content container -->
+            <button class="closeModalBtn" id="closeModalBtn"> <!-- close button for the popup -->
                 <svg width="30px" height="30px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M19 5L4.99998 19M5.00001 5L19 19" stroke="#1a5021" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M19 5L4.99998 19M5.00001 5L19 19" stroke="#1a5021" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><!-- for the (X) icon -->
                 </svg>
             </button>
             <h1>Partner Points Details</h1>
-            <div id="partnerInfo">
+            <div id="partnerInfo"> <!-- partner transaction information -->
                 <p>Username: <span id="partnerUsername"></span></p>
                 <p>Amount Spent: <span id="partnerAmount"></span></p>
                 <p>Points Awarded: <span id="partnerPoints"></span></p>
                 <p>Receipt:</p>
             </div>
-            <img id="partnerReceipt" src="" alt="Receipt Image">
+            <img id="partnerReceipt" src="" alt="Receipt Image"> <!-- to view the receipt image -->
+                <!-- to store transaction id -->
             <input type="hidden" id="partnerTransactionID" name="partnerTransactionID">
         </div>
     </div>

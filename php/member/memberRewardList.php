@@ -5,12 +5,15 @@
     $user_id = $_SESSION['user_id'];
 
     $view = isset($_GET['view'])? $_GET['view']:'available';
+
     if($view=='available'){
+        // fetch reward that are available and in stock
         $sql = "SELECT * FROM reward WHERE status = 'Available' AND stock > 0";
         $result = mysqli_query($dbConn, $sql);
         }
 
     elseif($view == 'redeemed'){
+        // fetch the rewards redeemed by the user
         $sql= "SELECT rr.status, rr.redemption_time, r.title, r.description, r.reward_img
                   FROM reward_redemption rr
                   JOIN reward r on rr.reward_id = r.reward_id
@@ -23,11 +26,13 @@
     }
 
 
+    // check if form is submitted
     if($_SERVER["REQUEST_METHOD"]=="POST"){
 
         $reward_id = $_POST['reward_id'];
         
-        //validations
+        // todo decide to keep or remove this
+        //validations, prevent unlucky scienario where the reward run out of stock or removed when the user click on redeem 
         $sql_reward = "SELECT * FROM reward WHERE reward_id = ?";
         $stmtReward = mysqli_prepare($dbConn, $sql_reward);
         mysqli_stmt_bind_param($stmtReward, "i", $reward_id);
@@ -44,6 +49,7 @@
         if ($reward_info['status'] != 'Available' || $reward_info['stock'] <= 0) {
             die("Error: Reward is out of stock or unavailable");
         }
+
 
         // Fetch User info from database
         $user_id = $_SESSION['user_id'];
@@ -65,72 +71,54 @@
             exit();
         }
 
-        //execution
 
         //calculate new values 
         $new_stock = $reward_info['stock']-1;
         $new_point_balance = $user_info['point_balance']-$reward_info['required_points'];
 
-        //query
+        //update stock balance
         $sql_update_stock = "UPDATE reward SET stock = ? WHERE reward_id = ?";
         $stmtUpdateStock = mysqli_prepare($dbConn, $sql_update_stock);
         mysqli_stmt_bind_param($stmtUpdateStock, "ii", $new_stock, $reward_id);
         
+        // update user point balance
         $sql_update_pointbal = "UPDATE user SET point_balance = $new_point_balance WHERE user_id = ?";
         $stmtUpdatePoint = mysqli_prepare($dbConn, $sql_update_pointbal);
         mysqli_stmt_bind_param($stmtUpdatePoint, "i", $user_id);
 
+        // insert new redemption record
         $sql_insert_redemption = "INSERT INTO reward_redemption (reward_id, user_id, points_spent, status) 
                                   VALUES (?, ?, ?, 'Pending')";
         $stmtInsertRedemption = mysqli_prepare($dbConn, $sql_insert_redemption);
         mysqli_stmt_bind_param($stmtInsertRedemption, "iii", $reward_id, $user_id, $reward_info['required_points']);
 
-        //turn off autosave to prevent data corruption if query fails
-        mysqli_begin_transaction($dbConn);
+        try{
+            //user transaction to ensure db only changes when all query suceed
+            mysqli_begin_transaction($dbConn);
 
-        $success = true;
-        $errMsg = "";
-        
-        if(!mysqli_stmt_execute($stmtUpdateStock)){
-            $success = false;
-            $errMsg = "Error While Updating Stock";
-        }
-        mysqli_stmt_close($stmtUpdateStock);
+            mysqli_stmt_execute($stmtUpdateStock);
+            mysqli_stmt_close($stmtUpdateStock);
 
-        if($success){
-            if(!mysqli_stmt_execute($stmtUpdatePoint)){
-                $success = false;
-                $errMsg = "Error While Updating Point";
-            }
+            mysqli_stmt_execute($stmtUpdatePoint);
             mysqli_stmt_close($stmtUpdatePoint);
-        }
 
-        if($success){
-            if(!mysqli_stmt_execute($stmtInsertRedemption)){
-                $success = false;
-                $errMsg = "Error While Inserting Redemption";
-            }
+            mysqli_stmt_execute($stmtInsertRedemption);
             mysqli_stmt_close($stmtInsertRedemption);
-        }
 
-        if($success){
             $redemption_id = mysqli_insert_id($dbConn);
+
+            // insert new transaction record
             $sql_insert_transaction= "INSERT INTO point_transaction (user_id, redemption_id, amount, type) 
                                     VALUES (?, ?, ?,'Redemption')";
 
             $stmtInsertTransaction = mysqli_prepare($dbConn, $sql_insert_transaction);
             mysqli_stmt_bind_param($stmtInsertTransaction, "iii", $user_id, $redemption_id, $reward_info['required_points']);
+            mysqli_stmt_execute($stmtInsertTransaction);
+            mysqli_stmt_close($stmtInsertTransaction);         
 
-            if(!mysqli_stmt_execute($stmtInsertTransaction)){
-                $success = false;
-                $errMsg = "Error While Inserting Transaction";
-            }
-            mysqli_stmt_close($stmtInsertTransaction);
-        }
-
-
-        if($success){
+            // update db once every query have no error
             mysqli_commit($dbConn);
+
             //set message flag to true to show success message
             $_SESSION['popupMessage']=[
                 'title' => 'Success!',
@@ -139,20 +127,19 @@
             ];
             header("Location: memberRewardList.php?view=available");
             exit();
-        }
-
-        if(!$success){
+            
+        }catch (Exception $e){
+            // do not make any changes if one of the query failed
             mysqli_rollback($dbConn);
 
             $_SESSION['popupMessage']=[
                 'title' => 'Error',
-                'text' => $errMsg,
+                'text' => 'Error While Redeeming reward, please try again!',
                 'icon' => 'error'
             ];
             header("Location: memberRewardList.php?view=available");
             exit();
         }
-
     }
 ?>
 
@@ -232,16 +219,7 @@
     <?php endif; ?>
 
     
-    <?php if(isset($_SESSION['popupMessage'])):?>
-        <script>
-            showMessage(
-                "<?php echo $_SESSION['popupMessage']['title']?>",
-                "<?php echo $_SESSION['popupMessage']['text']?>",
-                "<?php echo $_SESSION['popupMessage']['icon']?>",
-            );
-        </script>
-        <?php unset($_SESSION['popupMessage'])?>
-    <?php endif;?>
+    <?php include "../include/showSWAL.php"?>
     <script src="../../js/member.js"></script>
 </body>
 </html>

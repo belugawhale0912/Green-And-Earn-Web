@@ -1,10 +1,11 @@
 <?php
-    session_start();
-    $user_id = $_SESSION['user_id'];
 
+    include "../include/session.php";
     include "../include/conn.php";
 
-    // TODO check query
+    $user_id = $_SESSION['user_id'];
+
+    // use coalesce to return the value that is not null
     $sql = "SELECT pt.*, COALESCE(r.title, a.title, u_partner.username, pt.type) AS transaction_name,
             CASE
                 WHEN pt.type = 'Refund' THEN 'Refund' 
@@ -12,7 +13,8 @@
                 WHEN pt.partner_transaction_id IS NOT NULL THEN 'Shop At Partner Store'
                 WHEN pt.redemption_id IS NOT NULL THEN 'Redemption'
                 ELSE pt.type
-            END AS display_category
+            END 
+            AS display_category
 
             FROM point_transaction pt
             LEFT JOIN reward_redemption rr ON pt.redemption_id = rr.redemption_id
@@ -24,8 +26,9 @@
             LEFT JOIN partner_point_transaction ptrans ON pt.partner_transaction_id = ptrans.partner_transaction_id
             LEFT JOIN user u_partner ON ptrans.partner_id = u_partner.user_id
 
-            WHERE pt.user_id = $user_id 
+            WHERE pt.user_id = ? 
             ORDER BY pt.transaction_time DESC";
+
     $stmt = mysqli_prepare($dbConn, $sql);
     mysqli_stmt_bind_param($stmt, "i", $user_id);
     mysqli_stmt_execute($stmt);

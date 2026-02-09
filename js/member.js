@@ -21,7 +21,7 @@ document.addEventListener("DOMContentLoaded", function() {
         // for each buttons we apply function(each of the button)
         btnOpenSubmission.forEach(function(button) {
             // for each button from buttons, we run the below code
-            // 1. add click listener to button, if a click is detected run the function
+            // add click listener to button, if a click is detected run the function
             button.addEventListener('click', function() { 
                 // these will run when button is clicked
                 const id = this.getAttribute("data-id");
@@ -87,14 +87,13 @@ document.addEventListener("DOMContentLoaded", function() {
     // Reward Page Functions
     const confirmForm = document.querySelectorAll('.redemptionForm');
 
-    if(confirmForm){
+    if(confirmForm.length > 0){
         confirmForm.forEach(function(form){
             form.addEventListener('submit', function(event) {
                 
-                // Stop the form from sending data to PHP immediately
+                // Stop the form from sending 
                 event.preventDefault(); 
             
-                // 4. THE POPUP
                 CustomSwal.fire({
                     title: 'Are you sure?',
                     text: "Do you want to redeem this reward?",
@@ -102,11 +101,10 @@ document.addEventListener("DOMContentLoaded", function() {
                     showCancelButton: true,
                     confirmButtonText: 'Yes, redeem it!'
                 }).then((result) => {
-                    // 5. THE DECISION
+                    // submit the form if the user click comfirm
                     if (result.isConfirmed) {
                         form.submit(); 
                     }
-                    // If User said NO: Do nothing. The form remains stopped.
                 });
             });
         });
@@ -165,13 +163,11 @@ document.addEventListener("DOMContentLoaded", function() {
     if(deleteFriendForm){
         // Apply function for each from from comfirmForm
         deleteFriendForm.forEach(function(form){
-            // add event listener for form, when a form is trying to be submitted run the code in the function(event){}
             form.addEventListener('submit', function(event) {
                 
                 // Stop the form from sending data to PHP immediately
                 event.preventDefault(); 
-                
-                // 4. THE POPUP
+                // comfirmation dialog
                 CustomSwal.fire({
                     title: 'Are you sure?',
                     text: "Do you want to delete this friend?",
@@ -179,11 +175,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     showCancelButton: true,
                     confirmButtonText: 'Yes'
                 }).then((result) => {
-                    // 5. THE DECISION
                     if (result.isConfirmed) {
-                        // User said YES: Manually trigger the submission
-                        // Note: We use 'form.submit()' instead of 'this.submit()' to be safe inside arrow functions, 
-                        // though 'this' works in standard functions.
                         form.submit(); 
                     }
                 });
