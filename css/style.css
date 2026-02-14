@@ -365,6 +365,15 @@ tbody tr:last-of-type{
     border: 2px solid var(--clr-surface-tonal-a20);
 }
 
+.closeModalBtn{
+    align-self: flex-end;
+    border: none;
+    background-color: transparent;
+    width: 50px;
+    height: 50px;
+    cursor: pointer;
+}
+
 .list_container{
     display: flex;
     flex-direction: column;

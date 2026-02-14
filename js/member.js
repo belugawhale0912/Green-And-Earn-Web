@@ -81,9 +81,6 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
 
-
-
-
     // Reward Page Functions
     const confirmForm = document.querySelectorAll('.redemptionForm');
 
@@ -192,7 +189,7 @@ document.addEventListener("DOMContentLoaded", function() {
             const searchText = event.target.value.toLowerCase().trim();
 
             friendCard.forEach(function(card){
-                const username = card.getAttribute("data-username");
+                const username = card.getAttribute("data-username").toLowerCase().trim();
 
                 if(username.includes(searchText)){
                     card.style.display="";

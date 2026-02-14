@@ -25,14 +25,14 @@ header{
 }
 
 
-#header_links a {
-    position: relative; /* 1. IMPORTANT: Anchors the bar to this text */
+#header_links a{
+    position: relative; 
     color: var(--text-main);
     text-decoration: none;
     padding-bottom: 5px; 
 }
 
-#header_links a::after {
+#header_links a::after{
     content: "";
     position: absolute; 
     width: 100%;
@@ -46,11 +46,11 @@ header{
     transition: transform 0.7s ; 
 }
 
-#header_links a:hover {
+#header_links a:hover{
     color: var(--clr-primary-a10);
 }
 
-#header_links a:hover::after {
+#header_links a:hover::after{
     transform: scaleX(1);
 }
 
@@ -81,7 +81,7 @@ header{
 
 
 
-@media (max-width: 1200px) {
+@media (max-width: 1200px){
     #hamburger{
         display: flex;
     }
@@ -91,9 +91,9 @@ header{
         flex-direction: column;
         width: 100%;
         position: absolute;
-        top: 100%; /* Pushes it exactly below the header */
+        top: 100%; 
         left: 0;
-        background-color: var(--clr-surface-a0); /* Solid background so text is readable */
+        background-color: var(--clr-surface-a0); 
         border-bottom: 2px solid var(--clr-primary-a10);
         padding: 20px 0;
         box-shadow: 0 5px 10px rgba(0,0,0,0.1);

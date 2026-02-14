@@ -3,6 +3,12 @@
     include "../include/session.php";
     include "../include/conn.php";
 
+    // ensure the user is member, if not redirect to landing page
+    if($_SESSION['role_id'] != 2){
+        header("Location: ../pages/Landingpage.php");
+        exit();
+    }
+
     $user_id = $_SESSION['user_id'];
 
     // use coalesce to return the value that is not null
@@ -33,6 +39,7 @@
     mysqli_stmt_bind_param($stmt, "i", $user_id);
     mysqli_stmt_execute($stmt);
     $result = mysqli_stmt_get_result($stmt);
+    mysqli_stmt_close($stmt);
 ?>
 
 <!DOCTYPE html>
@@ -87,3 +94,4 @@
     <script src="../../js/member.js"></script>
 </body>
 </html>
+<?php mysqli_close($dbConn)?>

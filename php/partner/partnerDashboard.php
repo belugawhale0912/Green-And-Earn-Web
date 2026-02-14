@@ -1,6 +1,13 @@
 <?php
     include "../include/conn.php";
     include "../include/session.php";
+
+    // check if the current user is partner, redirect to landing page if not partner
+    if($_SESSION['role_id'] != 4){
+        header("Location: ../pages/Landingpage.php");
+        exit();
+    }
+
     $partner_id = $_SESSION['user_id'];
 
     $sqllistReward = "SELECT * FROM reward WHERE partner_id = $partner_id AND status != 'deleted'
@@ -229,3 +236,4 @@
     </script>
 </body>
 </html>
+<?php mysqli_close($dbConn)?>

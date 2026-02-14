@@ -2,8 +2,15 @@
     include "../include/conn.php";
     include "../include/session.php";
 
+    // ensure the user is member, if not redirect to landing page
+    if($_SESSION['role_id'] != 2){
+        header("Location: ../pages/Landingpage.php");
+        exit();
+    }
+
     $user_id = $_SESSION['user_id'];
 
+    // check if user have any new obtained badge
     $sqlNewBadge = "SELECT b.title 
                     FROM badge_obtain bo
                     JOIN badge b ON bo.badge_id = b.badge_id
@@ -24,7 +31,7 @@
             $count = count($badgeNames);
         }
 
-        // Join values into badge1,badge2,badge3
+        // join values into badge1,badge2,badge3
         $badgeString = implode(",", $badgeNames);
         
         $_SESSION['popupMessage']=[
@@ -32,34 +39,37 @@
             'text' => "You have earned $count new badges:$badgeString",
             'icon' => 'info'
         ];
+        mysqli_stmt_close($stmtNewBadge);
 
         // remove new status after the user know they earned the badge
         $sql_mark_read = "UPDATE badge_obtain SET isNew = 0 WHERE user_id = ?";
         $stmtMarkRead = mysqli_prepare($dbConn, $sql_mark_read);
         mysqli_stmt_bind_param($stmtMarkRead, "i", $user_id);
         mysqli_stmt_execute($stmtMarkRead);
+        mysqli_stmt_close($stmtMarkRead);
 
         header("Location: memberBadge.php");
         exit();
 
     }
-
+    
     // fetch all badges
     $sql_all_badges = "SELECT * FROM badge ORDER BY criteria_value ASC";
     $result_all = mysqli_query($dbConn, $sql_all_badges);
 
-    // fetch user's badges 
-    $my_inventory = []; 
+    // fetch user badges 
+    $userBadges = []; 
     $sql_my_badges = "SELECT badge_id, obtain_date FROM badge_obtain WHERE user_id = ?";
 
     $stmtMyBadge = mysqli_prepare($dbConn, $sql_my_badges);
     mysqli_stmt_bind_param($stmtMyBadge, "i", $user_id);
     mysqli_stmt_execute($stmtMyBadge);
     $result_my = mysqli_stmt_get_result($stmtMyBadge);
+    mysqli_stmt_close($stmtMyBadge);
 
     while($row = mysqli_fetch_assoc($result_my)){
         // store as associative arry key = badge_id value = obtain_date
-        $my_inventory[$row['badge_id']] = $row['obtain_date'];
+        $userBadges[$row['badge_id']] = $row['obtain_date'];
     }
 ?>
 
@@ -86,7 +96,7 @@
         <?php while($badge = mysqli_fetch_assoc($result_all)): ?>
             <?php 
                 $badge_id = $badge['badge_id'];
-                $isEarned = array_key_exists($badge_id, $my_inventory);
+                $isEarned = array_key_exists($badge_id, $userBadges);
                 $statusClass = $isEarned ? 'unlocked' : 'locked'; 
             ?>
 
@@ -96,10 +106,10 @@
                 <h3><?php echo $badge['title']; ?></h3>
                 <p class="desc"><?php echo $badge['description']; ?></p>
 
-                <?php if($isEarned): ?>
+                <?php if($isEarned):?>
                     <div class="statusBox earned">
                         <p class="status-main">Unlocked</p>
-                        <p class="status-sub">on <?php echo date("d M Y", strtotime($my_inventory[$badge_id])); ?></p>
+                        <p class="status-sub">on <?php echo date("d M Y", strtotime($userBadges[$badge_id])); ?></p>
                     </div>
                 <?php else: ?>
                     <div class="statusBox lockedInfo">
@@ -113,3 +123,4 @@
     <?php include "../include/showSWAL.php"?>
 </body>
 </html>
+<?php mysqli_close($dbConn)?>

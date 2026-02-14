@@ -2,6 +2,12 @@
     include "../include/conn.php";
     include "../include/session.php";
 
+    // ensure the user is admin, if not redirect to landing page
+    if($_SESSION['role_id'] != 1){
+        header("Location: ../pages/Landingpage.php");
+        exit();
+    }
+
     $user_id = $_SESSION['user_id'];
 
     //filter status php, all as default
@@ -36,13 +42,14 @@
                 $stmt =  mysqli_prepare($dbConn, $sql);
                 mysqli_stmt_bind_param($stmt, "ississ", $admin_id, $title, $description, $pointAward, $start, $end);
 
-                //sweet alert
                 if(mysqli_stmt_execute($stmt)){
                     $_SESSION['popupMessage']=[
                         'title' => 'Success',
                         'text' => 'Activity Added Successfully',
                         'icon' => 'success'
                     ];
+                    mysqli_stmt_close($stmt);
+
                     header("Location: ../admin/adminActivityManagement.php");
                     exit();
                 }else{
@@ -51,24 +58,29 @@
                         'text' => 'Failed to Add Activity',
                         'icon' => 'error'
                     ];
+                    mysqli_stmt_close($stmt);
+
                     header("Location: ../admin/adminActivityManagement.php");
                     exit();
                 }
+                
             }
-            //add update
+            //update activity
             if($_POST['action']=="update"){
                 $activity_id = $_POST['activity_id'];
                 $sql = "UPDATE activity SET admin_id = ?, title = ?, description = ?, points_awarded = ?, start_date = ?, end_date = ? WHERE activity_id = ?";
                 //prevent sql injection
                 $stmt = mysqli_prepare($dbConn, $sql);
                 mysqli_stmt_bind_param($stmt, "ississi", $admin_id, $title, $description, $pointAward, $start, $end, $activity_id);
-                //sweet alert
+
                 if(mysqli_stmt_execute($stmt)){
                     $_SESSION['popupMessage']=[
                         'title' => 'Success',
                         'text' => 'Activity Updated Successfully',
                         'icon' => 'success'
                     ];
+                    mysqli_stmt_close($stmt);
+
                     header("Location: ../admin/adminActivityManagement.php");
                     exit();
                 }else{
@@ -77,6 +89,8 @@
                         'text' => 'Failed to Update Activity',
                         'icon' => 'error'
                     ];
+                    mysqli_stmt_close($stmt);
+                    
                     header("Location: ../admin/adminActivityManagement.php");
                     exit();
                 }
@@ -92,20 +106,24 @@
             //sweet alert
             if(mysqli_stmt_execute($stmt)){
                 $_SESSION['popupMessage']=[
-                        'title' => 'Success',
-                        'text' => 'Activity Deleted Successfully',
-                        'icon' => 'success'
-                    ];
-                    header("Location: ../admin/adminActivityManagement.php");
-                    exit();
+                    'title' => 'Success',
+                    'text' => 'Activity Deleted Successfully',
+                    'icon' => 'success'
+                ];
+                mysqli_stmt_close($stmt);
+
+                header("Location: ../admin/adminActivityManagement.php");
+                exit();
             }else{
                 $_SESSION['popupMessage']=[
-                        'title' => 'Error',
-                        'text' => 'Failed to Delete Activity',
-                        'icon' => 'error'
-                    ];
-                    header("Location: ../admin/adminActivityManagement.php");
-                    exit();
+                    'title' => 'Error',
+                    'text' => 'Failed to Delete Activity',
+                    'icon' => 'error'
+                ];
+                mysqli_stmt_close($stmt);
+
+                header("Location: ../admin/adminActivityManagement.php");
+                exit();
             }
         }
         //restore button in table
@@ -118,20 +136,24 @@
             //sweet alert
             if(mysqli_stmt_execute($stmt)){
                 $_SESSION['popupMessage']=[
-                        'title' => 'Success',
-                        'text' => 'Activity Restored Successfully',
-                        'icon' => 'success'
-                    ];
-                    header("Location: ../admin/adminActivityManagement.php");
-                    exit();
+                    'title' => 'Success',
+                    'text' => 'Activity Restored Successfully',
+                    'icon' => 'success'
+                ];
+                mysqli_stmt_close($stmt);
+
+                header("Location: ../admin/adminActivityManagement.php");
+                exit();
             }else{
                 $_SESSION['popupMessage']=[
-                        'title' => 'Error',
-                        'text' => 'Failed to Restore Activity',
-                        'icon' => 'error'
-                    ];
-                    header("Location: ../admin/adminActivityManagement.php");
-                    exit();
+                    'title' => 'Error',
+                    'text' => 'Failed to Restore Activity',
+                    'icon' => 'error'
+                ];
+                mysqli_stmt_close($stmt);
+
+                header("Location: ../admin/adminActivityManagement.php");
+                exit();
             }
         }
     }
@@ -258,4 +280,5 @@
     <script src="../../js/admin.js"></script>
 </body>
 </html>
+<?php mysqli_close($dbConn)?>
 

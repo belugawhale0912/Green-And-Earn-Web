@@ -40,7 +40,7 @@
     padding: 5px; 
 }
 
-.viewToggle a {
+.viewToggle a{
     flex: 1; 
     text-align: center;
     text-decoration: none;
@@ -50,13 +50,11 @@
     transition: all 0.3s ease;
 }
 
-/* HOVER STATE */
-.viewToggle a:hover {
+.viewToggle a:hover{
     color: var(--clr-primary-a40);
     background-color: var(--clr-surface-a10); 
 }
 
-/* When selected */
 .viewToggle a.active {
     background-color: var(--clr-surface-a10); 
     border: 2px solid var(--clr-primary-a40);
@@ -65,14 +63,14 @@
     box-shadow: 0 2px 5px rgba(0,0,0,0.1); 
 }
 
-.closeModalBtn{
+/* .closeModalBtn{
     align-self: flex-end;
     border: none;
     background-color: transparent;
     width: 50px;
     height: 50px;
     cursor: pointer;
-}
+} */
 
 
 
@@ -99,7 +97,7 @@
     padding: 20px;
 }
 
-.canvas-container {
+.canvas-container{
     position: relative;
     height: 250px; 
     width: 100%;
@@ -168,12 +166,12 @@
 }
 
 
-#activityPoints {
+#activityPoints{
     font-size: 1.1rem;
     color: #fff;
-    background-color: #2e7d32; /* Badge background */
+    background-color: #2e7d32; 
     padding: 8px 16px;
-    border-radius: 50px; /* Pill shape */
+    border-radius: 50px; 
     margin: 0 0 30px 0;
     box-shadow: 0 4px 6px rgba(0,0,0,0.1);
 }
@@ -238,7 +236,7 @@
 
 
 /* Reward Page */
-.rewardContainer {
+.rewardContainer{
     display: grid;
     margin: 0 auto;
     max-width: 1400px;
@@ -248,7 +246,7 @@
 }
 
 
-.rewardCard {
+.rewardCard{
     border-radius: 10px;
     padding: 15px;
     text-align: center;
@@ -259,7 +257,7 @@
 }
 
 
-.rewardCard img {
+.rewardCard img{
     width: 100%;
     height: 180px;      
     object-fit: cover;  
@@ -268,18 +266,18 @@
 }
 
 
-.rewardCard h2 {
+.rewardCard h2{
     font-size: 1.2rem;
 }
 
-.rewardCard h3 {
+.rewardCard h3{
     font-size: 0.9rem;
     color: var(--text-main);
     flex-grow: 1; /* Pushes the price/button down */
     margin-bottom: 15px;
 }
 
-.rewardCard button {
+.rewardCard button{
     background-color: var(--clr-primary-a0);
     padding: 10px;
     width: 100%;
@@ -294,7 +292,7 @@
 }
 
 
-.rewardHistoryContainer {
+.rewardHistoryContainer{
     display: flex;
     flex-direction: column; /* Stack them like a list */
     gap: 15px;
@@ -303,7 +301,7 @@
     margin: 0 auto 50px auto;
 }
 
-.historyCard {
+.historyCard{
     display: flex; 
     background-color: var(--bg-highlight);
     border: 1px solid var(--clr-surface-a30);
@@ -313,7 +311,7 @@
 }
 
 
-.historyCard img {
+.historyCard img{
     width: 200px;
     height: auto;
     object-fit: cover;
@@ -322,7 +320,7 @@
 }
 
 
-.historyContent {
+.historyContent{
     flex-grow: 1; 
     text-align: left;
     align-self: flex-start;
@@ -332,24 +330,24 @@
 }
 
 
-.historyContent p {
+.historyContent p{
     color: var(--text-muted);
 }
 
 /* 3. Right: Status & Date */
-.historyStatus {
+.historyStatus{
     display: flex;
     flex-direction: column;
     align-self: flex-end;
 }
 
-.history-date {
+.history-date{
     color: var(--text-muted);
     font-weight: bold;
 }
 
 /* Status Pill */
-.status-pill {
+.status-pill{
     padding: 5px 15px;
     border-radius: 20px;
     text-transform: uppercase;
@@ -431,13 +429,13 @@
 
 
 /* Leaderboard */
-.leaderboardContainer {
+.leaderboardContainer{
     max-width: 1000px;
     margin: 0 auto;
 }
 
 
-.top3Container {
+.top3Container{
     display: flex;
     justify-content: center;
     align-items: flex-end; /* This aligns them at the bottom to create steps */
@@ -447,7 +445,7 @@
     margin: 0 auto 20px auto;
 }
 
-.top3 {
+.top3{
     text-align: center;
     width: 30%;
     border-radius: 15px 15px 0 0; 
@@ -461,7 +459,7 @@
     border: 2px solid var(--border-main);
 }
 
-.top3 img {
+.top3 img{
     width: 100px;
     height: 100px;
     border-radius: 999px;
@@ -472,7 +470,7 @@
     top: -100px; /* Floats the image above the box */
 }
 
-.rankNumber {
+.rankNumber{
     font-size: 3rem;
     font-weight: bold;
     opacity: 0.3;
@@ -485,19 +483,19 @@
     color: var(--clr-primary-a10);
 }
 
-.top3.firstPlace {
+.top3.firstPlace{
     height: 290px;
     order: 2; /* Force it to the middle */
 }
 
 
-.top3.secondPlace {
+.top3.secondPlace{
     height: 250px;
     order: 1; /* Force it to the left */
 }
 
 
-.top3.thirdPlace {
+.top3.thirdPlace{
     height: 220px;
     order: 2; /* Force it to the right */
 }
@@ -505,14 +503,14 @@
 
 
 /* --- The Rest of the List --- */
-.leaderboardList {
+.leaderboardList{
     display: flex;
     flex-direction: column;
     gap: 10px;
     margin-bottom: 170px;
 }
 
-.listItem {
+.listItem{
     display: flex;
     align-items: center;
     padding: 15px 20px;
@@ -523,14 +521,14 @@
     background-color: var(--bg-card);
 }
 
-.listRank {
+.listRank{
     font-size: 1.5rem;
     font-weight: bold;
     width: 50px;
     color: var(--clr-primary-a30);
 }
 
-.listImg {
+.listImg{
     width: 70px;
     height: 70px;
     border-radius: 50%;
@@ -538,19 +536,19 @@
     margin-left: 15px;
 }
 
-.listInfo {
+.listInfo{
     margin-left: 5%;
     text-align: left;
     flex-grow: 1;
 }
 
-.listPoints {
+.listPoints{
     font-weight: bold;
     color: var(--clr-primary-a10);
 }
 
 
-.myRankSticky {
+.myRankSticky{
     position: fixed;
     bottom: 0;
     left: 0;
@@ -562,7 +560,7 @@
     justify-content: center;
 }
 
-.myRankItem {
+.myRankItem{
     width: 90%;
     max-width: 900px;
     background-color: var(--bg-highlight); /* Light Green background to highlight */
@@ -655,7 +653,7 @@
 }
 
 /* --- Top Section (Header & PFP) --- */
-.fpTop {
+.fpTop{
     width: 100%;
     display: flex;
     flex-direction: column;
@@ -668,13 +666,13 @@
     border-radius: 20px;
 }
 
-.fpTop h1 {
+.fpTop h1{
     margin: 0 0 20px 0;
 }
 
 
 /* Profile Picture styling */
-#friendImg {
+#friendImg{
     width: 140px;
     height: 140px;
     border-radius: 50%; /* Perfect circle */
@@ -685,11 +683,11 @@
 }
 
 /* Username and Email container */
-#friendInfo {
+#friendInfo{
     text-align: center;
 }
 
-#friendInfo h3 {
+#friendInfo h3{
     margin: 5px 0;
     font-size: 1rem;
     color: #555;
@@ -699,13 +697,13 @@
 
 
 /* The dynamic text (spans) inside h3 */
-#friendInfo span {
+#friendInfo span{
     font-weight: 700;
     color: var(--clr-primary-a50);
 }
 
 /* --- Bottom Container (Grid Layout) --- */
-.fpContainer {
+.fpContainer{
     width: 100%;
     display: grid;
     /* Creates a responsive grid: 2 columns on wide screens, 1 on mobile */
@@ -716,7 +714,7 @@
 }
 
 /* --- Info Cards --- */
-.fpCard {
+.fpCard{
     background-color: var(--bg-highlight); /* Light grey background */
     padding: 20px;
     border-radius: 12px;
@@ -726,7 +724,7 @@
 }
 
 /* Hover effect for cards */
-.fpCard:hover {
+.fpCard:hover{
     transform: translateY(-3px);
     box-shadow: 0 5px 15px rgba(0,0,0,0.08);
     border-color: var(--clr-primary-a30); /* Green border on hover */
@@ -878,7 +876,7 @@
 
 /* Bagde page */
 /* 2. The Grid Container */
-.badgeContainer {
+.badgeContainer{
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
     gap: 25px;
@@ -888,7 +886,7 @@
 }
 
 /* 3. The Badge Card */
-.badgeCard {
+.badgeCard{
     transition: all 0.5s;
     border-radius: 20px;
     padding: 25px 20px;
@@ -900,7 +898,7 @@
     height: 100%; 
 }
 
-.badgeCard h3 {
+.badgeCard h3{
     margin: 10px 0 5px 0;
     font-size: 1.1rem;
     color: var(--text-main);
@@ -910,14 +908,14 @@
     width: 250px;
 }
 
-.badgeCard .desc {
+.badgeCard .desc{
     font-size: 0.9rem;
     color: var(--text-muted);
     margin-bottom: 20px;
     flex-grow: 1; /* Pushes the status box down */
 }
 
-.statusBox {
+.statusBox{
     width: 100%;
     height: 140px;
     padding: 10px;
@@ -929,31 +927,31 @@
 
 
 /* Unlocked Style */
-.statusBox.earned {
+.statusBox.earned{
     background-color: rgba(46, 204, 113, 0.1); /* Light Green */
     color: #2ecc71;
     border: 1px solid #2ecc71;
 }
 
 /* Locked Style */
-.statusBox.lockedInfo {
+.statusBox.lockedInfo{
     background-color: rgba(0, 0, 0, 0.05); /* Light Gray */
     color: #7f8c8d; /* Gray Text */
     border: 1px solid #bdc3c7;
 }
 
-.badgeCard.locked img {
+.badgeCard.locked img{
     filter: grayscale(100%) opacity(0.5);
 }
 
 /* IF LOCKED: Make the card look "inactive" */
-.badgeCard.locked {
+.badgeCard.locked{
     background-color: var(--clr-surface-a20); /* Slightly darker bg */
     border: none;
 }
 
 /* IF UNLOCKED: Make it pop on hover */
-.badgeCard.unlocked:hover {
+.badgeCard.unlocked:hover{
     transform: translateY(-5px);
     box-shadow: 0 10px 20px rgba(46, 204, 113, 0.15);
     border-color: var(--clr-primary-a10);
@@ -970,7 +968,7 @@
 
     /* Reset width constraints */
     .chartCard, 
-    .quickAccessCard {
+    .quickAccessCard{
         width: 100%; 
         min-width: 0;
     }
@@ -996,25 +994,25 @@
         align-self: center;
     }
 
-    .historyCard {
+    .historyCard{
         flex-direction: column; /* Stack vertically on phones */
         height: auto;
         padding: 0 0 15px 0;
         text-align: center;
     }
 
-    .historyCard img {
+    .historyCard img{
         width: 100%;
         height: 150px;
         border-right: none;
         border-bottom: 1px solid #eee;
     }
 
-    .historyContent {
+    .historyContent{
         padding: 15px;
     }
 
-    .historyStatus {
+    .historyStatus{
         align-items: center; /* Center align on mobile */
         text-align: center;
         width: 100%;

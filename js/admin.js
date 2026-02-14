@@ -6,6 +6,7 @@ document.addEventListener("DOMContentLoaded", function() {
     if(addActivityBtn){
         addActivityBtn.addEventListener("click",function(){
             document.getElementById("action").value = "add"; // Important!
+            document.getElementById("activityForm").reset();
             document.getElementById("activityModalTitle").innerText = "Add New Activity";
             document.getElementById("activityModal").style.display = "block";
         });

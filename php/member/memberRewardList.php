@@ -2,6 +2,12 @@
     include "../include/conn.php";
     include "../include/session.php";
 
+    // ensure the user is member, if not redirect to landing page
+    if($_SESSION['role_id'] != 2){
+        header("Location: ../pages/Landingpage.php");
+        exit();
+    }
+    
     $user_id = $_SESSION['user_id'];
 
     $view = isset($_GET['view'])? $_GET['view']:'available';
@@ -23,6 +29,7 @@
         mysqli_stmt_bind_param($stmtHistory, "i", $user_id);
         mysqli_stmt_execute($stmtHistory);
         $result = mysqli_stmt_get_result($stmtHistory);
+        mysqli_stmt_close($stmtHistory);
     }
 
 
@@ -31,25 +38,13 @@
 
         $reward_id = $_POST['reward_id'];
         
-        // todo decide to keep or remove this
-        //validations, prevent unlucky scienario where the reward run out of stock or removed when the user click on redeem 
         $sql_reward = "SELECT * FROM reward WHERE reward_id = ?";
         $stmtReward = mysqli_prepare($dbConn, $sql_reward);
         mysqli_stmt_bind_param($stmtReward, "i", $reward_id);
         mysqli_stmt_execute($stmtReward);
         $result_reward = mysqli_stmt_get_result($stmtReward);
+        mysqli_stmt_close($stmtReward);
         $reward_info = mysqli_fetch_assoc($result_reward);
-
-        // if reward exists
-        if (!$reward_info) {
-            die("Error: Reward not found");
-        }
-
-        // is it available
-        if ($reward_info['status'] != 'Available' || $reward_info['stock'] <= 0) {
-            die("Error: Reward is out of stock or unavailable");
-        }
-
 
         // Fetch User info from database
         $user_id = $_SESSION['user_id'];
@@ -58,6 +53,7 @@
         mysqli_stmt_bind_param($stmtUser, "i", $user_id);
         mysqli_stmt_execute($stmtUser);
         $result_user = mysqli_stmt_get_result($stmtUser);
+        mysqli_stmt_close($stmtUser);
         $user_info = mysqli_fetch_assoc($result_user);
 
         // check if user have sufficient points
@@ -71,7 +67,6 @@
             exit();
         }
 
-
         //calculate new values 
         $new_stock = $reward_info['stock']-1;
         $new_point_balance = $user_info['point_balance']-$reward_info['required_points'];
@@ -82,9 +77,9 @@
         mysqli_stmt_bind_param($stmtUpdateStock, "ii", $new_stock, $reward_id);
         
         // update user point balance
-        $sql_update_pointbal = "UPDATE user SET point_balance = $new_point_balance WHERE user_id = ?";
+        $sql_update_pointbal = "UPDATE user SET point_balance = ? WHERE user_id = ?";
         $stmtUpdatePoint = mysqli_prepare($dbConn, $sql_update_pointbal);
-        mysqli_stmt_bind_param($stmtUpdatePoint, "i", $user_id);
+        mysqli_stmt_bind_param($stmtUpdatePoint, "ii", $new_point_balance ,$user_id);
 
         // insert new redemption record
         $sql_insert_redemption = "INSERT INTO reward_redemption (reward_id, user_id, points_spent, status) 
@@ -223,3 +218,4 @@
     <script src="../../js/member.js"></script>
 </body>
 </html>
+<?php mysqli_close($dbConn)?>

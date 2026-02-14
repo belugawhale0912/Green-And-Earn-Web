@@ -1,7 +1,13 @@
 <?php
     include "../include/conn.php";
     include "../include/session.php";
-   
+    
+    // ensure the user is admin, if not redirect to landing page
+    if($_SESSION['role_id'] != 1){
+        header("Location: ../pages/Landingpage.php");
+        exit();
+    }
+
     $user_id = $_SESSION['user_id'];
 
     //all users, display role name instead of role id
@@ -46,21 +52,26 @@
                 $stmt = mysqli_prepare($dbConn, $sql);
                 mysqli_stmt_bind_param($stmt, "issss", $role, $username, $password_hash, $email, $profilePhoto);
                 
-                //sweet alerts
-                if(mysqli_stmt_execute($stmt)){
-                    $_SESSION['popupMessage']=[
-                        'title' => 'Success',
-                        'text' => 'User Added Successfully',
-                        'icon' => 'success'
-                    ];
-                    header("Location: ../admin/adminUserManagement.php ?view=$view");
-                    exit();
-                }else{
+                try{
+                    if(mysqli_stmt_execute($stmt)){
+                        $_SESSION['popupMessage']=[
+                            'title' => 'Success',
+                            'text' => 'User Added Successfully',
+                            'icon' => 'success'
+                        ];
+                        mysqli_stmt_close($stmt);
+                        
+                        header("Location: ../admin/adminUserManagement.php ?view=$view");
+                        exit();
+                    }
+                } catch (Exception $e){
                     $_SESSION['popupMessage']=[
                         'title' => 'Error',
-                        'text' => 'Failed to Add User',
+                        'text' => 'Email Or Name Already Exists in System!',
                         'icon' => 'error'
                     ];
+                    mysqli_stmt_close($stmt);
+
                     header("Location: ../admin/adminUserManagement.php ?view=$view");
                     exit();
                 }
@@ -80,6 +91,8 @@
                         'text' => 'User Suspended Successfully',
                         'icon' => 'success'
                     ];
+                    mysqli_stmt_close($stmt);
+
                     header("Location: ../admin/adminUserManagement.php ?view=$view");
                     exit();
                 }else{
@@ -88,6 +101,8 @@
                         'text' => 'Failed to Suspend User',
                         'icon' => 'error'
                     ];
+                    mysqli_stmt_close($stmt);
+
                     header("Location: ../admin/adminUserManagement.php ?view=$view");
                     exit();
                 }
@@ -107,6 +122,8 @@
                         'text' => 'User Activated Successfully',
                         'icon' => 'success'
                     ];
+                    mysqli_stmt_close($stmt);
+
                     header("Location: ../admin/adminUserManagement.php ?view=$view");
                     exit();
                 }else{
@@ -115,6 +132,8 @@
                         'text' => 'Failed to Activate User',
                         'icon' => 'error'
                     ];
+                    mysqli_stmt_close($stmt);
+                    
                     header("Location: ../admin/adminUserManagement.php ?view=$view");
                     exit();
                 }
@@ -404,3 +423,4 @@
     <script src="../../js/admin.js"> </script>
 </body>
 </html>
+<?php mysqli_close($dbConn)?>

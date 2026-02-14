@@ -11,6 +11,19 @@
 
         if (mysqli_num_rows($result)>0) {
             $user_info = mysqli_fetch_assoc($result);
+
+            // block deactivated account from logging in
+            if($user_info['active_status']!=1){
+                $_SESSION['popupMessage']=[
+                    'title' => 'Error!',
+                    'text' => 'This Account Has Been Deactivated',
+                    'icon' => 'error'
+                ];
+
+                header("Location: login.php");
+                exit();               
+            }
+
             if (password_verify($password, $user_info['password_hash'])){
                 $_SESSION['username'] = $user_info['username']; 
                 $_SESSION['role_id'] = $user_info['role_id'];
@@ -102,3 +115,4 @@
     <script src="../../js/header.js"></script>
 </body>
 </html>
+<?php mysqli_close($dbConn)?>

@@ -2,6 +2,12 @@
     include "../include/conn.php";
     include "../include/session.php";
 
+    // ensure the user is admin, if not redirect to landing page
+    if($_SESSION['role_id'] != 1){
+        header("Location: ../pages/Landingpage.php");
+        exit();
+    }
+    
     $user_id = $_SESSION['user_id'];
     $sql = "SELECT * FROM contact_us WHERE mark_as_read = 0 ORDER BY contact_id ASC";
     $result = mysqli_query($dbConn, $sql);
@@ -25,6 +31,8 @@
                         'text' => 'Message Read',
                         'icon' => 'success'
                     ];
+                    mysqli_stmt_close($stmt);
+
                     header("Location: ../admin/adminContactUs.php");
                     exit();
                 }else{
@@ -33,6 +41,8 @@
                         'text' => 'Message Not Read',
                         'icon' => 'error'
                     ];
+                    mysqli_stmt_close($stmt);
+
                     header("Location: ../admin/adminContactUs.php");
                     exit();
                 }
@@ -96,7 +106,7 @@
                 </table>
 
             <?php else: ?>
-                    No messages at the current moment.
+                <h1>No messages at the current moment</h1>
             <?php endif; ?>
     </div>
 
@@ -104,3 +114,4 @@
     <script src="../../js/admin.js"> </script>
 </body>
 </html>
+<?php mysqli_close($dbConn)?>

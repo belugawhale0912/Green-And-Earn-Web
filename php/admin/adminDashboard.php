@@ -2,12 +2,12 @@
     include "../include/conn.php";
     include "../include/session.php";
 
-    // 1. Security Check (Role ID 1 = Admin)
-    if(!isset($_SESSION['user_id']) || $_SESSION['role_id'] != 1){
+    // ensure the user is admin, if not redirect to landing page
+    if($_SESSION['role_id'] != 1){
         header("Location: ../pages/Landingpage.php");
         exit();
     }
-    // current user as session
+
     $user_id = $_SESSION['user_id'];
 
     // count total users
@@ -181,8 +181,6 @@
             });
         </script>
     </section>
-        
-    
-
 </body>
 </html>
+<?php mysqli_close($dbConn)?>

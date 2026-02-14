@@ -11,18 +11,39 @@
         if ($password == $password_confirm) {
             $password_hash = password_hash($password, PASSWORD_DEFAULT);
         }else{
-            die("<script>alert('Password Does Not Match!')</script>");
+            $_SESSION['popupMessage']=[
+                'title' =>'Error',
+                'text' => 'Password Does Not Match, Please try again!',
+                'icon' => 'error'
+            ];
+            header("Location: user_register.php");
+            exit();
         }
 
         $sql = "INSERT INTO user(username,role_id,password_hash,email,profile_photo)
-                VALUES('$username','$role_id','$password_hash','$email','../../assets/image.png')";
+                VALUES( ?, 2, ?, ?, '../../assets/placeHolders/image.png')";
+        
+        $stmt = mysqli_prepare($dbConn, $sql);
+        mysqli_stmt_bind_param($stmt, "sss", $username, $password_hash, $email);
 
-        if(mysqli_query($dbConn, $sql)){
+        try{
+            if(mysqli_stmt_execute($stmt)){
+                $_SESSION['popupMessage']=[
+                    'title' =>'Success',
+                    'text' => 'Account Created Successfully',
+                    'icon' => 'success'
+                ];
+                mysqli_stmt_close($stmt);
+                header("Location: user_register.php");
+                exit();
+            }
+        } catch (Exception $e){
             $_SESSION['popupMessage']=[
-                'title' =>'Success',
-                'text' => 'Account Created Successfully',
-                'icon' => 'success'
+                'title' =>'Error',
+                'text' => 'Email Or Name Already Exists!',
+                'icon' => 'error'
             ];
+            mysqli_stmt_close($stmt);
             header("Location: user_register.php");
             exit();
         }
@@ -66,3 +87,4 @@
     <script src="../../js/header.js"></script>
 </body>
 </html>
+<?php mysqli_close($dbConn)?>

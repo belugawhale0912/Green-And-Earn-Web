@@ -33,6 +33,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 const desc = btn.getAttribute("data-desc");
                 const points = btn.getAttribute("data-points");
                 const stock = btn.getAttribute("data-stock");
+                const img = btn.getAttribute("data-img");
 
                 document.getElementById('action').value="update";
                 document.getElementById("rewardID").value = id;
@@ -40,6 +41,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 document.getElementById("rewardDescription").value = desc;
                 document.getElementById("requiredPoints").value = points;
                 document.getElementById("stock").value = stock;
+                document.getElementById("img").value = img;
 
                 document.getElementById("modalTitle").innerText = "Update Reward";
                 rewardModal.style.display="block";

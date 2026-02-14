@@ -19,7 +19,7 @@
 
     $result_pending = mysqli_query($dbConn, $sql_pending); // execute the query
 
-    if ($_SERVER["REQUEST_METHOD"] == "POST") { // if moderator clicks a button
+    if ($_SERVER["REQUEST_METHOD"] == "POST") { // check if form is submitted
 
         $transaction_id = $_POST['partner_transaction_id']; 
         $decision = $_POST['decision']; // Will be either 'approve' or 'reject'
@@ -31,11 +31,11 @@
 
             $stmt = mysqli_prepare($dbConn, $sql_fetch); // prepare sql for execution
             mysqli_stmt_bind_param($stmt, "i", $transaction_id); // to make sure the placeholder has value
-            mysqli_stmt_execute($stmt); // executes the query
+            mysqli_stmt_execute($stmt); 
 
             $resultFetch = mysqli_stmt_get_result($stmt); // to retrieve result from the executed query
             $data = mysqli_fetch_assoc($resultFetch); // convert result as an associative array
-            mysqli_stmt_close($stmt); // close task
+            mysqli_stmt_close($stmt); 
 
             // store user id and points for later updates
             if($data){
@@ -43,26 +43,21 @@
                 $points = $data['points_awarded'];
             }
 
-            // transaction to make sure all db changes suceeds together
-            mysqli_begin_transaction($dbConn);
-            $success = true; // to check if all the operations succeeded
-            $err = ""; // stores error message if occurs
+            try{
+                //use transaction to prevent broken record in the database
+                mysqli_begin_transaction($dbConn);
 
-            // update submission status to approved
-            $sql_update_status = "UPDATE partner_point_transaction 
-                                    SET status = 'Approved' 
-                                    WHERE partner_transaction_id = ?";
-            
-            $stmt_update = mysqli_prepare($dbConn, $sql_update_status);
-            mysqli_stmt_bind_param($stmt_update, "i", $transaction_id);
-            if(!mysqli_stmt_execute($stmt_update)){
-                $success = false; // marks as failed
-                $err = "Error while updating status"; // display message
-            }
-            mysqli_stmt_close($stmt_update);
+                // update submission status to approved
+                $sql_update_status = "UPDATE partner_point_transaction 
+                                        SET status = 'Approved' 
+                                        WHERE partner_transaction_id = ?";
+                
+                $stmt_update = mysqli_prepare($dbConn, $sql_update_status);
+                mysqli_stmt_bind_param($stmt_update, "i", $transaction_id);
+                mysqli_stmt_execute($stmt_update);
+                mysqli_stmt_close($stmt_update);
 
-            // update user's points if succeeded
-            if($success){
+                // update user's points
                 $sql_give_points = "UPDATE user 
                                     SET point_balance = point_balance + ?, 
                                         total_point_accumulated = total_point_accumulated + ? 
@@ -70,50 +65,45 @@
 
                 $stmt_points = mysqli_prepare($dbConn, $sql_give_points); // prepare sql for execution
                 mysqli_stmt_bind_param($stmt_points, "iii", $points, $points, $userID); // make sure plceholders have values
-                if(!mysqli_stmt_execute($stmt_points)){
-                    $success = false; // mark as failed
-                    $err = "Error while updating points"; // display message
-                }
-                mysqli_stmt_close($stmt_points); // close task
-            }
-            
-            // insert the transaction in the point_transaction table
-            if($success){
+                mysqli_stmt_execute($stmt_points);
+                mysqli_stmt_close($stmt_points);
+
+
+                // insert transaction record
                 $sql_transactionRecord = "INSERT INTO point_transaction (user_id, partner_transaction_id, amount, type) 
                                             VALUES (?, ?, ?, 'Earned')";
                 
                 $stmt_transaction = mysqli_prepare($dbConn, $sql_transactionRecord);
                 mysqli_stmt_bind_param($stmt_transaction, "iii", $userID, $transaction_id, $points);
-                if(!mysqli_stmt_execute($stmt_transaction)){
-                    $success = false;
-                    $err = "Error while inserting transaction record";
-                }
+                mysqli_stmt_execute($stmt_transaction);
                 mysqli_stmt_close($stmt_transaction);
-            }
 
-            // commit or rollback the transaction if seceeded
-            if($success){
-                mysqli_commit($dbConn); // to save the changes
+                // commit when all query executed without error
+                mysqli_commit($dbConn);
+
+                // include badge system to reward member with badge
                 include "../include/badge_system.php";
-                checkPointBadges($dbConn, $data['user_id']); // check if user earned new badges
+                checkPointBadges($dbConn, $data['user_id']); // check if user qualifies for new badges
+
                 $_SESSION['popupMessage']=[
                     'title' => 'Success',
                     'text' => 'Points Awarded Successfully',
                     'icon' => 'success'
                 ];
-                header("Location: moderatorPartnerPoints.php");
-                exit();
-            }else{
+
+            } catch (Exception $e){
+                // rollback all changes if any of the query fail to run
                 mysqli_rollback($dbConn);
+
                 $_SESSION['popupMessage']=[
                     'title' => 'Error',
                     'text' => 'Error While Awarding Points',
                     'icon' => 'error'
                 ];
-                header("Location: moderatorPartnerPoints.php");
-                exit();
             }
-                
+            header("Location: moderatorPartnerPoints.php");
+            exit();
+
         }
         elseif ($decision == 'reject') {
             // mark as rejected and no points are awarded
@@ -129,6 +119,8 @@
                     'text' => 'Points Awarding Rejected',
                     'icon' => 'success'
                 ];
+                mysqli_stmt_close($stmt);
+
                 header("Location: moderatorPartnerPoints.php");
                 exit();
             }
@@ -228,3 +220,4 @@
     <script src="../../js/moderator.js"></script>
 </body>
 </html>
+<?php mysqli_close($dbConn)?>

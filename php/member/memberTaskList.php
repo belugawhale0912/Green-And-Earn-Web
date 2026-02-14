@@ -2,14 +2,19 @@
     include "../include/conn.php";
     include "../include/session.php";
 
+    // ensure the user is member, if not redirect to landing page
+    if($_SESSION['role_id'] != 2){
+        header("Location: ../pages/Landingpage.php");
+        exit();
+    }
+
     $user_id = $_SESSION['user_id'];
     $today = date("Y-m-d");
 
     // get activities that is not deleted and is started and not passed
     $view = isset($_GET['view'])? $_GET['view']:'available';
     if($view=='available'){
-        // fetch activity that is active, in within date range and the user havent complete/ submitted the activity
-        
+        // fetch activity that is active, in within date range and the user havent complete/ submitted the activity  
         $sqlGet = "SELECT * FROM activity 
                    WHERE status = 'Active' 
                    AND '$today' BETWEEN start_date AND end_date
@@ -23,6 +28,7 @@
         mysqli_stmt_bind_param($stmtGet, "i", $user_id);
         mysqli_stmt_execute($stmtGet);
         $resultGet = mysqli_stmt_get_result($stmtGet);
+        mysqli_stmt_close($stmtGet);
     }
     
     elseif($view == 'submitted'){
@@ -35,6 +41,7 @@
         mysqli_stmt_bind_param($stmtGet, "i", $user_id);
         mysqli_stmt_execute($stmtGet);
         $resultGet = mysqli_stmt_get_result($stmtGet);
+        mysqli_stmt_close($stmtGet);
     }
 
 
@@ -77,17 +84,22 @@
                             'text' => 'Successfully Submitted Task!',
                             'icon' => 'success'
                         ];
+                        mysqli_stmt_close($stmtSubmit);
+                        
                         header("Location: memberTaskList.php?view=available");
                         exit();
                     } else{
                         echo "Error While Saving";
                     }
+                    
                 }else{
                     $_SESSION['popupMessage']=[
                         'title' => 'Error!',
                         'text' => "Error While Trying To Save File, Try Again!",
                         'icon' => 'error'
                     ];
+                    mysqli_stmt_close($stmtSubmit);
+
                     header("Location: memberTaskList.php?view=available");
                     exit();
                 }
@@ -97,6 +109,7 @@
                     'text' => "Unsupported File Format! Supported formats('jpg','jpeg','png','gif')",
                     'icon' => 'error'
                 ];
+                mysqli_stmt_close($stmtSubmit);
                 header("Location: memberTaskList.php?view=available");
                 exit();
             }
@@ -106,6 +119,7 @@
                 'text' => "No files received, Try Again!",
                 'icon' => 'error'
             ];
+            mysqli_stmt_close($stmtSubmit);
             header("Location: memberTaskList.php?view=available");
             exit();
         }
@@ -236,3 +250,4 @@
     <script src="../../js/member.js"></script>
 </body>
 </html>
+<?php mysqli_close($dbConn)?>

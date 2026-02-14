@@ -47,80 +47,63 @@
                 $points = $submission_info['points_awarded'];
             }
 
-            // transaction to make sure all db changes suceeds together
-            mysqli_begin_transaction($dbConn);
-            $success = true; // to check if all the operations succeeded
-            $err = ""; // stores error message if occurs
+            try{
+                mysqli_begin_transaction($dbConn);
 
-            // update submission status to approved and record the moderator id
-            $sql_update_status = "UPDATE activity_submission 
-                                  SET status = 'Approved', 
-                                                moderator_id = ? 
-                                  WHERE submission_id = ?";
+                // update submission status to approved
+                $sql_update_status = "UPDATE activity_submission 
+                                      SET status = 'Approved', moderator_id = ? 
+                                      WHERE submission_id = ?";
 
-            $stmt_update = mysqli_prepare($dbConn, $sql_update_status);
-            mysqli_stmt_bind_param($stmt_update, "ii", $moderator_id, $submission_id);
-            if(!mysqli_stmt_execute($stmt_update)){
-                $success = false; // marks as failed
-                $err = "Status Update Failed"; // display message
-            }
-            mysqli_stmt_close($stmt_update);
+                $stmt_update = mysqli_prepare($dbConn, $sql_update_status);
+                mysqli_stmt_bind_param($stmt_update, "ii", $moderator_id, $submission_id);
+                mysqli_stmt_execute($stmt_update);
+                mysqli_stmt_close($stmt_update);
 
-            // update user's points if succeeded
-            if($success){
+                // update user points
                 $sql_add_points = "UPDATE user 
-                                SET point_balance = point_balance + ?, total_point_accumulated = total_point_accumulated + ? 
-                                WHERE user_id = ?";
+                                   SET point_balance = point_balance + ?, total_point_accumulated = total_point_accumulated + ? 
+                                   WHERE user_id = ?";
 
-                $stmt_points = mysqli_prepare($dbConn, $sql_add_points); // prepare sql for execution
-                mysqli_stmt_bind_param($stmt_points, "iii", $points, $points, $userID); // make sure plceholders have values
-                if(!mysqli_stmt_execute($stmt_points)){ 
-                    $success = false; // mark as failed
-                    $err = "Update User Point Failed"; // display message
-                }
-                mysqli_stmt_close($stmt_points); // close task
-            }
+                $stmt_points = mysqli_prepare($dbConn, $sql_add_points);
+                mysqli_stmt_bind_param($stmt_points, "iii", $points, $points, $userID); 
+                mysqli_stmt_execute($stmt_points);
+                mysqli_stmt_close($stmt_points);
 
-            // insert the transaction in the point_transaction table
-            if($success){
+                // insert transaction record
                 $sql_insert_transaction = "INSERT INTO point_transaction (user_id, submission_id, amount, type) 
                                         VALUES (?, ?, ?, 'Earned')";
                 $stmt_transaction = mysqli_prepare($dbConn, $sql_insert_transaction);
                 mysqli_stmt_bind_param($stmt_transaction, "iii", $userID, $submission_id, $points);
-                if(!mysqli_stmt_execute($stmt_transaction)) {
-                    $success = false;
-                    $err = "Transaction log failed";
-                }
+                mysqli_stmt_execute($stmt_transaction);
                 mysqli_stmt_close($stmt_transaction);
-            }
 
-            // commit or rollback the transaction if seceeded
-            if($success){
-                mysqli_commit($dbConn); // to save the changes
+                // commit changes to db after all query executed without error
+                mysqli_commit($dbConn); 
+
+                // include badge system to reward member badge
                 include "../include/badge_system.php";
-                checkTaskBadges($dbConn, $submission_info['user_id']); // check if the user earned task badges
-                checkPointBadges($dbConn, $submission_info['user_id']); // check if the user earned point badges
-                // store success message in session to show as popup
+                checkTaskBadges($dbConn, $submission_info['user_id']); // check if the user qualifies for new task badges
+                checkPointBadges($dbConn, $submission_info['user_id']); // check if the user qualifies for new point badges
+
                 $_SESSION['popupMessage']=[
                     'title' => 'Success',
                     'text' => 'Points Awarded Successfully',
                     'icon' => 'success'
                 ];
-                // redirect back to submissions page
-                header("Location: moderatorSubmissions.php");
-                exit();
 
-            }else{
-                mysqli_rollback($dbConn); // undo all the changes
-                // store error message in session to show as popup
+            } catch (Exception $e){
+                // undo all the changes when any of the query fails
+                mysqli_rollback($dbConn); 
+                
                 $_SESSION['popupMessage']=[
                     'title' => 'Error',
                     'text' => 'Error While Awarding Points',
                     'icon' => 'error'
                 ];
-                header("Location: moderatorSubmissions.php");
-                exit();
             }
+            header("Location: moderatorSubmissions.php");
+            exit();
 
         }else if ($decision == 'reject') {
             // mark as rejected and no points are awarded
@@ -138,9 +121,11 @@
                     'text' => 'Points Awarding Rejected',
                     'icon' => 'success'
                 ];
+                mysqli_stmt_close($stmt);
+
                 header("Location: moderatorSubmissions.php");
                 exit();
-                mysqli_stmt_close($stmt);
+
             }
         }     
     } 
@@ -239,3 +224,4 @@
     <script src="../../js/moderator.js"></script>
 </body>
 </html>
+<?php mysqli_close($dbConn)?>

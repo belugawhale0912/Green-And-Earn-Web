@@ -2,8 +2,8 @@
     include "../include/conn.php";
     include "../include/session.php";
 
-    // 1. ACCESS CONTROL (Only Partners)
-    if(!isset($_SESSION['role_id']) || $_SESSION['role_id'] != 4){
+    // check if the current user is partner, redirect to landing page if not partner
+    if($_SESSION['role_id'] != 4){
         header("Location: ../pages/Landingpage.php");
         exit();
     }
@@ -20,11 +20,13 @@
     mysqli_stmt_bind_param($stmt, "i", $partner_id);
     mysqli_stmt_execute($stmt);
     $resultRequest = mysqli_stmt_get_result($stmt);
+    mysqli_stmt_close($stmt);
 
 
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $redemption_id = $_POST['redemption_id'];
 
+        // if approve button is pressed
         if(isset($_POST['btnApprove'])){
             $sql = "UPDATE reward_redemption SET status = 'Approved' WHERE redemption_id = ?";
             $stmt = mysqli_prepare($dbConn, $sql);
@@ -36,6 +38,8 @@
                     'text' => 'Reward Approved!',
                     'icon' => 'success'
                 ];
+                mysqli_stmt_close($stmt);
+
                 header("Location: partnerGiveReward.php");
                 exit();
             }else{
@@ -44,17 +48,23 @@
                     'text' => 'Failed to Approve Reward!',
                     'icon' => 'error'
                 ];
+                mysqli_stmt_close($stmt);
+
                 header("Location: partnerGiveReward.php");
                 exit();
             }
         }
 
+        // if reject button is pressed
         if(isset($_POST['btnReject'])){
 
+            // grab member information
             $sql_getData = "SELECT user_id, points_spent FROM reward_redemption WHERE redemption_id = ?";
+            
             $stmt = mysqli_prepare($dbConn, $sql_getData);
             mysqli_stmt_bind_param($stmt, "i", $redemption_id);
             mysqli_stmt_execute($stmt);
+
             $resultData = mysqli_stmt_get_result($stmt);
             $data = mysqli_fetch_assoc($resultData);
             mysqli_stmt_close($stmt);
@@ -63,68 +73,52 @@
                 $userId = $data['user_id'];
                 $amount = $data['points_spent'];
 
-                mysqli_begin_transaction($dbConn);
-                $success = true;
-                $err = "";
+                try{
+                    mysqli_begin_transaction($dbConn);
 
-                // Refund Points to User
-                $sql_refundPoints = "UPDATE user 
-                                     SET point_balance = point_balance + ? 
-                                     WHERE user_id = ?";
-                $stmtRefund = mysqli_prepare($dbConn, $sql_refundPoints);
-                mysqli_stmt_bind_param($stmtRefund, "ii", $amount, $userId); 
-                if(!mysqli_stmt_execute($stmtRefund)){
-                    $success = false;
-                    $err = "Error While Refunding Point";
-                } 
-                mysqli_stmt_close($stmtRefund);
-
-                // Mark Redemption as Refunded
-                if($success){
+                    // Mark Redemption as Refunded
                     $sql_rewardRejected = "UPDATE reward_redemption 
                                            SET status = 'Refunded' 
                                            WHERE redemption_id = ?";
 
                     $stmtUpdate = mysqli_prepare($dbConn, $sql_rewardRejected);
                     mysqli_stmt_bind_param($stmtUpdate, "i", $redemption_id);
-                    if(!mysqli_stmt_execute($stmtUpdate)){
-                        $success = false;
-                        $err = "Error While Updating Status";
-                    } 
+                    mysqli_stmt_execute($stmtUpdate);
                     mysqli_stmt_close($stmtUpdate);
-                }
 
-                // Add Transaction Record
-                if($success){
+                    // Refund Points to User
+                    $sql_refundPoints = "UPDATE user 
+                                         SET point_balance = point_balance + ? 
+                                         WHERE user_id = ?";
+                    $stmtRefund = mysqli_prepare($dbConn, $sql_refundPoints);
+                    mysqli_stmt_bind_param($stmtRefund, "ii", $amount, $userId); 
+                    mysqli_stmt_execute($stmtRefund);
+                    mysqli_stmt_close($stmtRefund);
+
+                    // Insert transaction record
                     $sql_Transaction = "INSERT INTO point_transaction (user_id, redemption_id, amount, type) 
-                                VALUES (?, ?, ?, 'Refund')";
+                                        VALUES (?, ?, ?, 'Refund')";
                     $stmtTransaction = mysqli_prepare($dbConn, $sql_Transaction);
                     mysqli_stmt_bind_param($stmtTransaction, "iid", $userId, $redemption_id, $amount);
-                    if(!mysqli_stmt_execute($stmtTransaction)){
-                        $success = false;
-                    } 
+                    mysqli_stmt_execute($stmtTransaction);
                     mysqli_stmt_close($stmtTransaction);
-                }
 
-                if($success){
                     mysqli_commit($dbConn);
                     $_SESSION['popupMessage']=[
                         'title' => 'Success',
                         'text' => 'Reward Rejected! Points Refunded.',
                         'icon' => 'success'
                     ];
-                    header("Location: partnerGiveReward.php");
-                    exit();
-                } else {
+                } catch (Exception $e){
                     mysqli_rollback($dbConn);
                     $_SESSION['popupMessage']=[
                         'title' => 'Failed',
                         'text' => 'Error Processing Refund.',
                         'icon' => 'error'
                     ];
-                    header("Location: partnerGiveReward.php");
-                    exit();
                 }
+                header("Location: partnerGiveReward.php");
+                exit();         
             }
         }
     }
@@ -178,3 +172,4 @@
     <?php include "../include/showSWAL.php"?>
 </body>
 </html>
+<?php mysqli_close($dbConn)?>

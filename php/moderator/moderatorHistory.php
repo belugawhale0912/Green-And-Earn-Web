@@ -2,6 +2,12 @@
     include "../include/conn.php"; // include database connection
     include "../include/session.php"; // include session management 
 
+    // to check the user's role
+    if($_SESSION['role_id']!= 3){ // if not moderator
+        header("Location: ../pages/Landingpage.php"); // redirect to landing page
+        exit();
+    }
+    
     // check which view is active, and if default set to submissions
     $view = isset($_GET['view']) ? $_GET['view'] : 'submissions';
     $filter = isset($_GET['status']) ? $_GET['status'] : 'all'; // determine filter for status approved, rejected, or all
@@ -38,6 +44,7 @@
         JOIN user u ON p.user_id = u.user_id
         WHERE p.status = 'Approved'
         ORDER BY p.award_time DESC";
+
     }else if ($partnerFilter == "Rejected"){
         $sql_partner = "SELECT p.*, u.username
         FROM partner_point_transaction p
@@ -45,6 +52,7 @@
         WHERE p.status = 'Rejected'
         ORDER BY p.award_time DESC";
     }else{
+        
         $sql_partner = "SELECT p.*, u.username
         FROM partner_point_transaction p
         JOIN user u ON p.user_id = u.user_id
@@ -220,3 +228,4 @@
     <script src="../../js/moderator.js" defer></script>
 </body>
 </html>
+<?php mysqli_close($dbConn)?>

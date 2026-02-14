@@ -1,7 +1,12 @@
 <?php
     session_start();
     include "../include/conn.php";
-
+    
+    // ensure the user is member, if not redirect to landing page
+    if($_SESSION['role_id'] != 2){
+        header("Location: ../pages/Landingpage.php");
+        exit();
+    }
     $user_id = $_SESSION['user_id'];
 
     // fetch all user into an Array first
@@ -112,3 +117,4 @@
 
 </body>
 </html>
+<?php mysqli_close($dbConn)?>

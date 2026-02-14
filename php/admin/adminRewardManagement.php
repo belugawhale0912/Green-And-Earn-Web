@@ -2,7 +2,14 @@
     include "../include/conn.php";
     include "../include/session.php";
 
+    // ensure the user is admin, if not redirect to landing page
+    if($_SESSION['role_id'] != 1){
+        header("Location: ../pages/Landingpage.php");
+        exit();
+    }
+
     $user_id = $_SESSION['user_id'];
+
     //filter php
     $filter = isset($_GET['status']) ? $_GET['status'] : 'All';
     //toggle page php
@@ -35,20 +42,24 @@
             //sweet alert
             if(mysqli_stmt_execute($stmt)){
                 $_SESSION['popupMessage']=[
-                        'title' => 'Success',
-                        'text' => 'Approved Reward Successfully',
-                        'icon' => 'success'
-                    ];
-                    header("Location: ../admin/adminRewardManagement.php ?view=$view");
-                    exit();
+                    'title' => 'Success',
+                    'text' => 'Approved Reward Successfully',
+                    'icon' => 'success'
+                ];
+                mysqli_stmt_close($stmt);
+
+                header("Location: ../admin/adminRewardManagement.php ?view=$view");
+                exit();
             }else{
                 $_SESSION['popupMessage']=[
-                        'title' => 'Error',
-                        'text' => 'Failed to Approve Reward',
-                        'icon' => 'error'
-                    ];
-                    header("Location: ../admin/adminRewardManagement.php ?view=$view");
-                    exit();
+                    'title' => 'Error',
+                    'text' => 'Failed to Approve Reward',
+                    'icon' => 'error'
+                ];
+                mysqli_stmt_close($stmt);
+
+                header("Location: ../admin/adminRewardManagement.php ?view=$view");
+                exit();
             }
         }
         //reject button in table
@@ -60,23 +71,27 @@
             //prevent sql injection
             $stmt = mysqli_prepare($dbConn, $sql);
             mysqli_stmt_bind_param($stmt, "ii", $admin_id, $reward_id);
-            //sweet alert
+
             if(mysqli_stmt_execute($stmt)){
                 $_SESSION['popupMessage']=[
-                        'title' => 'Success',
-                        'text' => 'Rejected Reward Successfully',
-                        'icon' => 'success'
-                    ];
-                    header("Location: ../admin/adminRewardManagement.php ?view=$view");
-                    exit();
+                    'title' => 'Success',
+                    'text' => 'Rejected Reward Successfully',
+                    'icon' => 'success'
+                ];
+                mysqli_stmt_close($stmt);
+
+                header("Location: ../admin/adminRewardManagement.php ?view=$view");
+                exit();
             }else{
                 $_SESSION['popupMessage']=[
-                        'title' => 'Error',
-                        'text' => 'Failed to Reject Reward',
-                        'icon' => 'error'
-                    ];
-                    header("Location: ../admin/adminRewardManagement.php ?view=$view");
-                    exit();
+                    'title' => 'Error',
+                    'text' => 'Failed to Reject Reward',
+                    'icon' => 'error'
+                ];
+                mysqli_stmt_close($stmt);
+
+                header("Location: ../admin/adminRewardManagement.php ?view=$view");
+                exit();
             }
         }
         //activate buttonin table
@@ -91,20 +106,24 @@
             //sweet alert
             if(mysqli_stmt_execute($stmt)){
                 $_SESSION['popupMessage']=[
-                        'title' => 'Success',
-                        'text' => 'Activated Reward Successfully',
-                        'icon' => 'success'
-                    ];
-                    header("Location: ../admin/adminRewardManagement.php ?view=$view");
-                    exit();
+                    'title' => 'Success',
+                    'text' => 'Activated Reward Successfully',
+                    'icon' => 'success'
+                ];
+                mysqli_stmt_close($stmt);
+
+                header("Location: ../admin/adminRewardManagement.php ?view=$view");
+                exit();
             }else{
                 $_SESSION['popupMessage']=[
-                        'title' => 'Error',
-                        'text' => 'Failed to Activate Reward',
-                        'icon' => 'error'
-                    ];
-                    header("Location: ../admin/adminRewardManagement.php ?view=$view");
-                    exit();
+                    'title' => 'Error',
+                    'text' => 'Failed to Activate Reward',
+                    'icon' => 'error'
+                ];
+                mysqli_stmt_close($stmt);
+
+                header("Location: ../admin/adminRewardManagement.php ?view=$view");
+                exit();
             }
         }
         //deactivate button in table
@@ -119,20 +138,24 @@
             //sweet alert
             if(mysqli_stmt_execute($stmt)){
                 $_SESSION['popupMessage']=[
-                        'title' => 'Success',
-                        'text' => 'Deactivated Reward Successfully',
-                        'icon' => 'success'
-                    ];
-                    header("Location: ../admin/adminRewardManagement.php ?view=$view");
-                    exit();
+                    'title' => 'Success',
+                    'text' => 'Deactivated Reward Successfully',
+                    'icon' => 'success'
+                ];
+                mysqli_stmt_close($stmt);
+
+                header("Location: ../admin/adminRewardManagement.php ?view=$view");
+                exit();
             }else{
                 $_SESSION['popupMessage']=[
-                        'title' => 'Error',
-                        'text' => 'Failed to Deactivate Reward',
-                        'icon' => 'error'
-                    ];
-                    header("Location: ../admin/adminRewardManagement.php ?view=$view");
-                    exit();
+                    'title' => 'Error',
+                    'text' => 'Failed to Deactivate Reward',
+                    'icon' => 'error'
+                ];
+                mysqli_stmt_close($stmt);
+
+                header("Location: ../admin/adminRewardManagement.php ?view=$view");
+                exit();
             }
         }
     }
@@ -266,3 +289,4 @@
     <script src="../../js/admin.js"> </script>
 </body>
 </html>
+<?php mysqli_close($dbConn)?>

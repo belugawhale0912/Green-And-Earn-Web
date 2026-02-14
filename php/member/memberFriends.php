@@ -2,9 +2,9 @@
     include "../include/conn.php";
     include "../include/session.php";
 
-    // send user back to login page if page is not accessed through login
-    if(!isset($_SESSION['user_id'])){
-        header("Location: Landingpage.php");
+    // ensure the user is member, if not redirect to landing page
+    if($_SESSION['role_id'] != 2){
+        header("Location: ../pages/Landingpage.php");
         exit();
     }
 
@@ -51,6 +51,7 @@
 
     mysqli_stmt_execute($stmt);
     $result = mysqli_stmt_get_result($stmt);
+    mysqli_stmt_close($stmt);
 
     // Check if a form is submitted
     if($_SERVER["REQUEST_METHOD"] == "POST"){
@@ -71,11 +72,20 @@
                         'text' => 'Successfully Deleted Friend',
                         'icon' => 'success'
                     ];
+                    mysqli_stmt_close($stmt);
 
                     header("Location: memberFriends.php?view=list");
                     exit();
                 }else{
-                    echo "Error While Deleting Friend!";
+                    $_SESSION['popupMessage']=[
+                        'title' => 'Error!',
+                        'text' => 'Error While Deleting Friend',
+                        'icon' => 'error'
+                    ];
+                    mysqli_stmt_close($stmt);
+
+                    header("Location: memberFriends.php?view=list");
+                    exit();
                 }
             }
 
@@ -99,12 +109,13 @@
                     $msg = "Rejected";
                 }
 
-                if(mysqli_query($dbConn,$sql)){
+                if(mysqli_stmt_execute($stmt)){
                     $_SESSION['popupMessage']=[
                         'title' => 'Success!',
                         'text' => 'Friend Request is '.$msg,
                         'icon' => 'success'
                     ];
+                    mysqli_stmt_close($stmt);
 
                     header("Location: memberFriends.php?view=requests");
                     exit();
@@ -118,19 +129,31 @@
 
                 // insert new friend request into db
                 $insertSql = "INSERT INTO friendship (user_id, friend_id, status)
-                        VALUES ($user_id,$friend_id,'Pending')";
+                        VALUES (?, ?, 'Pending')";
+                $stmt = mysqli_prepare($dbConn, $insertSql);
+                mysqli_stmt_bind_param($stmt, "ii", $user_id, $friend_id);
 
-                if(mysqli_query($dbConn,$insertSql)){
+                if(mysqli_stmt_execute($stmt)){
                     $_SESSION['popupMessage']=[
                         'title' => 'Success',
                         'text' => 'Friend Request Successfully Sent!',
                         'icon' => 'success'
-                    ];    
+                    ];
+                    mysqli_stmt_close($stmt);
+
                     header("Location: memberFriends.php?view=search");
                     exit();
                 }
                 else{
-                    echo "Error";
+                    $_SESSION['popupMessage']=[
+                        'title' => 'Error',
+                        'text' => 'Error While Trying To Send Friend Reqeust',
+                        'icon' => 'error'
+                    ];
+                    mysqli_stmt_close($stmt);
+
+                    header("Location: memberFriends.php?view=search");
+                    exit();
                 }
             }
         }
@@ -283,3 +306,4 @@
     <script src="../../js/member.js"></script>
 </body>
 </html>
+<?php mysqli_close($dbConn)?>

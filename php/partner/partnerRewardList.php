@@ -2,9 +2,16 @@
     include "../include/conn.php";
     include "../include/session.php";
 
+    // check if the current user is partner, redirect to landing page if not partner
+    if($_SESSION['role_id'] != 4){
+        header("Location: ../pages/Landingpage.php");
+        exit();
+    }
+    
     $user_id = $_SESSION['user_id'];
 
-    $filter = isset($_GET['status']) ? $_GET['status'] : 'all';
+    $filter = isset($_GET['status']) ? $_GET['status'] : 'All';
+    
     if($filter == "Available"){
         $sql = "SELECT * FROM reward WHERE partner_id = ? AND status = 'Available'";
     }else if($filter == "Rejected"){
@@ -13,26 +20,23 @@
         $sql = "SELECT * FROM reward WHERE partner_id = ? AND status = 'Pending'";
     }else if($filter == "Deactivated"){
         $sql = "SELECT * FROM reward WHERE partner_id = ? AND status = 'Deactivated'";
-    }else{
-        $sql = "SELECT * FROM reward WHERE partner_id = ? AND status != 'Deleted' ORDER BY reward_id ASC";
+    }else if($filter == "All"){
+        $sql = "SELECT * FROM reward WHERE partner_id = ? AND status != 'Deleted'";
     }
+
 
     $stmt_fetch = mysqli_prepare($dbConn, $sql);
     mysqli_stmt_bind_param($stmt_fetch, "i", $user_id);
     mysqli_stmt_execute($stmt_fetch);
     $result = mysqli_stmt_get_result($stmt_fetch);
+    mysqli_stmt_close($stmt_fetch);
 
-    // 1. ACCESS CONTROL
-    if(!isset($_SESSION['role_id']) || $_SESSION['role_id'] != 4){ // Assuming Partner ID is 2
-       header("Location: ../pages/Landingpage.php");
-       exit();
-    }
-    
     if($_SERVER["REQUEST_METHOD"] == "POST"){
 
         if(isset($_POST['action'])){
             
             if($_POST['action']=="add"){
+                $imageSuccess = false;
                 $title = $_POST['title'];
                 $description = $_POST['description'];
                 $required_points = $_POST['required_points'];
@@ -47,35 +51,49 @@
                     $supportedExt = ['jpg','jpeg','png','gif'];
                 
                     if(in_array($fileExt,$supportedExt)){
-                        $formattedFileName = $title.".".$fileExt;
+                        $formattedFileName = $title. $user_id .".". date("dmY_His"). "." .$fileExt;
                         $saveDir = "../../uploads/rewardImages/".$formattedFileName;
 
                         if(move_uploaded_file($fileTempPath, $saveDir)){
-                            $sql = "INSERT INTO reward (partner_id, status, title, description, required_points, stock, reward_img)
-                                    VALUES (?, 'Pending', ?, ?, ?, ?, ?)";
-
-                            $stmt = mysqli_prepare($dbConn, $sql);
-                            mysqli_stmt_bind_param($stmt, "issiis", $user_id, $title, $description, $required_points, $stock, $saveDir);
-
-                            if(mysqli_stmt_execute($stmt)){
-                                $_SESSION['popupMessage']=[
-                                    'title' => 'Success',
-                                    'text' => 'Successfully Added Reward!',
-                                    'icon' => 'success'
-                                ];
-                                header("Location: partnerRewardList.php");
-                                exit();
-                            }else{
-                                $_SESSION['popupMessage']=[
-                                    'title' => 'Failed',
-                                    'text' => 'Failed to Add Reward!',
-                                    'icon' => 'error'
-                                ];
-                                header("Location: partnerRewardList.php");
-                                exit();
-                            }
+                            $imageSuccess = true;
                         }
                     }
+                }
+
+                if($imageSuccess){
+                    $sql = "INSERT INTO reward (partner_id, status, title, description, required_points, stock, reward_img)
+                            VALUES (?, 'Pending', ?, ?, ?, ?, ?)";
+
+                    $stmt = mysqli_prepare($dbConn, $sql);
+                    mysqli_stmt_bind_param($stmt, "issiis", $user_id, $title, $description, $required_points, $stock, $saveDir);
+
+                    if(mysqli_stmt_execute($stmt)){
+                        $_SESSION['popupMessage']=[
+                            'title' => 'Success',
+                            'text' => 'Successfully Added Reward!',
+                            'icon' => 'success'
+                        ];
+                        header("Location: partnerRewardList.php");
+                        exit();
+
+                    }else{
+                        $_SESSION['popupMessage']=[
+                            'title' => 'Failed',
+                            'text' => 'Failed to Add Reward!',
+                            'icon' => 'error'
+                        ];
+                        header("Location: partnerRewardList.php");
+                        exit();
+                    }
+
+                } else{
+                    $_SESSION['popupMessage']=[
+                        'title' => 'Add Reward Failed',
+                        'text' => 'Error While Processing Reward Image!',
+                        'icon' => 'error'
+                    ];
+                    header("Location: partnerRewardList.php");
+                    exit();
                 }
             }
 
@@ -85,6 +103,7 @@
                 $description = $_POST['description'];
                 $required_points = $_POST['required_points'];
                 $stock = $_POST['stock'];
+                $reward_img = $_POST['existingImage'];
 
                 // if file ok execute the action
                 if(isset($_FILES['reward_img']) && $_FILES['reward_img']['error'] === UPLOAD_ERR_OK){
@@ -96,14 +115,15 @@
                     $supportedExt = ['jpg','jpeg','png','gif'];
                     
                     if(in_array($fileExt, $supportedExt)){
-                        $formattedFileName = $title.".".$fileExt;
-                        $saveDir = "../../uploads/rewardImages/".$formattedFileName;
-                        
-                        if(move_uploaded_file($fileTempPath, $saveDir)){
+                        $formattedFileName = $title. $user_id .".". date("dmY_His"). "." .$fileExt;
 
-                        }
+                        $saveDir = "../../uploads/rewardImages/".$formattedFileName;
+                        move_uploaded_file($fileTempPath, $saveDir);
+
                     }
+
                 }else{
+                    // if no image is received, keep the existing image
                     $saveDir = $reward_img;
                 }
 
@@ -120,6 +140,8 @@
                         'text' => 'Successfully Updated Reward!',
                         'icon' => 'success'
                     ];
+                    mysqli_stmt_close($stmt);
+                    
                     header("Location: partnerRewardList.php");
                     exit();
                 }else{
@@ -128,10 +150,12 @@
                         'text' => 'Failed to Update Reward!',
                         'icon' => 'error'
                     ];
+                    mysqli_stmt_close($stmt);
+
                     header("Location: partnerRewardList.php");
                     exit();
                 }
-                mysqli_stmt_close($stmt);
+                
             }
         }
         if(isset($_POST['delete_btn'])){
@@ -147,17 +171,23 @@
                         'text' => 'Successfully Removed Reward!',
                         'icon' => 'success'
                     ];
+                    mysqli_stmt_close($stmt);
+                    
                     header("Location: partnerRewardList.php");
                     exit();
             }else{
-                echo"Error";
+                $_SESSION['popupMessage']=[
+                    'title' => 'Error',
+                    'text' => 'Error While Deleting Reward!',
+                    'icon' => 'error'
+                ];
+                mysqli_stmt_close($stmt);
+                
+                header("Location: partnerRewardList.php");
+                exit();
             }
-            mysqli_stmt_close($stmt);
         }
     }
-
-
-
 ?>
 
 <!DOCTYPE html>
@@ -220,6 +250,7 @@
                                 data-desc="<?php echo htmlspecialchars($reward_info['description'], ENT_QUOTES); ?>"
                                 data-points="<?php echo $reward_info['required_points']; ?>"
                                 data-stock="<?php echo $reward_info['stock']; ?>"
+                                data-img="<?php echo $reward_info['reward_img']; ?>"
                             >
                                 Update
                             </button>
@@ -235,13 +266,15 @@
                 <?php endwhile;?>
             </tbody>
         </table>
-        <!-- Responsive modal -->
+
+
         <div id="rewardModal" class="modal">
             <div class="modalContent">
                 <h2 id="modalTitle"></h2>
                 <form action="" id="rewardForm" method="POST" enctype="multipart/form-data">
                     <input type="hidden" id="action" name="action">
                     <input type="hidden" id="rewardID" name="rewardID">
+                    <input type="hidden" id="img" name="existingImage">
                     <label for="title">Title</label>
                     <input id="rewardTitle" type="text" name="title" class="modal-input" required>
 
@@ -269,3 +302,4 @@
     <?php include "../include/showSWAL.php"?>
 </body>
 </html>
+<?php mysqli_close($dbConn)?>

@@ -3,8 +3,8 @@
     include "../include/session.php";
 
 
-    // 1. ACCESS CONTROL (Only Partners)
-    if(!isset($_SESSION['role_id']) || $_SESSION['role_id'] != 4){
+    // check if the current user is partner, redirect to landing page if not partner
+    if($_SESSION['role_id'] != 4){
         header("Location: ../pages/Landingpage.php");
         exit();
     }
@@ -47,16 +47,23 @@
         }
         mysqli_stmt_close($stmt);
 
-        
+        //check file exists and no error
         if(isset($_FILES['receipt_img'])&&$_FILES['receipt_img']['error'] === UPLOAD_ERR_OK){
 
+            // retrive uploaded file name
             $fileName = $_FILES['receipt_img']['name'];
+
+            // retrive temp path on server
             $fileTempPath = $_FILES['receipt_img']['tmp_name'];
+
+            // retrive extention of the uploaded file
             $fileExt = pathinfo($fileName,PATHINFO_EXTENSION);
+
             $supportedExt = ['jpg','jpeg','png','gif'];
 
+            // if the uploaded file is supported
             if(in_array($fileExt,$supportedExt)){
-                $formattedFileName = "member_".$username."partner_"."$partnerName".time().".".$fileExt;
+                $formattedFileName = "member_".$username."partner_"."$partnerName". date("dmY_His") .".".$fileExt;
 
                 $saveDir = "../../uploads/receipt/".$formattedFileName;
 
@@ -83,11 +90,8 @@
                         exit();
                     } 
                 } 
-                // Error while moving file
             }
-            // unsupported file ext
         }
-        // no receipt recieved or upload error
     }
 ?>
 
@@ -134,3 +138,4 @@
     <?php include "../include/showSWAL.php"?>
 </body>
 </html>
+<?php mysqli_close($dbConn)?>

@@ -1,13 +1,22 @@
 <?php
     include "../include/conn.php";
     include "../include/session.php";
+    
+    // ensure the user is member, if not redirect to landing page
+    if($_SESSION['role_id'] != 2){
+        header("Location: ../pages/Landingpage.php");
+        exit();
+    }
 
     $user_id = $_SESSION['user_id'];
     $today = date("Y-m-d");
 
-    $sql = "SELECT * FROM user WHERE user_id = {$_SESSION['user_id']}";
-
-    $result = mysqli_query($dbConn, $sql);
+    $sql = "SELECT * FROM user WHERE user_id = ?";
+    $stmt = mysqli_prepare($dbConn, $sql);
+    mysqli_stmt_bind_param($stmt, "i", $user_id);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+    mysqli_stmt_close($stmt);
 
     if (mysqli_num_rows($result)>0) {
         $user_info = mysqli_fetch_assoc($result);
@@ -33,24 +42,24 @@
                   AND transaction_time >= DATE_SUB(CURDATE(), INTERVAL 6 DAY)
                   GROUP BY DATE(transaction_time), type";
 
-    $stmt = mysqli_prepare($dbConn, $sql_chart);
-    mysqli_stmt_bind_param($stmt, "i", $_SESSION['user_id']);
-    mysqli_stmt_execute($stmt);
-    $res_chart = mysqli_stmt_get_result($stmt);
+    $stmtBar = mysqli_prepare($dbConn, $sql_chart);
+    mysqli_stmt_bind_param($stmtBar, "i", $_SESSION['user_id']);
+    mysqli_stmt_execute($stmtBar);
+    $res_chart = mysqli_stmt_get_result($stmtBar);
+    mysqli_stmt_close($stmtBar);
 
-    // Fill the data
-    while($row = mysqli_fetch_assoc($res_chart)){
-        $dbDate = $row['trans_date'];
+    while($data = mysqli_fetch_assoc($res_chart)){
+        $dbDate = $data['trans_date'];
         
         if(isset($last7Days[$dbDate])){
-            if($row['type'] == 'Earned'){
+            if($data['type'] == 'Earned'){
                 // update earned value 
-                $last7Days[$dbDate]['earned'] = $row['total'];
+                $last7Days[$dbDate]['earned'] = $data['total'];
             } 
 
-            else if($row['type'] == 'Redemption'){
+            else if($data['type'] == 'Redemption'){
                 // update spent value 
-                $last7Days[$dbDate]['spent'] = $row['total'];
+                $last7Days[$dbDate]['spent'] = $data['total'];
             }
         }
     }
@@ -75,19 +84,19 @@
                 WHERE user_id = ? 
                 GROUP BY status";
 
-    $stmt_pie = mysqli_prepare($dbConn, $sql_pie);
-    mysqli_stmt_bind_param($stmt_pie, "i", $_SESSION['user_id']);
-    mysqli_stmt_execute($stmt_pie);
-    $res_pie = mysqli_stmt_get_result($stmt_pie);
+    $stmtPie = mysqli_prepare($dbConn, $sql_pie);
+    mysqli_stmt_bind_param($stmtPie, "i", $_SESSION['user_id']);
+    mysqli_stmt_execute($stmtPie);
+    $res_pie = mysqli_stmt_get_result($stmtPie);
+    mysqli_stmt_close($stmtPie);
 
 
-    while($row = mysqli_fetch_assoc($res_pie)){
-        $status = $row['status']; 
-        $taskData[$status] = $row['total'];
+    while($data = mysqli_fetch_assoc($res_pie)){
+        $status = $data['status']; 
+        $taskData[$status] = $data['total'];
     }
 
     // Prepare simple arrays for Chart.js
-    // We explicitly order them so colors match correctly later
     $pieLabels = ['Approved', 'Pending', 'Rejected'];
     $pieValues = [
         $taskData['Approved'], 
@@ -110,6 +119,7 @@
     mysqli_stmt_bind_param($stmtTask, "i", $user_id);
     mysqli_stmt_execute($stmtTask);
     $resultGet = mysqli_stmt_get_result($stmtTask);
+    mysqli_stmt_close($stmtTask);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -157,7 +167,8 @@
         <section class="card quickAccessCard" id="eco_facts">
                 <h2>Fun Fact</h2>
                 <p>
-                    <?php 
+                    <?php
+                        // list of fun facts 
                         $facts = [
                             "Recycling one aluminum can saves enough energy to run a TV for 3 hours.",
                             "A single tree can absorb 48 pounds of carbon dioxide per year.",
@@ -168,6 +179,7 @@
                             "The average person generates over 4 pounds of trash every day."
                         ];
 
+                        // use array_rand to get random index so that the facts shuffle 
                         $randomIndex = array_rand($facts);
                         echo $facts[$randomIndex];
                     ?>
@@ -281,6 +293,6 @@
     </script>
 </body>
 </html>
-
+<?php mysqli_close($dbConn)?>
 
 

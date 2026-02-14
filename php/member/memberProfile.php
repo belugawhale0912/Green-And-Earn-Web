@@ -2,6 +2,12 @@
     include "../include/conn.php";
     include "../include/session.php";
 
+    // ensure the user is member, if not redirect to landing page
+    if($_SESSION['role_id'] != 2){
+        header("Location: ../pages/Landingpage.php");
+        exit();
+    }
+
     $user_id = $_SESSION['user_id'];
 
     if($_SERVER["REQUEST_METHOD"] == "POST"){
@@ -100,6 +106,7 @@
                 'text' => 'Profile Updated Successfully',
                 'icon' => 'success'
             ];
+            mysqli_stmt_close($stmt);
             header("Location: memberProfile.php");
             exit();
 
@@ -109,6 +116,7 @@
                 'text' => 'Error while updating profile, please try again!',
                 'icon' => 'error'
             ];
+            mysqli_stmt_close($stmt);
             header("Location: memberProfile.php");
             exit();
         }
@@ -133,6 +141,7 @@
     mysqli_stmt_bind_param($stmtRecent, "i", $user_id);
     mysqli_stmt_execute($stmtRecent);
     $result_recent = mysqli_stmt_get_result($stmtRecent);
+    mysqli_stmt_close($stmtRecent);
 
 ?>
 
@@ -236,3 +245,4 @@
     <script src="../../js/member.js"></script>
 </body>
 </html>
+<?php mysqli_close($dbConn)?>
