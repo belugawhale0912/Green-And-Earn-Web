@@ -40,8 +40,8 @@ document.addEventListener("DOMContentLoaded", function() {
                 document.getElementById("rewardTitle").value = title;
                 document.getElementById("rewardDescription").value = desc;
                 document.getElementById("requiredPoints").value = points;
-                document.getElementById("stock").value = stock;
-                document.getElementById("img").value = img;
+                document.getElementById("editStock").value = stock;
+                document.getElementById("oldImg").value = img;
 
                 document.getElementById("modalTitle").innerText = "Update Reward";
                 rewardModal.style.display="block";

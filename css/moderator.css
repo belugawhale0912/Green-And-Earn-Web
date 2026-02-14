@@ -3,15 +3,6 @@
     width: 100%;
 }
 
-/* 'X' styling in modal */
-/* .closeModalBtn{
-    align-self: flex-end;
-    border: none;
-    background-color: transparent;
-    width: 50px;
-    height: 50px;
-    cursor: pointer;
-} */
 
 .closeModalBtn:hover{
     background-color: transparent;

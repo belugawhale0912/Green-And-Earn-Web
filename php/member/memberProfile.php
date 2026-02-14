@@ -12,11 +12,13 @@
 
     if($_SERVER["REQUEST_METHOD"] == "POST"){
         $sql = "SELECT * FROM user WHERE user_id = $user_id";
-        $result = mysqli_query($dbConn,$sql);
+        $stmt = mysqli_prepare($dbConn, $sql);
+        mysqli_stmt_bind_param($stmt, "i", $user_id);
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+        mysqli_stmt_close($stmt);
         $user_info = mysqli_fetch_assoc($result);
-
         $user_id = $_SESSION['user_id'];
-
         $new_username = $_POST['username'];
         $newBio = $_POST['bio'];
         $new_email = $_POST['email'];

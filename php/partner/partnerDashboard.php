@@ -11,7 +11,7 @@
     $partner_id = $_SESSION['user_id'];
 
     $sqllistReward = "SELECT * FROM reward WHERE partner_id = $partner_id AND status != 'deleted'
-        ORDER BY reward_id ASC LIMIT 4";
+        ORDER BY reward_id ASC LIMIT 8";
     $result = mysqli_query($dbConn,$sqllistReward);
 
     $sqlTotal = "SELECT COUNT(*) as total

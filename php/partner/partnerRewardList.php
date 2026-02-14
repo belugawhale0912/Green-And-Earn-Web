@@ -24,7 +24,6 @@
         $sql = "SELECT * FROM reward WHERE partner_id = ? AND status != 'Deleted'";
     }
 
-
     $stmt_fetch = mysqli_prepare($dbConn, $sql);
     mysqli_stmt_bind_param($stmt_fetch, "i", $user_id);
     mysqli_stmt_execute($stmt_fetch);
@@ -32,7 +31,6 @@
     mysqli_stmt_close($stmt_fetch);
 
     if($_SERVER["REQUEST_METHOD"] == "POST"){
-
         if(isset($_POST['action'])){ //Checks for action
             
             if($_POST['action']=="add"){
@@ -51,7 +49,7 @@
                     $supportedExt = ['jpg','jpeg','png','gif'];
                 
                     if(in_array($fileExt,$supportedExt)){
-                        $formattedFileName = $title. $user_id .".". date("dmY_His"). "." .$fileExt;
+                        $formattedFileName = $user_id .".". date("dmY_His"). "." .$fileExt;
                         $saveDir = "../../uploads/rewardImages/".$formattedFileName;
 
                         if(move_uploaded_file($fileTempPath, $saveDir)){
@@ -103,7 +101,8 @@
                 $description = $_POST['description'];
                 $required_points = $_POST['required_points'];
                 $stock = $_POST['stock'];
-                $reward_img = $_POST['existingImage'];
+                // make the image default to existing image so the old reward image is kept when the user dosent upload a new image
+                $saveDir = $_POST['existingImage'];
 
                 // if file ok execute the action
                 if(isset($_FILES['reward_img']) && $_FILES['reward_img']['error'] === UPLOAD_ERR_OK){
@@ -115,16 +114,12 @@
                     $supportedExt = ['jpg','jpeg','png','gif'];
                     
                     if(in_array($fileExt, $supportedExt)){
-                        $formattedFileName = $title. $user_id .".". date("dmY_His"). "." .$fileExt;
+                        $formattedFileName = $user_id .".". date("dmY_His"). "." .$fileExt;
 
                         $saveDir = "../../uploads/rewardImages/".$formattedFileName;
                         move_uploaded_file($fileTempPath, $saveDir);
-
                     }
 
-                }else{
-                    // if no image is received, keep the existing image
-                    $saveDir = $reward_img;
                 }
 
                 $sql = "UPDATE reward SET title = ?, description = ?, required_points = ?,
@@ -274,7 +269,7 @@
                 <form action="" id="rewardForm" method="POST" enctype="multipart/form-data">
                     <input type="hidden" id="action" name="action">
                     <input type="hidden" id="rewardID" name="rewardID">
-                    <input type="hidden" id="img" name="existingImage">
+                    <input type="hidden" id="oldImg" name="existingImage">
                     <label for="title">Title</label>
                     <input id="rewardTitle" type="text" name="title" class="modal-input" required>
 
@@ -285,7 +280,7 @@
                     <input id="requiredPoints" type="number" name="required_points" class="modal-input" required>
 
                     <label for="stock">Stock</label>
-                    <input id="stock" type="number" name="stock" class="modal-input" required>
+                    <input id="editStock" type="number" name="stock" class="modal-input" required>
 
                     <label for="reward_img">Reward Image</label>
                     <input id="rewardImg" type="file" name="reward_img" class="modal-input" accept="image/*">
