@@ -13,11 +13,11 @@
     $partner_id = $_SESSION['user_id'];
 
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
-
+        //Retrieve values
         $username = $_POST['username'];
         $amt_spent = $_POST['amt_spent'];
 
-        if($amt_spent <= 0){
+        if($amt_spent <= 0){ //Ensure amount spent input is more than 0
             $_SESSION['popupMessage']=[
                 'title' => 'Failed',
                 'text' => 'Amount spent must be more than 0!',
@@ -27,7 +27,7 @@
             exit();
         }
 
-
+        
         $checkSql = "SELECT * FROM user WHERE username = ?";
         $stmt = mysqli_prepare($dbConn, $checkSql);
         mysqli_stmt_bind_param($stmt, "s", $username);

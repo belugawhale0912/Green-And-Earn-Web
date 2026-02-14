@@ -1,6 +1,6 @@
 <?php
-    include "../include/conn.php";
-    include "../include/session.php";
+    include "../include/conn.php"; //Includes the database connection file
+    include "../include/session.php"; //Includes the session handling file (starts session, manages login info)
 
     // check if the current user is partner, redirect to landing page if not partner
     if($_SESSION['role_id'] != 4){
@@ -13,11 +13,11 @@
     $filter = isset($_GET['status']) ? $_GET['status'] : 'All';
     
     if($filter == "Available"){
-        $sql = "SELECT * FROM reward WHERE partner_id = ? AND status = 'Available'";
+        $sql = "SELECT * FROM reward WHERE partner_id = ? AND status = 'Available'"; //Fetch only available rewards
     }else if($filter == "Rejected"){
-        $sql = "SELECT * FROM reward WHERE partner_id = ? AND status = 'Rejected'";
+        $sql = "SELECT * FROM reward WHERE partner_id = ? AND status = 'Rejected'"; //Fetch only rejected rewards
     }else if($filter == "Pending"){
-        $sql = "SELECT * FROM reward WHERE partner_id = ? AND status = 'Pending'";
+        $sql = "SELECT * FROM reward WHERE partner_id = ? AND status = 'Pending'"; //Fetch only pending rewards
     }else if($filter == "Deactivated"){
         $sql = "SELECT * FROM reward WHERE partner_id = ? AND status = 'Deactivated'";
     }else if($filter == "All"){
@@ -33,7 +33,7 @@
 
     if($_SERVER["REQUEST_METHOD"] == "POST"){
 
-        if(isset($_POST['action'])){
+        if(isset($_POST['action'])){ //Checks for action
             
             if($_POST['action']=="add"){
                 $imageSuccess = false;
@@ -42,12 +42,12 @@
                 $required_points = $_POST['required_points'];
                 $stock = $_POST['stock'];
 
-                // if file ok execute the action
+                //Ensure file upload is successful
                 if(isset($_FILES['reward_img'])&&$_FILES['reward_img']['error'] === UPLOAD_ERR_OK){
 
                     $fileName = $_FILES['reward_img']['name'];
-                    $fileTempPath = $_FILES['reward_img']['tmp_name'];
-                    $fileExt = pathinfo($fileName,PATHINFO_EXTENSION);
+                    $fileTempPath = $_FILES['reward_img']['tmp_name']; //Get original filename and temporary file path
+                    $fileExt = pathinfo($fileName,PATHINFO_EXTENSION); //Get file extension
                     $supportedExt = ['jpg','jpeg','png','gif'];
                 
                     if(in_array($fileExt,$supportedExt)){

@@ -69,7 +69,7 @@
             $data = mysqli_fetch_assoc($resultData);
             mysqli_stmt_close($stmt);
             
-            if($data){
+            if($data){ //Ensures the redemption record exists
                 $userId = $data['user_id'];
                 $amount = $data['points_spent'];
 
