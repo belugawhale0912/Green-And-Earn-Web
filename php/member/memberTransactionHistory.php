@@ -50,7 +50,7 @@
     <link rel="stylesheet" href="../../css/style.css">
     <link rel="stylesheet" href="../../css/header.css">
     <link rel="stylesheet" href="../../css/member.css">
-    <link rel="icon" href="/GreenAndEarnWeb/favicon.ico">
+    <link rel="icon" href="../../favicon.ico">
     <title>Point Transaction</title>
 </head>
 <body>

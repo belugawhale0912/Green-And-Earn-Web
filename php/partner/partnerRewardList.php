@@ -194,6 +194,7 @@
     <link rel="stylesheet" href="../../css/style.css">
     <link rel="stylesheet" href="../../css/partner.css">
     <?php include "../include/libraries.php";?>
+    <link rel="icon" href="../../favicon.ico">
     <title>Partner Reward List</title>
 </head>
 <body>

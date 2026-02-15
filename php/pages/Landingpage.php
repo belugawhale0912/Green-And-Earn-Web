@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="../../css/landing.css">
     <link rel="stylesheet" href="../../css/footer.css">
     <link rel="stylesheet" href="../../css/header.css">
-    <link rel="icon" href="/GreenAndEarnWeb/favicon.ico">
+    <link rel="icon" href="../../favicon.ico">
 </head>
 <body>
     <!-- global header element -->

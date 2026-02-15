@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="../../css/style.css">
     <link rel="stylesheet" href="../../css/aboutUs.css">
     <link rel="stylesheet" href="../../css/header.css">
-    <link rel="icon" href="/GreenAndEarnWeb/favicon.ico">
+    <link rel="icon" href="../../favicon.ico">
     <title>About Us</title>
 </head>
 

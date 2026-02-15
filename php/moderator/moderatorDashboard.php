@@ -76,7 +76,8 @@
     <link rel="stylesheet" href="../../css/header.css">
     <link rel="stylesheet" href="../../css/style.css">
     <link rel="stylesheet" href="../../css/moderator.css">
-    <title>Document</title>
+    <link rel="icon" href="../../favicon.ico">
+    <title>Dashboard</title>
 </head>
 <body>
     <?php

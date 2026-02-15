@@ -59,7 +59,7 @@
     <title>Register</title>
     <link rel="stylesheet" href="../../css/style.css">
     <link rel="stylesheet" href="../../css/register.css">
-    <link rel="icon" href="/GreenAndEarnWeb/favicon.ico">
+    <link rel="icon" href="../../favicon.ico">
     <?php include "../include/libraries.php"?>
 </head>
 <body>

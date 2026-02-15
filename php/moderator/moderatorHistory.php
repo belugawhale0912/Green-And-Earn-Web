@@ -71,6 +71,7 @@
     <link rel="stylesheet" href="../../css/header.css">
     <link rel="stylesheet" href="../../css/style.css">
     <link rel="stylesheet" href="../../css/moderator.css">
+    <link rel="icon" href="../../favicon.ico">
     <title>History Viewing</title>
 </head>
 <body>

@@ -140,7 +140,8 @@
     <link rel="stylesheet" href="../../css/header.css">
     <link rel="stylesheet" href="../../css/style.css">
     <link rel="stylesheet" href="../../css/moderator.css">
-    <?php include "../include/libraries.php";?>  
+    <?php include "../include/libraries.php";?> 
+    <link rel="icon" href="../../favicon.ico"> 
     <title>Submission Viewing</title>
 </head>
 <body>

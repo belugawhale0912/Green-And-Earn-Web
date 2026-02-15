@@ -169,7 +169,7 @@
     <link rel="stylesheet" href="../../css/admin.css">
     <?php include "../include/libraries.php";?>
     <title>Manage Activities</title>
-    <link rel="icon" href="/Green-Earn-Web/favicon.ico">
+    <link rel="icon" href="../../favicon.ico">
 </head>
 <body>
     <script src="../../js/customSwal.js"></script>  

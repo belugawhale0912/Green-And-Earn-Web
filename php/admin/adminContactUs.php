@@ -57,7 +57,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Contact Us Inbox</title>
-    <link rel="icon" href="/Green-Earn-Web/favicon.ico">
+    <link rel="icon" href="../../favicon.ico">
     <link rel="stylesheet" href="../../css/header.css">
     <link rel="stylesheet" href="../../css/style.css">
     <link rel="stylesheet" href="../../css/admin.css">

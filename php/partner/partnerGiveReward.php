@@ -132,10 +132,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../../css/header.css">
     <link rel="stylesheet" href="../../css/style.css">
-    <link rel="stylesheet" href="../../css/layout.css">
     <link rel="stylesheet" href="../../css/partner.css">
     <?php include "../include/libraries.php";?>
-    <title>Document</title>
+    <link rel="icon" href="../../favicon.ico">
+    <title>Give Reward</title>
 </head>
 <body>
     <script src="../../js/customSwal.js"></script>
