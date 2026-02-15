@@ -207,7 +207,7 @@ button:hover{
     text-align: center;
 }
 
-/* --- Mobile View for Profile Section --- */
+
 @media screen and (max-width: 800px) {
     
     /* To center history view control button and style the text inside the button */

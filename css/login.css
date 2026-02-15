@@ -3,7 +3,7 @@
     box-sizing: border-box;
 }
 
-.container {
+.container{
     margin: 0;
     padding: 0;
     height: 100vh;
@@ -13,14 +13,13 @@
 }
 
 /* Login to green and earn */
-body h1 {
+body h1{
     font-size: 2rem;
     margin: 10px 0 20px 0;
     color: var(--clr-primary-a40); 
 }
 
-/* Login conntainer  */
-#login_container {
+#login_container{
     align-self: center;
     display: flex;
     width: 100%;
@@ -28,9 +27,7 @@ body h1 {
 }
 
 
-/*Left area*/
-
-#left_pane {
+#left_pane{
     position: relative; 
     flex: 1; 
     display: flex;
@@ -41,7 +38,6 @@ body h1 {
     padding: 20px;
 }
 
-/* back link styling*/
 #left_pane > a { 
     position: absolute;
     top: 20px;
@@ -52,7 +48,7 @@ body h1 {
 }
 
 
-.form_container {
+.form_container{
     width: 100%;
     max-width: 400px;
     padding: 30px;
@@ -62,20 +58,20 @@ body h1 {
     box-shadow: 0 4px 15px rgba(0,0,0,0.05);
 }
 
-.form_container form {
+.form_container form{
     display: flex;
     flex-direction: column;
 }
 
 
-.form_container label {
+.form_container label{
     align-self: flex-start;
     margin-bottom: 8px;
     font-weight: 600;
     color: var(--text-muted);
 }
 
-.form_container input {
+.form_container input{
     padding: 12px;
     margin-bottom: 20px;
     border: 2px solid var(--border-main);
@@ -86,13 +82,12 @@ body h1 {
     transition: border 0.3s;
 }
 
-.form_container input:focus {
+.form_container input:focus{
     border-color: var(--clr-primary-a40);
     outline: none;
 }
 
-/* 8. Links inside form (Register) */
-.form_container a {
+.form_container a{
     color: var(--clr-primary-a40);
     text-decoration: none;
     font-size: 0.9rem;
@@ -100,12 +95,12 @@ body h1 {
     align-self: flex-end; 
 }
 
-.form_container a:hover {
+.form_container a:hover{
     text-decoration: underline;
 }
 
 
-.form_container button {
+.form_container button{
     padding: 12px;
     background-color: var(--clr-primary-a40);
     color: var(--text-on-primary);
@@ -117,19 +112,19 @@ body h1 {
     transition: background-color 0.3s;
 }
 
-.form_container button:hover {
+.form_container button:hover{
     background-color: var(--clr-primary-a50);
 }
 
-/* right area*/
-#right_pane {
+
+#right_pane{
     flex: 1.5; 
     background-color: var(--bg-body);
     position: relative;
     box-shadow: inset 0 0 0 1000px var(--clr-backdrop); 
 }
 
-#right_pane img {
+#right_pane img{
     width: 100%;
     height: 100%;
     object-fit: cover; 
@@ -138,16 +133,16 @@ body h1 {
 
 
 
-@media (max-width: 800px) {
+@media (max-width: 800px){
     #login_container {
         flex-direction: column; 
     }
     
-    #left_pane {
+    #left_pane{
         flex: 1;
     }
     
-    #right_pane {
+    #right_pane{
         display: none;
     }
 }

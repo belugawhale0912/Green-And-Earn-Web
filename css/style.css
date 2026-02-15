@@ -9,7 +9,6 @@
 }
 
 :root {
-
     --fs-h1: clamp(1.75rem, 3vw + 1rem, 2.5rem);
     
     --fs-h2: clamp(1.5rem, 2.5vw + 1rem, 2rem);
@@ -211,7 +210,6 @@ textarea{
 
 table{
     width: 100%;
-    /* remove double line */
     border-collapse: collapse; 
     font-size: 0.9em;
     font-family: var(--font-body);
@@ -307,7 +305,7 @@ tbody tr:last-of-type{
 
 .title{
     color: var(--text-main);
-    font-family: var(--font-heading); /* Match your site's font */
+    font-family: var(--font-heading);
     font-size: 1.5rem;
 }
 
@@ -335,7 +333,7 @@ tbody tr:last-of-type{
     color: #3c720a;
 }
 
-.editBtn, .logoutBtn {
+.editBtn, .logoutBtn{
     background-color: var(--clr-primary-a40);
     border-color: var(--clr-primary-a50);
     color: var(--text-main-invert);

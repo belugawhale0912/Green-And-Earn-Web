@@ -1,4 +1,3 @@
-/* 1. Global Reset */
 *{
     box-sizing: border-box;
 }
@@ -87,7 +86,6 @@
 }
 
 /* Partner Reward List Page */
-/* Top Section to put filter and add button in same row */
 .topSection{
     display: flex;
     padding: 10px;
@@ -123,7 +121,7 @@
     transform: translateY(-2px);
 }
 
-/* Styling Status of the table */
+
 .rewardStatus{
     width: fit-content;
     padding: 10px;
@@ -144,7 +142,6 @@
     background-color: var(--clr-warning-a0);
 }
 
-/* Update Button */
 .editRewardBtn{
     background: var(--clr-primary-a50);
     border-color: var(--clr-primary-a50);
@@ -162,7 +159,6 @@
     transform: translateY(-2px);
 }
 
-/* Delete Button */
 .deleteRewardBtn{
     background-color: var(--clr-danger-a0);
     border-color: var(--clr-danger-a0);
@@ -185,7 +181,6 @@
     max-width: 800px;
 }
 
-/* styling text area of the modal */
 .modalContent textarea{
     max-width: 550px;
     min-height: 120px;
@@ -303,7 +298,6 @@
 }
 
 /* Partner Points Award Page */
-/* Dark overlay to make the form pop */
 .background{
     box-shadow: inset 0 0 0 1000px rgba(37, 39, 37, 0.7);
     height: 100vh;
@@ -320,7 +314,7 @@
     align-items: center;
 }
 
-/* Floating Card */
+
 .formCard{
     margin-top: 5%;
     background: var(--clr-surface-a0);
@@ -335,7 +329,7 @@
     text-align: center;
     color: var(--text-main);
     margin-bottom: 5px;
-    border-bottom: none; /* Removed the line for cleaner look */
+    border-bottom: none;
 }
 
 .subtitle{

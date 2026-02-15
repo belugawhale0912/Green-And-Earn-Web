@@ -18,24 +18,18 @@ document.addEventListener("DOMContentLoaded", function() {
     const btnOpenSubmission = document.querySelectorAll('.openSubmissionModalBtn');
 
     if(btnOpenSubmission.length>0){
-        // for each buttons we apply function(each of the button)
         btnOpenSubmission.forEach(function(button) {
-            // for each button from buttons, we run the below code
-            // add click listener to button, if a click is detected run the function
             button.addEventListener('click', function() { 
-                // these will run when button is clicked
                 const id = this.getAttribute("data-id");
                 const title = this.getAttribute("data-title");
                 const desc = this.getAttribute("data-desc");
                 const points = this.getAttribute("data-points");
 
-                // set modal with recorded values
                 document.getElementById("activityTitle").innerText = title;
                 document.getElementById("activityDescription").innerText = desc;
                 document.getElementById("activityPoints").innerText = "Points awarded: " + points;
                 document.getElementById("activity_id").value = id;
 
-                // Show the Modal
                 document.getElementById('submitTask').style.display = "block";
             });
         });
@@ -88,7 +82,6 @@ document.addEventListener("DOMContentLoaded", function() {
         confirmForm.forEach(function(form){
             form.addEventListener('submit', function(event) {
                 
-                // Stop the form from sending 
                 event.preventDefault(); 
             
                 CustomSwal.fire({
@@ -98,7 +91,6 @@ document.addEventListener("DOMContentLoaded", function() {
                     showCancelButton: true,
                     confirmButtonText: 'Yes, redeem it!'
                 }).then((result) => {
-                    // submit the form if the user click comfirm
                     if (result.isConfirmed) {
                         form.submit(); 
                     }
@@ -158,13 +150,10 @@ document.addEventListener("DOMContentLoaded", function() {
     const deleteFriendForm = document.querySelectorAll('.deleteFriendForm');
 
     if(deleteFriendForm){
-        // Apply function for each from from comfirmForm
         deleteFriendForm.forEach(function(form){
             form.addEventListener('submit', function(event) {
                 
-                // Stop the form from sending data to PHP immediately
                 event.preventDefault(); 
-                // comfirmation dialog
                 CustomSwal.fire({
                     title: 'Are you sure?',
                     text: "Do you want to delete this friend?",

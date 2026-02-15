@@ -45,7 +45,7 @@
                 $password_hash = password_hash($username, PASSWORD_DEFAULT);
                 $role = $_POST['role_id'];
                 $email = $_POST['email'];
-                $profilePhoto = '../../assets/placeHolders/placeholder.png';
+                $profilePhoto = '../../assets/placeHolders/image.png';
 
                 $sql = "INSERT INTO user (role_id, username, password_hash, email, profile_photo) VALUES (?, ?, ?, ?, ?)";
                 //prevent sql injection

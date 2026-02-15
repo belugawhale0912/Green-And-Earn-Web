@@ -1,0 +1,25 @@
+Available users:
+Password is abc123
+
+Admin:
+-violet
+
+Member:
+-beluga
+-Mr Hamster
+-Yeru
+-Huh
+-bongo
+-elmore
+-meganight
+-lokchart
+-camber
+
+Moderator:
+-blabla
+
+Partner:
+-runaway(blablaMart)
+-RitoGames
+-APU
+

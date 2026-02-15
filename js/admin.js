@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     if(addActivityBtn){
         addActivityBtn.addEventListener("click",function(){
-            document.getElementById("action").value = "add"; // Important!
+            document.getElementById("action").value = "add"; 
             document.getElementById("activityForm").reset();
             document.getElementById("activityModalTitle").innerText = "Add New Activity";
             document.getElementById("activityModal").style.display = "block";
@@ -33,7 +33,6 @@ document.addEventListener("DOMContentLoaded", function() {
                 const start = btn.getAttribute('data-start');
                 const end = btn.getAttribute('data-end');
 
-                // 2. Populate the Modal Form
                 document.getElementById("action").value = "update"; // Important!
                 document.getElementById("activityID").value = id;
                 document.getElementById("activityTitle").value = title;
@@ -42,11 +41,8 @@ document.addEventListener("DOMContentLoaded", function() {
                 document.getElementById("startDate").value = start;
                 document.getElementById("endDate").value = end;
 
-                // 3. Update Modal Title
                 document.getElementById("activityModalTitle").innerText = "Update Activity";
 
-                // 4. Show Modal
-                // Assuming you have a generic openModal function, or just:
                 document.getElementById("activityModal").style.display = "block";
             });
         });
@@ -94,22 +90,19 @@ document.addEventListener("DOMContentLoaded", function() {
             tab.addEventListener("click", function() {
                 const tabID = tab.dataset.target;
                 
-                //hide all tables
                 document.querySelectorAll(".table-section").forEach(function(section) {
                     section.classList.remove("active");
                 });
 
-                //show clicked table
                 document.getElementById(tabID).classList.add("active");
 
-                //remove "active" from all tabs
                 tabs.forEach(function(t){t.classList.remove("active")});
 
-                //click tab
                 tab.classList.add("active");
             });
         });
     }
+    
     //date input validation
     const startDate = document.getElementById('startDate');
     const endDate = document.getElementById('endDate');

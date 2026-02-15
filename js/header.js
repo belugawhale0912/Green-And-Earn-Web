@@ -1,19 +1,17 @@
 document.addEventListener("DOMContentLoaded",function(){
-    const htmlElement = document.documentElement; // Selects the <html> tag
+    const htmlElement = document.documentElement;
     const hamburger = document.getElementById("hamburger");
     const nav = document.getElementById("header_links");
     const toggleBtn = document.getElementById("themeToggle");
     // check for setted theme from local storage
     const savedTheme = localStorage.getItem("theme");
 
-    // if the saved theme is dark
     if (savedTheme === "dark") {
         htmlElement.setAttribute("data-theme", "dark");
     }
 
     if(hamburger){
         hamburger.addEventListener("click",function(){
-        // TODO check here
         nav.classList.toggle('active');
         });
     }
@@ -25,7 +23,6 @@ document.addEventListener("DOMContentLoaded",function(){
 
         toggleBtn.addEventListener("click", function() {
             
-            // Check current mode
             const currentTheme = htmlElement.getAttribute("data-theme");
 
             if (currentTheme === "dark") {
@@ -42,11 +39,4 @@ document.addEventListener("DOMContentLoaded",function(){
         });
     }
 
-    // general way to close modal (click outside modal)
-    window.onclick = function(event) {
-            const modal = document.querySelector('.modal');
-            if (modal && event.target == modal) {
-                modal.style.display = "none";
-            }
-        }
 });
